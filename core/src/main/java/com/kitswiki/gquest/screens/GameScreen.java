@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -47,7 +48,7 @@ public class GameScreen implements Screen {
         this.world = new World(new Vector2(0,0),true);
 
         this.engine = new Engine();
-        this.entityFactory = new EntityFactory(world);
+        this.entityFactory = new EntityFactory(world,mapReader);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader);
 
         Vector2 spawn = mapReader.getPoint("objects","spawn");
@@ -61,7 +62,15 @@ public class GameScreen implements Screen {
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RenderSystem(batch,world,camera));
 
+        Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");
+
+        for(TiledMapReader.MapTileObject m : mapObjects)
+        {
+            engine.addEntity(entityFactory.createStaticObjects(m));
+        }
+
         engine.addEntity(entityFactory.createPlayer(mapReader.getPoint("objects","spawn")));
+
         staticBodyBuilder.createStaticBody();
     }
 

@@ -4,13 +4,16 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.kitswiki.gquest.components.*;
+import com.kitswiki.gquest.map.TiledMapReader;
 
 public class EntityFactory {
 
     private final World world;
+    private final TiledMapReader mapReader;
 
-    public EntityFactory(World world) {
+    public EntityFactory(World world, TiledMapReader mapReader) {
         this.world = world;
+        this.mapReader = mapReader;
     }
 
     public Entity createPlayer(Vector2 pos)
@@ -33,6 +36,23 @@ public class EntityFactory {
         e.add(new StateComponent());
         e.add(a);
         e.add(new TextureComponent());
+        return e;
+    }
+
+    public Entity createStaticObjects(TiledMapReader.MapTileObject mapObject)
+    {
+        Entity e = new Entity();
+
+        TransformComponent t = new TransformComponent();
+        t.position.x = mapObject.x + mapObject.width/2;
+        t.position.y = mapObject.y + mapObject.height/2;
+
+        TextureComponent tex = new TextureComponent();
+        tex.regions.add(mapObject.region);
+
+        e.add(t);
+        e.add(tex);
+
         return e;
     }
 
