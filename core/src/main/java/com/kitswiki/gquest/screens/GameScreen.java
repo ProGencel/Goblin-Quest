@@ -16,10 +16,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
-import com.kitswiki.gquest.systems.AnimationSystem;
-import com.kitswiki.gquest.systems.PhysicSyncSystem;
-import com.kitswiki.gquest.systems.PhysicSystem;
-import com.kitswiki.gquest.systems.RenderSystem;
+import com.kitswiki.gquest.systems.*;
 import com.kitswiki.gquest.utils.Constants;
 
 public class GameScreen implements Screen {
@@ -61,6 +58,8 @@ public class GameScreen implements Screen {
         engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RenderSystem(batch,world,camera));
+        engine.addSystem(new MovementSystem());
+        engine.addSystem(new InputSystem());
 
         Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");
 

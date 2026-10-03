@@ -36,6 +36,8 @@ public class EntityFactory {
         e.add(new StateComponent());
         e.add(a);
         e.add(new TextureComponent());
+        e.add(new PlayerComponent());
+        e.add(new MovementComponent());
         return e;
     }
 
