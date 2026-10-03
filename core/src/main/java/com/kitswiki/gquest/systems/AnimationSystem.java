@@ -49,6 +49,7 @@ public class AnimationSystem extends IteratingSystem {
             TextureRegion strip = atlas.findRegion(key);
             TextureRegion[] frames = strip.split(96,64)[0];
             a = new Animation<>(0.12f, frames);
+            a.setPlayMode(Animation.PlayMode.LOOP);
             cache.put(key, a);
         }
 
