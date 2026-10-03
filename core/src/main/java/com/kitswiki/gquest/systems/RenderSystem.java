@@ -4,9 +4,12 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.kitswiki.gquest.components.TextureComponent;
 import com.kitswiki.gquest.components.TransformComponent;
 import com.kitswiki.gquest.utils.Constants;
@@ -17,10 +20,16 @@ public class RenderSystem extends IteratingSystem {
     private final ComponentMapper<TransformComponent> tsc = ComponentMapper.getFor(TransformComponent.class);
 
     private final SpriteBatch batch;
+    private final Box2DDebugRenderer debugRenderer;
+    private final World world;
+    private final OrthographicCamera camera;
 
-    public RenderSystem(SpriteBatch batch) {
+    public RenderSystem(SpriteBatch batch, World world, OrthographicCamera camera) {
         super(Family.all(TransformComponent.class, TextureComponent.class).get());
+        this.debugRenderer = new Box2DDebugRenderer();
         this.batch = batch;
+        this.world = world;
+        this.camera = camera;
     }
 
     @Override
@@ -28,6 +37,7 @@ public class RenderSystem extends IteratingSystem {
         batch.begin();
         super.update(deltaTime);
         batch.end();
+        debugRenderer.render(world,camera.combined);
     }
 
     @Override

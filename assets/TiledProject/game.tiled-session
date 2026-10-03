@@ -1,4 +1,8 @@
 {
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "maps/town.tmx": {
             "scale": 0.33,
@@ -17,5 +21,10 @@
             "dynamicWrapping": true,
             "scaleInDock": 1
         }
-    }
+    },
+    "openFiles": [
+    ],
+    "project": "game.tiled-project",
+    "recentFiles": [
+    ]
 }

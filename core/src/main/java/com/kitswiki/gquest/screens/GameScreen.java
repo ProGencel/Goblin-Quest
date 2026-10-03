@@ -8,12 +8,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.factories.EntityFactory;
+import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.AnimationSystem;
+import com.kitswiki.gquest.systems.PhysicSyncSystem;
+import com.kitswiki.gquest.systems.PhysicSystem;
 import com.kitswiki.gquest.systems.RenderSystem;
 import com.kitswiki.gquest.utils.Constants;
 
@@ -26,9 +30,11 @@ public class GameScreen implements Screen {
     private final OrthographicCamera camera;
     private final Viewport viewport;
     private final TiledMapReader mapReader;
+    private final World world;
 
     private final Engine engine;
     private final EntityFactory entityFactory;
+    private final StaticBodyBuilder staticBodyBuilder;
 
     public GameScreen(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -38,9 +44,11 @@ public class GameScreen implements Screen {
         this.camera = new OrthographicCamera();
         this.viewport = new FitViewport(480f * Constants.UNIT_SCALE, 270f * Constants.UNIT_SCALE,camera);
         this.mapReader = new TiledMapReader(tiledMap,Constants.UNIT_SCALE);
+        this.world = new World(new Vector2(0,0),true);
 
         this.engine = new Engine();
-        this.entityFactory = new EntityFactory();
+        this.entityFactory = new EntityFactory(world);
+        this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader);
 
         Vector2 spawn = mapReader.getPoint("objects","spawn");
         camera.position.set(spawn,0);
@@ -48,10 +56,13 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        engine.addSystem(new PhysicSystem(world));
+        engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
-        engine.addSystem(new RenderSystem(batch));
+        engine.addSystem(new RenderSystem(batch,world,camera));
 
         engine.addEntity(entityFactory.createPlayer(mapReader.getPoint("objects","spawn")));
+        staticBodyBuilder.createStaticBody();
     }
 
     @Override
