@@ -43,15 +43,23 @@ public class RenderSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         Vector2 pos = tsc.get(entity).position;
+        TextureComponent tc = this.tc.get(entity);
 
-        for(TextureRegion region : tc.get(entity).regions)
+        for(TextureRegion region : this.tc.get(entity).regions)
         {
             float w = region.getRegionWidth() * Constants.UNIT_SCALE;
             float h = region.getRegionHeight() * Constants.UNIT_SCALE;
             float x = pos.x - w/2;
             float y = pos.y - h/2;
 
-            batch.draw(region,x,y,w,h);
+            if(!tc.flipped)
+            {
+                batch.draw(region,x,y,w,h);
+            }
+            else
+            {
+                batch.draw(region,x + w,y,-w,h);
+            }
         }
     }
 }

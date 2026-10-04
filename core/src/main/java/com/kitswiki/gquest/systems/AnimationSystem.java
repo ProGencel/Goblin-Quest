@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.kitswiki.gquest.components.AnimationComponent;
 import com.kitswiki.gquest.components.StateComponent;
 import com.kitswiki.gquest.components.TextureComponent;
+import com.kitswiki.gquest.enums.CharacterState;
 
 public class AnimationSystem extends IteratingSystem {
 
@@ -21,7 +22,7 @@ public class AnimationSystem extends IteratingSystem {
     private final ObjectMap<String, Animation<TextureRegion>> cache;
 
     public AnimationSystem(TextureAtlas atlas) {
-        super(Family.all(StateComponent.class, TextureComponent.class, AnimationComponent.class).get());
+        super(Family.all(StateComponent.class, TextureComponent.class, AnimationComponent.class, StateComponent.class).get());
         this.cache = new ObjectMap<>();
         this.atlas = atlas;
     }
@@ -36,7 +37,9 @@ public class AnimationSystem extends IteratingSystem {
         tex.regions.clear();
         for(String layer : anim.layers)
         {
+
             tex.regions.add(getAnimation(layer,st).getKeyFrame(st.stateTime));
+
         }
     }
 

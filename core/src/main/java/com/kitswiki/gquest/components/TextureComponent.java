@@ -7,4 +7,5 @@ import com.badlogic.gdx.utils.Array;
 public class TextureComponent implements Component {
 
     public final Array<TextureRegion> regions = new Array<>();
+    public boolean flipped = false;
 }
