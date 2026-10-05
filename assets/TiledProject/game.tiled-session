@@ -5,11 +5,11 @@
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "maps/town.tmx": {
-            "scale": 0.75,
+            "scale": 3,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1036,
-                "y": 784
+                "x": 1079.6666666666665,
+                "y": 1046.3333333333333
             }
         },
         "tilesets/SunnySide Environment.tsx": {

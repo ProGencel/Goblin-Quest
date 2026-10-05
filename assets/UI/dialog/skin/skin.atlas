@@ -1,0 +1,22 @@
+
+skin.png
+size: 512, 512
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+Minecraft
+  rotate: false
+  xy: 1, 472
+  size: 506, 33
+  orig: 506, 33
+  offset: 0, 0
+  index: -1
+dialog
+  rotate: false
+  xy: 1, 461
+  size: 9, 9
+  split: 2, 2, 2, 2
+  pad: 3, 3, 3, 3
+  orig: 9, 9
+  offset: 0, 0
+  index: -1

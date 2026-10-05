@@ -1,0 +1,35 @@
+{
+"com.badlogic.gdx.graphics.g2d.BitmapFont": {
+	"Minecraft": {
+		"file": "Minecraft.fnt",
+		"scaledSize": -1,
+		"markupEnabled": false,
+		"flip": false
+	}
+},
+"com.badlogic.gdx.graphics.Color": {
+	"FontColor": {
+		"r": 0.32156864,
+		"g": 0.30980393,
+		"b": 0.35686275,
+		"a": 1
+	},
+	"white": {
+		"r": 1,
+		"g": 1,
+		"b": 1,
+		"a": 1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+	"default": {
+		"font": "Minecraft",
+		"fontColor": "FontColor"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
+	"default": {
+		"label": "default"
+	}
+}
+}

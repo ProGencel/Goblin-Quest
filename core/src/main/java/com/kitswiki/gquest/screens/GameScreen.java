@@ -9,15 +9,20 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.*;
+import com.kitswiki.gquest.ui.DialogUi;
 import com.kitswiki.gquest.utils.Constants;
+
+import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
 public class GameScreen implements Screen {
 
@@ -30,6 +35,10 @@ public class GameScreen implements Screen {
     private final TiledMapReader mapReader;
     private final World world;
 
+    private final Viewport dialogViewport;
+    private final Stage dialogStage;
+    private final DialogUi dialogUi;
+
     private final Engine engine;
     private final EntityFactory entityFactory;
     private final StaticBodyBuilder staticBodyBuilder;
@@ -38,11 +47,15 @@ public class GameScreen implements Screen {
         this.assetManager = assetManager;
         this.tiledMap = assetManager.get("TiledProject/maps/town.tmx");
         this.batch = new SpriteBatch();
-        this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap,Constants.UNIT_SCALE,batch);
+        this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, UNIT_SCALE,batch);
         this.camera = new OrthographicCamera();
-        this.viewport = new FitViewport(480f * Constants.UNIT_SCALE, 270f * Constants.UNIT_SCALE,camera);
-        this.mapReader = new TiledMapReader(tiledMap,Constants.UNIT_SCALE);
+        this.viewport = new FitViewport(480f * UNIT_SCALE, 270f * UNIT_SCALE,camera);
+        this.mapReader = new TiledMapReader(tiledMap, UNIT_SCALE);
         this.world = new World(new Vector2(0,0),true);
+
+        this.dialogViewport = new FitViewport(480,270);
+        this.dialogStage = new Stage(dialogViewport,batch);
+        this.dialogUi = new DialogUi(dialogStage,assetManager.get("UI/dialog/skin/skin.json"));
 
         this.engine = new Engine();
         this.entityFactory = new EntityFactory(world,mapReader);
@@ -58,7 +71,7 @@ public class GameScreen implements Screen {
         engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
-        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world));
+        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world,dialogStage));
         engine.addSystem(new MovementSystem(mapReader));
         engine.addSystem(new InputSystem());
 
@@ -85,6 +98,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        dialogViewport.update(width, height, true);
     }
 
     @Override

@@ -1,10 +1,8 @@
 package com.kitswiki.gquest.systems;
 
-import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,9 +15,9 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.kitswiki.gquest.components.TextureComponent;
 import com.kitswiki.gquest.components.TransformComponent;
-import com.kitswiki.gquest.utils.Constants;
 
 import java.util.Comparator;
 
@@ -37,11 +35,12 @@ public class RenderSystem extends SortedIteratingSystem {
     private final OrthographicCamera camera;
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final World world;
+    private final Stage dialogStage;
 
     private final int aboveIndex;
     private final MapLayer aboveLayer;
 
-    public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, World world) {
+    public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, World world, Stage dialogStage) {
         super(Family.all(TransformComponent.class, TextureComponent.class).get(),new YComparator());
         this.debugRenderer = new Box2DDebugRenderer();
         this.batch = batch;
@@ -49,6 +48,7 @@ public class RenderSystem extends SortedIteratingSystem {
         this.camera = camera;
         this.mapRenderer = mapRenderer;
         this.world = world;
+        this.dialogStage = dialogStage;
 
         aboveLayer = map.getLayers().get("above");
         aboveIndex = map.getLayers().getIndex("above");
@@ -70,12 +70,15 @@ public class RenderSystem extends SortedIteratingSystem {
         super.update(deltaTime);
         batch.end();
 
-        if(aboveLayer != null)
-        {
-            aboveLayer.setVisible(true);
-            mapRenderer.render(new int[] {aboveIndex});
-            aboveLayer.setVisible(false);
-        }
+//        if(aboveLayer != null)
+//        {
+//            aboveLayer.setVisible(true);
+//            mapRenderer.render(new int[] {aboveIndex});
+//            aboveLayer.setVisible(false);
+//        }
+
+        dialogStage.act();
+        dialogStage.draw();
 
         //debugDrawSortLines();
         //debugRenderer.render(world,camera.combined);
