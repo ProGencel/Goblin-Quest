@@ -8,7 +8,7 @@ bounds:868,332,768,64
 bowlhair_idle
 bounds:2,464,864,64
 bowlhair_run
-bounds:2,2,768,64
+bounds:772,68,768,64
 curlyhair_idle
 bounds:2,332,864,64
 curlyhair_run
@@ -20,7 +20,7 @@ bounds:2,134,768,64
 mophair_idle
 bounds:868,398,864,64
 mophair_run
-bounds:772,134,768,64
+bounds:2,2,768,64
 shorthair_idle
 bounds:2,530,864,64
 shorthair_run
@@ -29,6 +29,8 @@ spikeyhair_idle
 bounds:868,464,864,64
 spikeyhair_run
 bounds:868,266,768,64
+spr_idle
+bounds:772,134,768,64
 tools_idle
 bounds:2,398,864,64
 tools_run

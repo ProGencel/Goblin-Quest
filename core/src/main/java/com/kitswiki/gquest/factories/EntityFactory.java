@@ -26,7 +26,7 @@ public class EntityFactory {
         t.position.set(pos);
 
         BodyComponent b = new BodyComponent();
-        b.body = handleBodyForPlayer(pos);
+        b.body = handleBodyForDynamicCircle(pos);
 
         AnimationComponent a = new AnimationComponent();
         a.layers.add("base");
@@ -48,6 +48,30 @@ public class EntityFactory {
         return e;
     }
 
+    public Entity createGoblin(TiledMapReader.MapTileObject mapObject, float offSetY, int frameH)
+    {
+        Entity e = new Entity();
+
+
+        TransformComponent t = new TransformComponent();
+        t.position.x = mapObject.x + mapObject.width/2;
+        t.position.y = mapObject.y + mapObject.height/2;
+
+        AnimationComponent a = new AnimationComponent();
+        a.layers.add("spr");
+
+        TextureComponent tex = new TextureComponent();
+        tex.offsetY = (-frameH / 2f + offSetY) * UNIT_SCALE;
+        tex.flipped = mapObject.getBool("isFlipped",true);
+
+        e.add(t);
+        e.add(new StateComponent());
+        e.add(a);
+        e.add(tex);
+
+        return e;
+    }
+
     public Entity createStaticObjects(TiledMapReader.MapTileObject mapObject, float offsetY, int frameH)
     {
         Entity e = new Entity();
@@ -65,7 +89,7 @@ public class EntityFactory {
         return e;
     }
 
-    private Body handleBodyForPlayer(Vector2 pos)
+    private Body handleBodyForDynamicCircle(Vector2 pos)
     {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -79,6 +103,15 @@ public class EntityFactory {
         shape.setPosition(new Vector2(0,-0.3f));
         b.createFixture(shape,1);
         shape.dispose();
+
+        CircleShape sensorShape = new CircleShape();
+        sensorShape.setRadius(1f);
+        FixtureDef fdef = new FixtureDef();
+        fdef.isSensor = true;
+        fdef.shape = sensorShape;
+        b.createFixture(fdef);
+        sensorShape.dispose();
+
 
         return b;
     }

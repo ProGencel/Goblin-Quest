@@ -40,6 +40,38 @@ public class TiledMapReader {
         }
     }
 
+    /**
+     * Haritaya konmuş bir Point nesnesi: isim + konum + custom property'ler.
+     * Konum dünya biriminde. (Dikdörtgen nesneden üretilirse merkezi alınır.)
+     */
+    public static class MapPoint {
+        public final String name;               // Tiled'daki nesne adı (boş olabilir)
+        public final float x, y;                // dünya birimi
+        public final MapProperties properties;  // nesnenin custom property'leri
+
+        MapPoint(String name, float x, float y, MapProperties properties) {
+            this.name = name;
+            this.x = x;
+            this.y = y;
+            this.properties = properties;
+        }
+
+        /** Her çağrıda yeni Vector2 üretir. */
+        public Vector2 getPosition() { return new Vector2(x, y); }
+
+        /** Tiled'daki "Class/Type" alanı (yoksa null). */
+        public String getType() {
+            return TiledMapReader.getString(properties, "type",
+                TiledMapReader.getString(properties, "class", null));
+        }
+
+        public boolean has(String key) { return properties.containsKey(key); }
+        public String getString(String key, String def) { return TiledMapReader.getString(properties, key, def); }
+        public int getInt(String key, int def)          { return TiledMapReader.getInt(properties, key, def); }
+        public float getFloat(String key, float def)    { return TiledMapReader.getFloat(properties, key, def); }
+        public boolean getBool(String key, boolean def) { return TiledMapReader.getBool(properties, key, def); }
+    }
+
     public static class MapTileObject {
         public final String name;
         public final TextureRegion region;
@@ -188,6 +220,15 @@ public class TiledMapReader {
         return result;
     }
 
+    /** Property'si (key = value) olan İLK tile nesnesi. Bulunamazsa hata fırlatır. */
+    public MapTileObject getTileObjectByProperty(String objectLayerName, String key, String value) {
+        Array<MapTileObject> found = getTileObjectsByProperty(objectLayerName, key, value);
+        if (found.size == 0) {
+            throw new IllegalStateException("Tile nesnesi yok: " + key + "=" + value + " (katman: " + objectLayerName + ")");
+        }
+        return found.first();
+    }
+
     /** Tek bir tile nesnesinin birleşik property'leri (nesne + tile). */
     public static MapProperties getTileObjectProperties(MapObject obj) {
         MapProperties merged = new MapProperties();
@@ -232,19 +273,100 @@ public class TiledMapReader {
     }
 
     // ------------------------------------------------------------------
+    // ÖZELLİĞE (CUSTOM PROPERTY) GÖRE ARAMA
+    // name'e ek olarak herhangi bir property ile nesne bulmak için.
+    // Değer karşılaştırması string üzerinden yapılır (true -> "true", 5 -> "5").
+    // Tile nesnelerinde tileset'teki property'ler de aranır (nesne değeri öncelikli).
+    // ------------------------------------------------------------------
+
+    /** Katmanda belirli bir property'si olan nesneler (değeri ne olursa olsun). */
+    public Array<MapObject> getObjectsByProperty(String layerName, String key) {
+        return filterObjects(layerName, key, null);
+    }
+
+    /** Katmanda property'si verilen değere eşit olan nesneler (örn. "spawnId" = "door_1"). */
+    public Array<MapObject> getObjectsByProperty(String layerName, String key, String value) {
+        return filterObjects(layerName, key, value);
+    }
+
+    /** Property'si (key = value) olan İLK nesne. Bulunamazsa hata fırlatır. */
+    public MapObject getObjectByProperty(String layerName, String key, String value) {
+        Array<MapObject> found = filterObjects(layerName, key, value);
+        if (found.size == 0) {
+            throw new IllegalStateException("Nesne yok: " + key + "=" + value + " (katman: " + layerName + ")");
+        }
+        return found.first();
+    }
+
+    /** Property'ye göre şekiller (dikdörtgen, elips, poligon, çizgi). Point'ler atlanır. */
+    public Array<MapShape> getShapesByProperty(String layerName, String key) {
+        return shapesOf(filterObjects(layerName, key, null));
+    }
+
+    public Array<MapShape> getShapesByProperty(String layerName, String key, String value) {
+        return shapesOf(filterObjects(layerName, key, value));
+    }
+
+    public MapShape getShapeByProperty(String layerName, String key, String value) {
+        Array<MapShape> found = getShapesByProperty(layerName, key, value);
+        if (found.size == 0) {
+            throw new IllegalStateException("Şekil yok: " + key + "=" + value + " (katman: " + layerName + ")");
+        }
+        return found.first();
+    }
+
+    /** Property'ye göre dikdörtgenler. */
+    public Array<Rectangle> getRectsByProperty(String layerName, String key) {
+        return rectsOf(filterObjects(layerName, key, null));
+    }
+
+    public Array<Rectangle> getRectsByProperty(String layerName, String key, String value) {
+        return rectsOf(filterObjects(layerName, key, value));
+    }
+
+    public Rectangle getRectByProperty(String layerName, String key, String value) {
+        Array<Rectangle> found = getRectsByProperty(layerName, key, value);
+        if (found.size == 0) {
+            throw new IllegalStateException("Dikdörtgen yok: " + key + "=" + value + " (katman: " + layerName + ")");
+        }
+        return found.first();
+    }
+
+    // ------------------------------------------------------------------
     // POINT (doğma noktaları, waypoint'ler)
     // ------------------------------------------------------------------
 
-    public Vector2 getPoint(String layerName, String objectName) {
-        return toPoint(getObject(layerName, objectName));
+    /**
+     * İsmine göre tek nokta. Nesne Point ise konumu, dikdörtgen ise merkezi alınır.
+     * Konum için: point.x / point.y veya point.getPosition().
+     */
+    public MapPoint getPoint(String layerName, String objectName) {
+        return toMapPoint(getObject(layerName, objectName));
     }
 
-    public Array<Vector2> getPoints(String layerName) {
-        Array<Vector2> result = new Array<>();
-        for (MapObject obj : getLayer(layerName).getObjects()) {
-            if (obj instanceof PointMapObject) result.add(toPoint(obj));
-        }
-        return result;
+    /** Katmandaki TÜM Point nesneleri (isim + konum + property'leriyle). */
+    public Array<MapPoint> getPoints(String layerName) {
+        return pointsOf(getLayer(layerName).getObjects());
+    }
+
+    /** Belirli bir property'si olan Point'ler (değeri ne olursa olsun). */
+    public Array<MapPoint> getPointsByProperty(String layerName, String key) {
+        return pointsOf(filterObjects(layerName, key, null));
+    }
+
+    /** Property'si verilen değere eşit olan Point'ler (örn. "type" = "spawn"). */
+    public Array<MapPoint> getPointsByProperty(String layerName, String key, String value) {
+        return pointsOf(filterObjects(layerName, key, value));
+    }
+
+    /** Property'si (key = value) olan İLK nokta. Bulunamazsa hata fırlatır. */
+    public MapPoint getPointByProperty(String layerName, String key, String value) {
+        return toMapPoint(getObjectByProperty(layerName, key, value));
+    }
+
+    /** Tiled'daki "Class/Type" alanına göre Point'ler (örn. "spawn", "waypoint"). */
+    public Array<MapPoint> getPointsByType(String layerName, String type) {
+        return pointsOf(getObjectsByType(layerName, type));
     }
 
     /** Point ise konumu, dikdörtgen ise merkezini verir. */
@@ -258,6 +380,12 @@ public class TiledMapReader {
             return new Vector2(r.x + r.width / 2f, r.y + r.height / 2f);
         }
         throw new IllegalStateException("Nesne point/dikdörtgen değil: " + obj.getName());
+    }
+
+    /** Point/dikdörtgen nesneyi isim + konum + property içeren MapPoint'e çevirir. */
+    public MapPoint toMapPoint(MapObject obj) {
+        Vector2 pos = toPoint(obj);
+        return new MapPoint(obj.getName(), pos.x, pos.y, obj.getProperties());
     }
 
     // ------------------------------------------------------------------
@@ -443,6 +571,45 @@ public class TiledMapReader {
         if (cell == null) return false;
         TiledMapTile tile = cell.getTile();
         return tile != null && getBool(tile.getProperties(), key, false);
+    }
+
+    /** value == null ise sadece property'nin varlığına bakar. */
+    private static boolean propertyMatches(MapProperties p, String key, String value) {
+        if (!p.containsKey(key)) return false;
+        return value == null || value.equals(getString(p, key, null));
+    }
+
+    private Array<MapObject> filterObjects(String layerName, String key, String value) {
+        Array<MapObject> result = new Array<>();
+        for (MapObject obj : getLayer(layerName).getObjects()) {
+            if (propertyMatches(getTileObjectProperties(obj), key, value)) result.add(obj);
+        }
+        return result;
+    }
+
+    private Array<MapPoint> pointsOf(Iterable<MapObject> objects) {
+        Array<MapPoint> result = new Array<>();
+        for (MapObject obj : objects) {
+            if (obj instanceof PointMapObject) result.add(toMapPoint(obj));
+        }
+        return result;
+    }
+
+    private Array<MapShape> shapesOf(Array<MapObject> objects) {
+        Array<MapShape> result = new Array<>();
+        for (MapObject obj : objects) {
+            MapShape s = toShape(obj, 0f, 0f);
+            if (s != null) result.add(s);
+        }
+        return result;
+    }
+
+    private Array<Rectangle> rectsOf(Array<MapObject> objects) {
+        Array<Rectangle> result = new Array<>();
+        for (MapObject obj : objects) {
+            if (obj instanceof RectangleMapObject) result.add(getBounds(obj));
+        }
+        return result;
     }
 
     /** offX/offY: piksel cinsinden kaydırma (tile içi şekilleri haritaya taşımak için). */

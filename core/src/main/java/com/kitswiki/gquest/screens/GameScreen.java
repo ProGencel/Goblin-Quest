@@ -1,10 +1,12 @@
 package com.kitswiki.gquest.screens;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -61,7 +63,7 @@ public class GameScreen implements Screen {
         this.entityFactory = new EntityFactory(world,mapReader);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader);
 
-        Vector2 spawn = mapReader.getPoint("objects","spawn");
+        Vector2 spawn = mapReader.getPoint("objects","spawn").getPosition();
         camera.position.set(spawn,0);
     }
 
@@ -79,12 +81,21 @@ public class GameScreen implements Screen {
 
         for(TiledMapReader.MapTileObject m : mapObjects)
         {
-            float offsetY = m.getFloat("OFFSET_Y",0);
-            int frameH = m.getInt("FRAME_H",48);
-            engine.addEntity(entityFactory.createStaticObjects(m,offsetY,frameH));
+            if(m.getString("type","").equals("static"))
+            {
+                float offsetY = m.getFloat("OFFSET_Y",0);
+                int frameH = m.getInt("FRAME_H",48);
+                engine.addEntity(entityFactory.createStaticObjects(m,offsetY,frameH));
+            }
+            else if(m.getString("type","").equals("goblin"))
+            {
+                float offsetY = m.getFloat("OFFSET_Y",0);
+                int frameH = m.getInt("FRAME_H",0);
+                engine.addEntity(entityFactory.createGoblin(m,offsetY,frameH));
+            }
         }
 
-        engine.addEntity(entityFactory.createPlayer(mapReader.getPoint("objects","spawn")));
+        engine.addEntity(entityFactory.createPlayer(mapReader.getPoint("objects","spawn").getPosition()));
 
         staticBodyBuilder.createStaticBody();
     }

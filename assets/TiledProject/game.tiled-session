@@ -29,7 +29,7 @@
         "tilesets/props.tsx"
     ],
     "project": "game.tiled-project",
-    "property.type": "int",
+    "property.type": "bool",
     "recentFiles": [
         "tilesets/props.tsx",
         "maps/town.tmx"

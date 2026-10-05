@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="21">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="25">
  <tileset firstgid="1" source="../tilesets/SunnySide Environment.tsx"/>
  <tileset firstgid="4097" source="../tilesets/props.tsx"/>
  <layer id="1" name="ground" width="100" height="100">
@@ -211,7 +211,7 @@
 </data>
  </layer>
  <objectgroup id="4" name="objects">
-  <object id="4" gid="4097" x="1216" y="1136" width="32" height="48">
+  <object id="4" type="static" gid="4097" x="1216" y="1136" width="32" height="48">
    <properties>
     <property name="OFFSET_Y" type="float" value="10"/>
    </properties>
@@ -219,15 +219,8 @@
   <object id="9" name="spawn" x="899" y="1013.67">
    <point/>
   </object>
-  <object id="13" gid="4099" x="848" y="992" width="112" height="112"/>
-  <object id="15" gid="4097" x="0" y="1056" width="32" height="48"/>
-  <object id="16" gid="4097" x="864" y="32" width="32" height="48"/>
-  <object id="17" gid="4097" x="928" y="1600" width="32" height="48"/>
-  <object id="18" gid="4097" x="1568" y="1568" width="32" height="48"/>
-  <object id="19" gid="4097" x="1488" y="1600" width="32" height="48"/>
-  <object id="20" name="goblin" x="1296" y="1120">
-   <point/>
-  </object>
+  <object id="13" type="static" gid="4099" x="848" y="992" width="112" height="112"/>
+  <object id="24" gid="4101" x="944" y="1008" width="18" height="16"/>
  </objectgroup>
  <objectgroup id="9" name="collisions"/>
 </map>
