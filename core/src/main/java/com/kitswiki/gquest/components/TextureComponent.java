@@ -8,4 +8,5 @@ public class TextureComponent implements Component {
 
     public final Array<TextureRegion> regions = new Array<>();
     public boolean flipped = false;
+    public float offsetY = 0;
 }

@@ -5,11 +5,11 @@
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "maps/town.tmx": {
-            "scale": 4,
-            "selectedLayer": 6,
+            "scale": 5.5,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 952,
-                "y": 1070.25
+                "x": 907.4545454545455,
+                "y": 980.909090909091
             }
         },
         "tilesets/SunnySide Environment.tsx": {
@@ -19,14 +19,19 @@
         },
         "tilesets/props.tsx": {
             "dynamicWrapping": true,
-            "scaleInDock": 1
+            "scaleInDock": 5.5,
+            "scaleInEditor": 1
         }
     },
+    "last.imagePath": "C:/Desktop/libGDX/GoblinQuests/assets/TiledProject/tilesets",
     "openFiles": [
-        "maps/town.tmx"
+        "maps/town.tmx",
+        "tilesets/props.tsx"
     ],
     "project": "game.tiled-project",
+    "property.type": "int",
     "recentFiles": [
+        "tilesets/props.tsx",
         "maps/town.tmx"
     ]
 }

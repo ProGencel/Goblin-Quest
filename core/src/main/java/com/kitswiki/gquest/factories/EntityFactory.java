@@ -6,6 +6,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.map.TiledMapReader;
 
+import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
+
 public class EntityFactory {
 
     private final World world;
@@ -31,17 +33,22 @@ public class EntityFactory {
         a.layers.add("mophair");
         a.layers.add("tools");
 
+        TextureComponent tex = new TextureComponent();
+        int PLAYER_FEET_PADDING = 25;
+        int PLAYER_FRAME_HEIGHT = 64;
+        tex.offsetY = (-PLAYER_FRAME_HEIGHT / 2f + PLAYER_FEET_PADDING) * UNIT_SCALE;
+
         e.add(t);
         e.add(b);
         e.add(new StateComponent());
         e.add(a);
-        e.add(new TextureComponent());
+        e.add(tex);
         e.add(new PlayerComponent());
         e.add(new MovementComponent());
         return e;
     }
 
-    public Entity createStaticObjects(TiledMapReader.MapTileObject mapObject)
+    public Entity createStaticObjects(TiledMapReader.MapTileObject mapObject, float offsetY, int frameH)
     {
         Entity e = new Entity();
 
@@ -51,7 +58,7 @@ public class EntityFactory {
 
         TextureComponent tex = new TextureComponent();
         tex.regions.add(mapObject.region);
-
+        tex.offsetY = ( -frameH / 2f + offsetY ) * UNIT_SCALE;
         e.add(t);
         e.add(tex);
 

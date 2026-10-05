@@ -41,15 +41,31 @@ public class TiledMapReader {
     }
 
     public static class MapTileObject {
+        public final String name;
         public final TextureRegion region;
         public final float x, y;          // sol alt köşe, dünya birimi
         public final float width, height; // dünya birimi
-        public final MapProperties properties;
+        public final MapProperties properties;      // sadece nesnenin kendi property'leri
+        public final MapProperties tileProperties;  // tileset'te tile'a eklenenler
+        public final MapProperties allProperties;   // birleşik (nesne, tile'ı ezer)
 
-        MapTileObject(TextureRegion region, float x, float y, float w, float h, MapProperties p) {
+        MapTileObject(String name, TextureRegion region, float x, float y, float w, float h,
+                      MapProperties objProps, MapProperties tileProps) {
+            this.name = name;
             this.region = region; this.x = x; this.y = y;
-            this.width = w; this.height = h; this.properties = p;
+            this.width = w; this.height = h;
+            this.properties = objProps;
+            this.tileProperties = tileProps;
+            this.allProperties = new MapProperties();
+            this.allProperties.putAll(tileProps);
+            this.allProperties.putAll(objProps);   // nesne değeri öncelikli
         }
+
+        public boolean has(String key) { return allProperties.containsKey(key); }
+        public String getString(String key, String def) { return TiledMapReader.getString(allProperties, key, def); }
+        public int getInt(String key, int def)          { return TiledMapReader.getInt(allProperties, key, def); }
+        public float getFloat(String key, float def)    { return TiledMapReader.getFloat(allProperties, key, def); }
+        public boolean getBool(String key, boolean def) { return TiledMapReader.getBool(allProperties, key, def); }
     }
 
     private final TiledMap map;
@@ -140,15 +156,54 @@ public class TiledMapReader {
         Array<MapTileObject> result = new Array<>();
         for (MapObject obj : getLayer(objectLayerName).getObjects()) {
             if (!(obj instanceof TiledMapTileMapObject)) continue;
-            TiledMapTileMapObject t = (TiledMapTileMapObject) obj;
-            TextureRegion r = t.getTile().getTextureRegion();
-
-            result.add(new MapTileObject(r,
-                t.getX() * scale, t.getY() * scale,
-                r.getRegionWidth() * scale, r.getRegionHeight() * scale,
-                t.getProperties()));
+            result.add(toTileObject((TiledMapTileMapObject) obj));
         }
         return result;
+    }
+
+    /** İsmine göre tek bir tile nesnesi. */
+    public MapTileObject getTileObject(String objectLayerName, String objectName) {
+        MapObject obj = getObject(objectLayerName, objectName);
+        if (!(obj instanceof TiledMapTileMapObject)) {
+            throw new IllegalStateException("Nesne tile nesnesi değil: " + objectName);
+        }
+        return toTileObject((TiledMapTileMapObject) obj);
+    }
+
+    /** Belirli bir property'si olan tile nesneleri (değeri ne olursa olsun). */
+    public Array<MapTileObject> getTileObjectsByProperty(String objectLayerName, String key) {
+        Array<MapTileObject> result = new Array<>();
+        for (MapTileObject o : getTileObjects(objectLayerName)) {
+            if (o.has(key)) result.add(o);
+        }
+        return result;
+    }
+
+    /** Property'si verilen değere eşit olan tile nesneleri (örn. "type" = "chest"). */
+    public Array<MapTileObject> getTileObjectsByProperty(String objectLayerName, String key, String value) {
+        Array<MapTileObject> result = new Array<>();
+        for (MapTileObject o : getTileObjects(objectLayerName)) {
+            if (value.equals(o.getString(key, null))) result.add(o);
+        }
+        return result;
+    }
+
+    /** Tek bir tile nesnesinin birleşik property'leri (nesne + tile). */
+    public static MapProperties getTileObjectProperties(MapObject obj) {
+        MapProperties merged = new MapProperties();
+        if (obj instanceof TiledMapTileMapObject) {
+            merged.putAll(((TiledMapTileMapObject) obj).getTile().getProperties());
+        }
+        merged.putAll(obj.getProperties());
+        return merged;
+    }
+
+    private MapTileObject toTileObject(TiledMapTileMapObject t) {
+        TextureRegion r = t.getTile().getTextureRegion();
+        return new MapTileObject(t.getName(), r,
+            t.getX() * scale, t.getY() * scale,
+            r.getRegionWidth() * scale, r.getRegionHeight() * scale,
+            t.getProperties(), t.getTile().getProperties());
     }
 
     public MapObject getObject(String layerName, String objectName) {

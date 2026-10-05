@@ -57,7 +57,7 @@ public class GameScreen implements Screen {
         engine.addSystem(new PhysicSystem(world));
         engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
-        engine.addSystem(new RenderSystem(batch,world,camera));
+        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world));
         engine.addSystem(new MovementSystem());
         engine.addSystem(new InputSystem());
 
@@ -65,7 +65,9 @@ public class GameScreen implements Screen {
 
         for(TiledMapReader.MapTileObject m : mapObjects)
         {
-            engine.addEntity(entityFactory.createStaticObjects(m));
+            float offsetY = m.getFloat("OFFSET_Y",0);
+            int frameH = m.getInt("FRAME_H",48);
+            engine.addEntity(entityFactory.createStaticObjects(m,offsetY,frameH));
         }
 
         engine.addEntity(entityFactory.createPlayer(mapReader.getPoint("objects","spawn")));
@@ -76,9 +78,6 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0,0,0,1);
-        camera.update();
-        mapRenderer.setView(camera);
-        mapRenderer.render();
         engine.update(delta);
     }
 
