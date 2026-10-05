@@ -56,6 +56,7 @@ public class GameScreen implements Screen {
     public void show() {
         engine.addSystem(new PhysicSystem(world));
         engine.addSystem(new PhysicSyncSystem());
+        engine.addSystem(new CameraSystem(camera,mapReader,viewport));
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world));
         engine.addSystem(new MovementSystem());
