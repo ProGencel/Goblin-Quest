@@ -59,7 +59,7 @@ public class GameScreen implements Screen {
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world));
-        engine.addSystem(new MovementSystem());
+        engine.addSystem(new MovementSystem(mapReader));
         engine.addSystem(new InputSystem());
 
         Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");

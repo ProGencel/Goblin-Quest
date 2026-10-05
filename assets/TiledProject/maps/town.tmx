@@ -216,7 +216,7 @@
     <property name="OFFSET_Y" type="float" value="10"/>
    </properties>
   </object>
-  <object id="9" name="spawn" x="1512" y="1524">
+  <object id="9" name="spawn" x="1460" y="58.6667">
    <point/>
   </object>
   <object id="13" gid="4099" x="848" y="992" width="112" height="112"/>
