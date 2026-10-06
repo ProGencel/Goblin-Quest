@@ -1,5 +1,10 @@
 {
-  "goblin": [
-    "Hi !"
+  "goblin_intro": [
+    "Hi !",
+    "I haven't seen you around here before.",
+    "Be careful, the forest is dangerous at night."
+  ],
+  "goblin_idle": [
+    "Go on, don't just stand there."
   ]
 }

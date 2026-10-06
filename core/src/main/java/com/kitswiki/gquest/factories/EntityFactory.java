@@ -64,10 +64,14 @@ public class EntityFactory {
         tex.offsetY = (-frameH / 2f + offSetY) * UNIT_SCALE;
         tex.flipped = mapObject.getBool("isFlipped",true);
 
+        DialogComponent d = new DialogComponent();
+        d.dialogId = "goblin_intro";
+
         e.add(t);
         e.add(new StateComponent());
         e.add(a);
         e.add(tex);
+        e.add(d);
 
         return e;
     }

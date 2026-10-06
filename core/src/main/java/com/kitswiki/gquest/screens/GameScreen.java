@@ -2,27 +2,28 @@ package com.kitswiki.gquest.screens;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kitswiki.gquest.components.PlayerComponent;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.*;
-import com.kitswiki.gquest.ui.DialogUi;
-import com.kitswiki.gquest.utils.Constants;
+import com.kitswiki.gquest.ui.DialogBox;
+import com.kitswiki.gquest.ui.DialogManager;
 
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
@@ -39,7 +40,8 @@ public class GameScreen implements Screen {
 
     private final Viewport dialogViewport;
     private final Stage dialogStage;
-    private final DialogUi dialogUi;
+    private final DialogManager dialogManager;
+    private final DialogBox dialogBox;
 
     private final Engine engine;
     private final EntityFactory entityFactory;
@@ -57,12 +59,16 @@ public class GameScreen implements Screen {
 
         this.dialogViewport = new FitViewport(480,270);
         this.dialogStage = new Stage(dialogViewport,batch);
-        this.dialogUi = new DialogUi(dialogStage,assetManager.get("UI/dialog/skin/skin.json"));
+        this.dialogManager = new DialogManager();
+        this.dialogBox = new DialogBox(assetManager.get("UI/dialog/skin/skin.json"));
+
+        setDialog();
 
         this.engine = new Engine();
         this.entityFactory = new EntityFactory(world,mapReader);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader);
 
+        dialogManager.readJson();
         Vector2 spawn = mapReader.getPoint("objects","spawn").getPosition();
         camera.position.set(spawn,0);
     }
@@ -95,9 +101,23 @@ public class GameScreen implements Screen {
             }
         }
 
-        engine.addEntity(entityFactory.createPlayer(mapReader.getPoint("objects","spawn").getPosition()));
+        Entity e = entityFactory.createPlayer(mapReader.getPoint("objects","spawn").getPosition());
+        engine.addEntity(e);
+
+        engine.addSystem(new DialogInteractSystem(e,dialogBox,dialogManager));
 
         staticBodyBuilder.createStaticBody();
+    }
+
+    private void setDialog()
+    {
+        Table mainTable = new Table();
+        mainTable.setFillParent(true);
+
+        mainTable.add(dialogBox).growX().height(100).pad(10);
+        mainTable.bottom();
+
+        dialogStage.addActor(mainTable);
     }
 
     @Override
