@@ -3,6 +3,7 @@ package com.kitswiki.gquest.screens;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.components.PlayerComponent;
 import com.kitswiki.gquest.factories.EntityFactory;
+import com.kitswiki.gquest.listeners.GameContactListener;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.*;
@@ -56,6 +58,7 @@ public class GameScreen implements Screen {
         this.viewport = new FitViewport(480f * UNIT_SCALE, 270f * UNIT_SCALE,camera);
         this.mapReader = new TiledMapReader(tiledMap, UNIT_SCALE);
         this.world = new World(new Vector2(0,0),true);
+        this.world.setContactListener(new GameContactListener());
 
         this.dialogViewport = new FitViewport(480,270);
         this.dialogStage = new Stage(dialogViewport,batch);
@@ -75,6 +78,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+
         engine.addSystem(new PhysicSystem(world));
         engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
@@ -82,6 +86,7 @@ public class GameScreen implements Screen {
         engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world,dialogStage));
         engine.addSystem(new MovementSystem(mapReader));
         engine.addSystem(new InputSystem());
+        engine.addSystem(new InteractSystem());
 
         Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");
 

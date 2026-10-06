@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.maps.MapObjects;
@@ -28,8 +29,8 @@ public class TiledMapReader {
         public enum Type { RECTANGLE, ELLIPSE, POLYGON, POLYLINE }
 
         public final Type type;
-        public final Rectangle bounds;       // her tür için sınırlayıcı kutu
-        public final float[] vertices;       // sadece POLYGON / POLYLINE: x,y,x,y...
+        public final Rectangle bounds;
+        public final float[] vertices;
         public final MapProperties properties;
 
         MapShape(Type type, Rectangle bounds, float[] vertices, MapProperties properties) {
@@ -38,6 +39,12 @@ public class TiledMapReader {
             this.vertices = vertices;
             this.properties = properties;
         }
+
+        public boolean has(String key) { return properties.containsKey(key); }
+        public String getString(String key, String def) { return TiledMapReader.getString(properties, key, def); }
+        public int getInt(String key, int def)          { return TiledMapReader.getInt(properties, key, def); }
+        public float getFloat(String key, float def)    { return TiledMapReader.getFloat(properties, key, def); }
+        public boolean getBool(String key, boolean def) { return TiledMapReader.getBool(properties, key, def); }
     }
 
     /**
@@ -80,17 +87,19 @@ public class TiledMapReader {
         public final MapProperties properties;      // sadece nesnenin kendi property'leri
         public final MapProperties tileProperties;  // tileset'te tile'a eklenenler
         public final MapProperties allProperties;   // birleşik (nesne, tile'ı ezer)
+        public final Array<MapShape> shapes;
 
         MapTileObject(String name, TextureRegion region, float x, float y, float w, float h,
-                      MapProperties objProps, MapProperties tileProps) {
+                      MapProperties objProps, MapProperties tileProps, Array<MapShape> shapes) {
             this.name = name;
             this.region = region; this.x = x; this.y = y;
             this.width = w; this.height = h;
             this.properties = objProps;
             this.tileProperties = tileProps;
+            this.shapes = shapes;
             this.allProperties = new MapProperties();
             this.allProperties.putAll(tileProps);
-            this.allProperties.putAll(objProps);   // nesne değeri öncelikli
+            this.allProperties.putAll(objProps);
         }
 
         public boolean has(String key) { return allProperties.containsKey(key); }
@@ -172,15 +181,7 @@ public class TiledMapReader {
     /** Object layer'a yerleştirilmiş tile'ların (masa, sandık vb.) hitbox şekilleri. */
     public Array<MapShape> getTileObjectShapes(String objectLayerName) {
         Array<MapShape> result = new Array<>();
-        for (MapObject obj : getLayer(objectLayerName).getObjects()) {
-            if (!(obj instanceof TiledMapTileMapObject)) continue;
-            TiledMapTileMapObject t = (TiledMapTileMapObject) obj;
-
-            for (MapObject shape : t.getTile().getObjects()) {
-                MapShape s = toShape(shape, t.getX(), t.getY());
-                if (s != null) result.add(s);
-            }
-        }
+        for (MapTileObject o : getTileObjects(objectLayerName)) result.addAll(o.shapes);
         return result;
     }
 
@@ -241,10 +242,69 @@ public class TiledMapReader {
 
     private MapTileObject toTileObject(TiledMapTileMapObject t) {
         TextureRegion r = t.getTile().getTextureRegion();
+
+        Array<MapShape> shapes = new Array<>();
+        for (MapObject local : t.getTile().getObjects()) {
+            MapShape s = toShape(local, 0f, 0f);
+            if (s == null) continue;
+
+            MapProperties merged = new MapProperties();
+            merged.putAll(t.getTile().getProperties());
+            merged.putAll(t.getProperties());
+            merged.putAll(local.getProperties());
+
+            shapes.add(placeShape(new MapShape(s.type, s.bounds, s.vertices, merged), t));
+        }
+
         return new MapTileObject(t.getName(), r,
             t.getX() * scale, t.getY() * scale,
             r.getRegionWidth() * scale, r.getRegionHeight() * scale,
-            t.getProperties(), t.getTile().getProperties());
+            t.getProperties(), t.getTile().getProperties(), shapes);
+    }
+
+    /** Tile-yerel şekli; nesnenin konum/flip/scale/rotation değerlerine göre haritaya yerleştirir. */
+    private MapShape placeShape(MapShape s, TiledMapTileMapObject t) {
+        TextureRegion r = t.getTile().getTextureRegion();
+        float tw = r.getRegionWidth() * scale;
+        float th = r.getRegionHeight() * scale;
+        float ox = t.getX() * scale, oy = t.getY() * scale;
+
+        // Tiled'da rotation saat yönündedir; matematik için eksiye çeviriyoruz.
+        float rad = -t.getRotation() * MathUtils.degreesToRadians;
+        float cos = MathUtils.cos(rad), sin = MathUtils.sin(rad);
+
+        float[] v;
+        if (s.type == MapShape.Type.POLYGON || s.type == MapShape.Type.POLYLINE) {
+            v = s.vertices.clone();
+        } else { // RECTANGLE / ELLIPSE -> 4 köşe
+            Rectangle b = s.bounds;
+            v = new float[] {
+                b.x, b.y,  b.x + b.width, b.y,
+                b.x + b.width, b.y + b.height,  b.x, b.y + b.height };
+        }
+
+        for (int i = 0; i < v.length; i += 2) {
+            float px = v[i], py = v[i + 1];
+            if (t.isFlipHorizontally()) px = tw - px;
+            if (t.isFlipVertically())   py = th - py;
+            px *= t.getScaleX();
+            py *= t.getScaleY();
+            v[i]     = ox + px * cos - py * sin;   // pivot: nesnenin sol alt köşesi (Tiled gibi)
+            v[i + 1] = oy + px * sin + py * cos;
+        }
+
+        boolean rotated = t.getRotation() != 0f;
+        switch (s.type) {
+            case POLYGON:
+            case POLYLINE:
+                return new MapShape(s.type, boundsOf(v), v, s.properties);
+            case ELLIPSE:   // döndürülmüş elips AABB'ye yaklaştırılır
+                return new MapShape(MapShape.Type.ELLIPSE, boundsOf(v), null, s.properties);
+            default:        // RECTANGLE
+                return rotated
+                    ? new MapShape(MapShape.Type.POLYGON, boundsOf(v), v, s.properties)
+                    : new MapShape(MapShape.Type.RECTANGLE, boundsOf(v), null, s.properties);
+        }
     }
 
     public MapObject getObject(String layerName, String objectName) {

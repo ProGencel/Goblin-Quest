@@ -36,7 +36,11 @@ public class MovementSystem extends IteratingSystem {
         TextureComponent t = this.t.get(entity);
         StateComponent s = this.s.get(entity);
 
-        if(!m.dir.equals(new Vector2(0,0)))
+        if(s.charState == CharacterState.STOP)
+        {
+            return;
+        }
+        else if(!m.dir.equals(new Vector2(0,0)))
         {
             s.charState = CharacterState.RUN;
         }
@@ -44,6 +48,7 @@ public class MovementSystem extends IteratingSystem {
         {
             s.charState = CharacterState.IDLE;
         }
+
         if(m.dir.x < 0)
         {
             t.flipped = true;

@@ -11,7 +11,8 @@ import com.kitswiki.gquest.components.PlayerComponent;
 
 public class InputSystem extends IteratingSystem {
 
-    ComponentMapper<MovementComponent> m = ComponentMapper.getFor(MovementComponent.class);
+    private final ComponentMapper<MovementComponent> m = ComponentMapper.getFor(MovementComponent.class);
+    private final ComponentMapper<PlayerComponent> p = ComponentMapper.getFor(PlayerComponent.class);
 
     public InputSystem() {
         super(Family.all(PlayerComponent.class, MovementComponent.class).get());
@@ -21,6 +22,9 @@ public class InputSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
 
         MovementComponent m = this.m.get(entity);
+        PlayerComponent p = this.p.get(entity);
+
+        p.interact = Gdx.input.isKeyJustPressed(Input.Keys.E);
 
         m.dir.set(0, 0);
         if (Gdx.input.isKeyPressed(Input.Keys.W)) m.dir.y += 1;

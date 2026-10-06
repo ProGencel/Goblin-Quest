@@ -3,6 +3,7 @@ package com.kitswiki.gquest.ui;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 
 public class DialogBox extends Table {
     private Label label;
@@ -18,6 +19,7 @@ public class DialogBox extends Table {
         this.setBackground(skin.getDrawable("dialog"));
 
         label = new Label("", skin);
+        label.setAlignment(Align.topLeft);
         label.setWrap(true);
         this.add(label).expand().fill().pad(10);
 

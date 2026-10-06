@@ -45,7 +45,16 @@ public class AnimationSystem extends IteratingSystem {
 
     private Animation<TextureRegion> getAnimation(String layer, StateComponent st)
     {
-        String key = layer + "_" + st.charState.name().toLowerCase();
+        String key;
+        if(st.charState.equals(CharacterState.STOP))
+        {
+            key = layer + "_" + "idle";
+        }
+        else
+        {
+            key = layer + "_" + st.charState.name().toLowerCase();
+        }
+
         Animation<TextureRegion> a = cache.get(key);
         if(a == null)
         {

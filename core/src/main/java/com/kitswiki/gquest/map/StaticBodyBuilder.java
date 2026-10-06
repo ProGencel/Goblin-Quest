@@ -32,6 +32,11 @@ public class StaticBodyBuilder {
         Array<TiledMapReader.MapShape> mapShapes = mapReader.getTileObjectShapes("objects");
         for(TiledMapReader.MapShape mapShape : mapShapes)
         {
+            String shapeType = mapShape.getString("type","");
+            if(!"static".equals(shapeType))
+            {
+                continue;
+            }
             if(mapShape.type.equals(TiledMapReader.MapShape.Type.RECTANGLE))
             {
                 Rectangle r = mapShape.bounds;

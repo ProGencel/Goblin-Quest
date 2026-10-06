@@ -1,8 +1,10 @@
 package com.kitswiki.gquest.factories;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.map.TiledMapReader;
 
@@ -27,6 +29,7 @@ public class EntityFactory {
 
         BodyComponent b = new BodyComponent();
         b.body = handleBodyForDynamicCircle(pos);
+        b.body.setUserData(e);
 
         AnimationComponent a = new AnimationComponent();
         a.layers.add("base");
@@ -45,6 +48,8 @@ public class EntityFactory {
         e.add(tex);
         e.add(new PlayerComponent());
         e.add(new MovementComponent());
+        e.add(new ContactComponent());
+
         return e;
     }
 
@@ -67,11 +72,18 @@ public class EntityFactory {
         DialogComponent d = new DialogComponent();
         d.dialogId = "goblin_intro";
 
+        BodyComponent b = new BodyComponent();
+        b.body = handleBodyForStaticRect(mapObject);
+        b.body.setUserData(e);
+
+
         e.add(t);
         e.add(new StateComponent());
         e.add(a);
         e.add(tex);
         e.add(d);
+        e.add(b);
+        e.add(new InteractComponent());
 
         return e;
     }
@@ -92,6 +104,40 @@ public class EntityFactory {
 
         return e;
     }
+
+
+    private Body handleBodyForStaticRect(TiledMapReader.MapTileObject mapTileObject)
+    {
+        Array<TiledMapReader.MapShape> shapes = mapTileObject.shapes;
+
+        float halfW = mapTileObject.width / 2f;
+        float halfH = mapTileObject.height / 2f;
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(mapTileObject.x + halfW, mapTileObject.y + halfH);
+        bodyDef.fixedRotation = true;
+
+        Body b = world.createBody(bodyDef);
+
+        for(TiledMapReader.MapShape m : shapes)
+        {
+            Rectangle r = m.bounds;
+            float bodyX = mapTileObject.x + halfW;
+            float bodyY = mapTileObject.y + halfH;
+
+            PolygonShape shape = new PolygonShape();
+            Vector2 center = new Vector2(
+                r.x + r.width / 2f - bodyX,
+                r.y + r.height / 2f - bodyY);
+            shape.setAsBox(r.width / 2f, r.height / 2f,center,0f);
+            b.createFixture(shape, 1f);
+            shape.dispose();
+        }
+
+        return b;
+    }
+
 
     private Body handleBodyForDynamicCircle(Vector2 pos)
     {

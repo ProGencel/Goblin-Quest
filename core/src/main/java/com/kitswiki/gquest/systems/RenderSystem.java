@@ -81,7 +81,7 @@ public class RenderSystem extends SortedIteratingSystem {
         dialogStage.draw();
 
         //debugDrawSortLines();
-        //debugRenderer.render(world,camera.combined);
+        debugRenderer.render(world,camera.combined);
     }
 
     @Override
