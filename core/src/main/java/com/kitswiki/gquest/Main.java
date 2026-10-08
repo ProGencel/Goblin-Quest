@@ -26,13 +26,14 @@ public class Main extends Game {
         loadAssets(assetManager);
         this.skin = assetManager.get("UI/dialog/skin/skin.json");
 
-        setScreen(new GameScreen(assetManager));
+        setScreen(new GameScreen(assetManager,this,"TiledProject/maps/town.tmx","begin"));
     }
 
     private void loadAssets(AssetManager assetManager)
     {
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         assetManager.load("TiledProject/maps/town.tmx", TiledMap.class);
+        assetManager.load("TiledProject/maps/cave.tmx", TiledMap.class);
         assetManager.load("atlas/cooked/gquest.atlas", TextureAtlas.class);
         assetManager.load("UI/dialog/skin/skin.json", Skin.class);
         assetManager.finishLoading();

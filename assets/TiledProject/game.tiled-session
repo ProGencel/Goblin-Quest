@@ -4,12 +4,31 @@
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
-        "maps/town.tmx": {
-            "scale": 4,
-            "selectedLayer": 2,
+        "maps/cave.tmx": {
+            "expandedObjectLayers": [
+                4,
+                8,
+                7
+            ],
+            "scale": 3,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 893.375,
-                "y": 1045.25
+                "x": 191.66666666666663,
+                "y": 227.66666666666669
+            }
+        },
+        "maps/town.tmx": {
+            "expandedObjectLayers": [
+                9,
+                4,
+                14,
+                15
+            ],
+            "scale": 4,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 994,
+                "y": 579.25
             }
         },
         "tilesets/SunnySide Environment.tsx": {
@@ -24,21 +43,26 @@
         },
         "tilesets/sunnysideworld.tsx": {
             "dynamicWrapping": false,
-            "scaleInDock": 5.5,
-            "scaleInEditor": 3
+            "scaleInDock": 3,
+            "scaleInEditor": 4
         }
     },
     "last.imagePath": "C:/Desktop/libGDX/GoblinQuests/assets/TiledProject/tilesets",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
     "openFiles": [
-        "maps/town.tmx",
+        "tilesets/sunnysideworld.tsx",
         "tilesets/props.tsx",
-        "tilesets/sunnysideworld.tsx"
+        "maps/cave.tmx",
+        "maps/town.tmx"
     ],
     "project": "game.tiled-project",
     "property.type": "bool",
     "recentFiles": [
         "tilesets/sunnysideworld.tsx",
         "tilesets/props.tsx",
+        "maps/cave.tmx",
         "maps/town.tmx",
         "tilesets/SunnySide Environment.tsx"
     ],

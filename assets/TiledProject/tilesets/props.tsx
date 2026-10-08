@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="112" tileheight="112" tilecount="3" columns="0">
+<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="112" tileheight="112" tilecount="6" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0" type="static">
   <properties>
@@ -37,6 +37,24 @@
   <image source="goblin_icon.png" width="18" height="16"/>
   <objectgroup draworder="index" id="2">
    <object id="1" x="5.04444" y="10.9778" width="6.86667" height="3.88889"/>
+  </objectgroup>
+ </tile>
+ <tile id="5">
+  <image source="bad_goblin_icon.png" width="18" height="16"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="5.78261" y="11.8261" width="6.04348" height="3.21739"/>
+  </objectgroup>
+ </tile>
+ <tile id="6">
+  <image source="empty_statue.png" width="32" height="48"/>
+  <objectgroup draworder="index" id="6">
+   <object id="5" x="1.95652" y="26.2609" width="28.087" height="15.6087"/>
+  </objectgroup>
+ </tile>
+ <tile id="7">
+  <image source="coal.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="10.1304" y="18.5217" width="11.7826" height="6.21739"/>
   </objectgroup>
  </tile>
 </tileset>

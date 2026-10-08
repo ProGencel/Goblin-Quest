@@ -2,10 +2,7 @@ package com.kitswiki.gquest.listeners;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.*;
 import com.kitswiki.gquest.components.ContactComponent;
 
 public class GameContactListener implements ContactListener {
@@ -31,17 +28,13 @@ public class GameContactListener implements ContactListener {
 
     }
 
-    private void handle(Contact c, boolean begin)
-    {
-        Object a = c.getFixtureA().getBody().getUserData();
-        Object b = c.getFixtureB().getBody().getUserData();
-        if(!(a instanceof Entity) || !(b instanceof Entity))
-        {
-            return;
-        }
-        update((Entity) a, (Entity) b, begin);
-        update((Entity) b, (Entity) a, begin);
+    private void handle(Contact contact, boolean begin) {
+        Entity a = entityOf(contact.getFixtureA());
+        Entity b = entityOf(contact.getFixtureB());
+        if (a == null || b == null) return;
 
+        update(a, b, begin);
+        update(b, a, begin);
     }
 
     private void update(Entity self, Entity other, boolean begin)
@@ -49,7 +42,6 @@ public class GameContactListener implements ContactListener {
         ContactComponent c = this.c.get(self);
         if(c == null)
         {
-
             return;
         }
 
@@ -61,6 +53,14 @@ public class GameContactListener implements ContactListener {
         {
             c.touching.removeValue(other, true);
         }
+    }
+
+    private Entity entityOf(Fixture f) {
+        Object data = f.getUserData();
+        if (data instanceof Entity) return (Entity) data;
+
+        data = f.getBody().getUserData();
+        return data instanceof Entity ? (Entity) data : null;
     }
 
 }

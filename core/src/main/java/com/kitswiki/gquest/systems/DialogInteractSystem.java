@@ -4,8 +4,6 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.enums.CharacterState;
 import com.kitswiki.gquest.ui.DialogBox;
@@ -13,10 +11,11 @@ import com.kitswiki.gquest.ui.DialogManager;
 
 public class DialogInteractSystem extends IteratingSystem {
 
-    private final ComponentMapper<DialogComponent> dialogM = ComponentMapper.getFor(DialogComponent.class);
+    private final ComponentMapper<DialogComponent> d = ComponentMapper.getFor(DialogComponent.class);
     private final ComponentMapper<PlayerComponent> p = ComponentMapper.getFor(PlayerComponent.class);
     private final ComponentMapper<ContactComponent> c = ComponentMapper.getFor(ContactComponent.class);
     private final ComponentMapper<StateComponent> s = ComponentMapper.getFor(StateComponent.class);
+    private final ComponentMapper<InteractComponent> i = ComponentMapper.getFor(InteractComponent.class);
 
     private final Entity player;
     private final DialogBox dialogBox;
@@ -31,40 +30,36 @@ public class DialogInteractSystem extends IteratingSystem {
 
     @Override
     public void update(float deltaTime) {
-
         PlayerComponent p = this.p.get(player);
-        ContactComponent c = this.c.get(player);
-        if(!p.interact || c.touching.isEmpty())
+
+        if(dialogBox.isOpen())
         {
-            return;
-        }
-
-        StateComponent s = this.s.get(player);
-
-        if (dialogBox.isOpen()) {
-            dialogBox.advance();
-            if(!dialogBox.isOpen())
+            if(p.interact)
             {
-                s.set(CharacterState.IDLE);
+                dialogBox.advance();
+                if(!dialogBox.isOpen())
+                {
+                    s.get(player).set(CharacterState.IDLE);
+                    p.interact = false;
+                }
             }
             return;
         }
 
-        s.set(CharacterState.STOP);
-
-        super.update(deltaTime);
+        if(p.interactTarget != null)
+        {
+            super.update(deltaTime);
+        }
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        if (dialogBox.isOpen())
+        if(entity != p.get(player).interactTarget)
         {
             return;
         }
 
-        DialogComponent dialog = dialogM.get(entity);
-
-        String[] lines = dialogReader.getLines(dialog.dialogId);
-        dialogBox.start(lines);
+        s.get(player).set(CharacterState.STOP);
+        dialogBox.start(dialogReader.getLines(d.get(entity).dialogId));
     }
 }

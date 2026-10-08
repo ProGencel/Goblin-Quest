@@ -18,8 +18,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kitswiki.gquest.Main;
 import com.kitswiki.gquest.components.PlayerComponent;
 import com.kitswiki.gquest.factories.EntityFactory;
+import com.kitswiki.gquest.factories.PortalFactory;
+import com.kitswiki.gquest.interfaces.ChangeMap;
 import com.kitswiki.gquest.listeners.GameContactListener;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
@@ -29,7 +32,9 @@ import com.kitswiki.gquest.ui.DialogManager;
 
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, ChangeMap {
+
+    private final Main main;
 
     private final AssetManager assetManager;
     private final TiledMap tiledMap;
@@ -47,11 +52,21 @@ public class GameScreen implements Screen {
 
     private final Engine engine;
     private final EntityFactory entityFactory;
+    private final PortalFactory portalFactory;
     private final StaticBodyBuilder staticBodyBuilder;
 
-    public GameScreen(AssetManager assetManager) {
+    private final String mapPath;
+    private final Vector2 spawnPos;
+
+    private String pendingMap;
+    private String pendingSpawn;
+
+    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId) {
+        this.main = main;
+
         this.assetManager = assetManager;
-        this.tiledMap = assetManager.get("TiledProject/maps/town.tmx");
+        this.mapPath = mapPath;
+        this.tiledMap = assetManager.get(mapPath);
         this.batch = new SpriteBatch();
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, UNIT_SCALE,batch);
         this.camera = new OrthographicCamera();
@@ -69,11 +84,12 @@ public class GameScreen implements Screen {
 
         this.engine = new Engine();
         this.entityFactory = new EntityFactory(world,mapReader);
-        this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader);
+        this.portalFactory = new PortalFactory(mapReader,engine,world);
+        this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
 
         dialogManager.readJson();
-        Vector2 spawn = mapReader.getPoint("objects","spawn").getPosition();
-        camera.position.set(spawn,0);
+        spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
+        camera.position.set(spawnPos,0);
     }
 
     @Override
@@ -86,7 +102,6 @@ public class GameScreen implements Screen {
         engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world,dialogStage));
         engine.addSystem(new MovementSystem(mapReader));
         engine.addSystem(new InputSystem());
-        engine.addSystem(new InteractSystem());
 
         Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");
 
@@ -106,12 +121,25 @@ public class GameScreen implements Screen {
             }
         }
 
-        Entity e = entityFactory.createPlayer(mapReader.getPoint("objects","spawn").getPosition());
-        engine.addEntity(e);
+        Entity p = entityFactory.createPlayer(spawnPos);
+        engine.addEntity(p);
 
-        engine.addSystem(new DialogInteractSystem(e,dialogBox,dialogManager));
+        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager));
+        engine.addSystem(new InteractSystem(p));
+        engine.addSystem(new PortalSystem(this,p));
 
         staticBodyBuilder.createStaticBody();
+        portalFactory.buildPortals();
+
+    }
+
+    public void changeMap(String map, String spawnId)
+    {
+        if("cave".equals(map))
+        {
+            main.setScreen(new GameScreen(assetManager, main, "TiledProject/maps/cave.tmx", spawnId));
+        }
+        dispose();
     }
 
     private void setDialog()
@@ -129,6 +157,21 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(0,0,0,1);
         engine.update(delta);
+
+        if(pendingMap != null)
+        {
+            String mapPath = "";
+            if("cave".equals(pendingMap))
+            {
+                mapPath = "TiledProject/maps/cave.tmx";
+            }
+            String spawn = pendingSpawn;
+            pendingMap = null;
+
+            Screen old = main.getScreen();
+            main.setScreen(new GameScreen(assetManager, main, mapPath, spawn));
+            old.dispose();
+        }
     }
 
     @Override
@@ -150,10 +193,5 @@ public class GameScreen implements Screen {
     @Override
     public void hide() {
 
-    }
-
-    @Override
-    public void dispose() {
-        mapRenderer.dispose();
     }
 }

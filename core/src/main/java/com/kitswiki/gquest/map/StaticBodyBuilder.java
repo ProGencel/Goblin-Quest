@@ -1,5 +1,7 @@
 package com.kitswiki.gquest.map;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -8,67 +10,78 @@ import com.badlogic.gdx.utils.Array;
 public class StaticBodyBuilder {
 
     private final Body body;
-    private final World world;
+    private final Engine engine;
     private final TiledMapReader mapReader;
+    private final World world;
 
     /** NEVER CALL THIS CLASS MORE THAN ONE TIME !!!!!!!!!!!**/
-    public StaticBodyBuilder(World world, TiledMapReader mapReader) {
+    public StaticBodyBuilder(World world, TiledMapReader mapReader, Engine engine) {
         this.world = world;
         this.mapReader = mapReader;
+        this.engine = engine;
         BodyDef bdef = new BodyDef();
         bdef.type = BodyDef.BodyType.StaticBody;
         this.body = world.createBody(bdef);
     }
 
-    public Body createStaticBody()
-    {
-        this.addRectsFromMap();
-        this.addRectsFromObjects();
+    public Body createStaticBody() {
+        addShapesFromLayer("collisions", false);
+        addShapesFromLayer("objects", true);
+
         return body;
     }
 
-    private void addRectsFromObjects()
-    {
-        Array<TiledMapReader.MapShape> mapShapes = mapReader.getTileObjectShapes("objects");
-        for(TiledMapReader.MapShape mapShape : mapShapes)
-        {
-            String shapeType = mapShape.getString("type","");
-            if(!"static".equals(shapeType))
-            {
-                continue;
-            }
-            if(mapShape.type.equals(TiledMapReader.MapShape.Type.RECTANGLE))
-            {
-                Rectangle r = mapShape.bounds;
+    public void addShapesFromLayer(String layerName, boolean includeTileObjects) {
+        if (!mapReader.hasLayer(layerName)) return;
 
-                PolygonShape shape = new PolygonShape();
-                Vector2 center = new Vector2(r.x + r.width/2, r.y + r.height/2);
-                shape.setAsBox(r.width / 2f, r.height / 2f,center,0f);
-                this.attach(shape);
+        Array<TiledMapReader.MapShape> shapes = mapReader.getShapes(layerName);
+        if (includeTileObjects) {
+            shapes.addAll(mapReader.getTileObjectShapes(layerName));
+        }
+
+        for (TiledMapReader.MapShape mapShape : shapes) {
+            String shapeType = mapShape.getString("type", "");
+            if (!shapeType.isEmpty() && !"static".equals(shapeType)) continue;
+
+            switch (mapShape.type) {
+                case POLYGON:
+                    if (mapShape.vertices != null && mapShape.vertices.length >= 6) {
+                        PolygonShape shape = new PolygonShape();
+                        shape.set(mapShape.vertices);
+                        attach(shape);
+                    }
+                    break;
+
+                case RECTANGLE:
+                    Rectangle r = mapShape.bounds;
+                    PolygonShape box = new PolygonShape();
+                    box.setAsBox(r.width / 2f, r.height / 2f,
+                        new Vector2(r.x + r.width / 2f, r.y + r.height / 2f), 0f);
+                    attach(box);
+                    break;
+
+                case POLYLINE:
+                    if (mapShape.vertices != null && mapShape.vertices.length >= 4) {
+                        ChainShape chain = new ChainShape();
+                        chain.createChain(mapShape.vertices);
+                        attach(chain);
+                    }
+                    break;
+
+                default:
+                    break;
             }
         }
     }
 
-    private void addRectsFromMap()
-    {
-        Array<Rectangle> rects = mapReader.getRects("collisions");
-
-        for(Rectangle r : rects)
-        {
-            PolygonShape shape = new PolygonShape();
-            Vector2 center = new Vector2(r.x + r.width/2, r.y + r.height/2);
-            shape.setAsBox(r.width / 2f, r.height / 2f,center,0f);
-            this.attach(shape);
-        }
-    }
-
-    private void attach(Shape shape)
+    private Fixture attach(Shape shape)
     {
         FixtureDef fdef = new FixtureDef();
         fdef.shape = shape;
         fdef.friction = 0f;
-        body.createFixture(fdef);
+        Fixture fixture = body.createFixture(fdef);
         shape.dispose();
-    }
 
+        return fixture;
+    }
 }
