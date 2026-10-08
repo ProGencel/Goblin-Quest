@@ -63,7 +63,6 @@ public class GameScreen implements Screen, ChangeMap {
 
     public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId) {
         this.main = main;
-
         this.assetManager = assetManager;
         this.mapPath = mapPath;
         this.tiledMap = assetManager.get(mapPath);
@@ -135,11 +134,30 @@ public class GameScreen implements Screen, ChangeMap {
 
     public void changeMap(String map, String spawnId)
     {
-        if("cave".equals(map))
+        pendingMap = map;
+        pendingSpawn = spawnId;
+    }
+
+    private void changeMapNow()
+    {
+        String mapPath = "";
+        if("cave".equals(pendingMap))
         {
-            main.setScreen(new GameScreen(assetManager, main, "TiledProject/maps/cave.tmx", spawnId));
+            mapPath = "TiledProject/maps/cave.tmx";
         }
-        dispose();
+        else if("town".equals(pendingMap))
+        {
+            mapPath = "TiledProject/maps/town.tmx";
+        }
+        String spawn = pendingSpawn;
+        pendingMap = null;
+
+        Screen old = main.getScreen();
+        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn));
+        old.dispose();
+
+        pendingSpawn = null;
+        pendingMap = null;
     }
 
     private void setDialog()
@@ -158,19 +176,9 @@ public class GameScreen implements Screen, ChangeMap {
         ScreenUtils.clear(0,0,0,1);
         engine.update(delta);
 
-        if(pendingMap != null)
+        if(pendingSpawn != null)
         {
-            String mapPath = "";
-            if("cave".equals(pendingMap))
-            {
-                mapPath = "TiledProject/maps/cave.tmx";
-            }
-            String spawn = pendingSpawn;
-            pendingMap = null;
-
-            Screen old = main.getScreen();
-            main.setScreen(new GameScreen(assetManager, main, mapPath, spawn));
-            old.dispose();
+            changeMapNow();
         }
     }
 
@@ -193,5 +201,10 @@ public class GameScreen implements Screen, ChangeMap {
     @Override
     public void hide() {
 
+    }
+
+    @Override
+    public void dispose() {
+        mapRenderer.dispose();
     }
 }

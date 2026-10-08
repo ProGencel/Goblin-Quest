@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="52">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="54">
  <tileset firstgid="1" source="../tilesets/sunnysideworld.tsx"/>
  <tileset firstgid="4097" source="../tilesets/props.tsx"/>
  <layer id="1" name="ground" width="30" height="20">
@@ -107,7 +107,7 @@
   <object id="47" gid="4104" x="55.8182" y="178.545" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="7" name="portals">
-  <object id="49" x="64" y="304">
+  <object id="49" x="64.5455" y="320.364">
    <properties>
     <property name="targetMap" value="town"/>
     <property name="targetSpawn" value="cave_exit"/>
@@ -115,13 +115,13 @@
    <polygon points="0,0 32,0 32.5,-7.625 -0.5,-8.375"/>
   </object>
  </objectgroup>
- <objectgroup id="9" name="Object Layer 4">
+ <objectgroup id="9" name="collisions">
   <object id="51" x="64" y="288">
-   <polyline points="0,0 -16,-16 -16,-64 -32,-80 -32,-96 16,-144 64,-144 80,-128 96,-128 112,-112 208,-112 240,-144 240,-160 256,-176 256,-208 288,-240 304,-240 320,-256 352,-256 384,-224 384,-176 352,-144 320,-144 288,-112 288,-96 304,-80 336,-80 352,-64 368,-64 400,-32 400,0 384,16 336,16 320,0 304,0 288,-16 288,-64 272,-80 64,-80 48,-64 48,-16 32,0 32,16 0,16"/>
+   <polyline points="-0.545455,27.6364 0,0 -16,-16 -16,-64 -32,-80 -32,-96 16,-144 64,-144 80,-128 96,-128 112,-112 208,-112 240,-144 240,-160 256,-176 256,-208 288,-240 304,-240 320,-256 352,-256 384,-224 384,-176 352,-144 320,-144 288,-112 288,-96 304,-80 336,-80 352,-64 368,-64 400,-32 400,0 384,16 336,16 320,0 304,0 288,-16 288,-64 272,-80 64,-80 48,-64 48,-16 32,0 32.3636,22.9091 0.545455,22.7273"/>
   </object>
  </objectgroup>
  <objectgroup id="8" name="spawns">
-  <object id="50" x="79.875" y="289.125">
+  <object id="50" x="78.7841" y="253.852">
    <properties>
     <property name="spawnId" value="cave_entry"/>
    </properties>

@@ -70,12 +70,12 @@ public class RenderSystem extends SortedIteratingSystem {
         super.update(deltaTime);
         batch.end();
 
-//        if(aboveLayer != null)
-//        {
-//            aboveLayer.setVisible(true);
-//            mapRenderer.render(new int[] {aboveIndex});
-//            aboveLayer.setVisible(false);
-//        }
+        if(aboveLayer != null)
+        {
+            aboveLayer.setVisible(true);
+            mapRenderer.render(new int[] {aboveIndex});
+            aboveLayer.setVisible(false);
+        }
 
         dialogStage.act();
         dialogStage.draw();

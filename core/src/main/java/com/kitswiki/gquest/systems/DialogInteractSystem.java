@@ -59,7 +59,10 @@ public class DialogInteractSystem extends IteratingSystem {
             return;
         }
 
-        s.get(player).set(CharacterState.STOP);
-        dialogBox.start(dialogReader.getLines(d.get(entity).dialogId));
+        if(p.get(player).interact)
+        {
+            s.get(player).set(CharacterState.STOP);
+            dialogBox.start(dialogReader.getLines(d.get(entity).dialogId));
+        }
     }
 }

@@ -32,7 +32,6 @@ public class PortalSystem extends IteratingSystem {
         {
             return;
         }
-
         screen.changeMap(po.targetMap,po.targetSpawn);
     }
 }

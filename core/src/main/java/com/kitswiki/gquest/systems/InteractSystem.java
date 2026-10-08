@@ -27,11 +27,6 @@ public class InteractSystem extends EntitySystem {
         PlayerComponent p = this.p.get(player);
         p.interactTarget = null;
 
-        if(!p.interact)
-        {
-            return;
-        }
-
         if(s.get(player).charState == CharacterState.STOP)
         {
             return;
