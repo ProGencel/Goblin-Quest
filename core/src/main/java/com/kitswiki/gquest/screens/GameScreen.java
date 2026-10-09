@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.Main;
+import com.kitswiki.gquest.ai.EnemyAI;
 import com.kitswiki.gquest.ai.SteerableBody;
 import com.kitswiki.gquest.components.BodyComponent;
 import com.kitswiki.gquest.components.PlayerComponent;
@@ -64,8 +65,8 @@ public class GameScreen implements Screen, ChangeMap {
     private String pendingMap;
     private String pendingSpawn;
 
-    private final Array<SteerableBody> enemySteerables = new Array<>();
     private SteerableBody playerSteerable;
+    private final Array<EnemyAI> enemies = new Array<>();
 
     public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId) {
         this.main = main;
@@ -136,8 +137,7 @@ public class GameScreen implements Screen, ChangeMap {
                 SteerableBody steerable = new SteerableBody(badGoblin.getComponent(BodyComponent.class).body, 0.5f);
                 steerable.setMaxLinearSpeed(1.5f);
                 steerable.setMaxLinearAcceleration(8f);
-                steerable.setBehavior(new Seek<>(steerable, playerSteerable));
-                enemySteerables.add(steerable);
+                enemies.add(new EnemyAI(steerable, playerSteerable));
             }
         }
 
@@ -184,8 +184,8 @@ public class GameScreen implements Screen, ChangeMap {
     public void render(float delta) {
         ScreenUtils.clear(0,0,0,1);
         engine.update(delta);
-        for (int i = 0; i < enemySteerables.size; i++) {
-            enemySteerables.get(i).update(delta);
+        for (EnemyAI e : enemies) {
+            e.update(delta);
         }
 
         if(pendingSpawn != null)

@@ -1,5 +1,6 @@
 package com.kitswiki.gquest.ai;
 
+import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.math.Vector2;
@@ -15,10 +16,23 @@ public class EnemyAI {
     public float loseRange = 6f;
     public float attackRange = 0.8f;
 
-    public EnemyAI(SteerableBody steerable, SteerableBody target, Seek<Vector2> seek, StateMachine<EnemyAI, EnemyState> stateMachine) {
+    public EnemyAI(SteerableBody steerable, SteerableBody target) {
         this.steerable = steerable;
         this.target = target;
         this.seek = new Seek<>(steerable, target);
-        this.stateMachine = stateMachine;
+
+        this.stateMachine = new DefaultStateMachine<>(this);
+        this.stateMachine.changeState(EnemyState.IDLE);
+    }
+
+    public float distaneToTarget()
+    {
+        return steerable.getPosition().dst(target.getPosition());
+    }
+
+    public void update(float dt)
+    {
+        stateMachine.update();
+        steerable.update(dt);
     }
 }
