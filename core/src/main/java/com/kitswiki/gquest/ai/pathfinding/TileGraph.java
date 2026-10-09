@@ -28,7 +28,8 @@ public class TileGraph implements IndexedGraph<TileNode> {
     private final IndexedAStarPathFinder<TileNode> pathFinder;
     private final Heuristic<TileNode> heuristic = (a,b) -> Vector2.dst(a.x,a.y,b.x,b.y);
     private boolean hit;
-    private final Vector2 pa = new Vector2(), pb = new Vector2();
+    private final Vector2 pa = new Vector2();
+    private final Vector2 pb = new Vector2();
 
     public TileGraph(World world, int width, int height, float tileSize) {
         this.world = world;
@@ -95,23 +96,6 @@ public class TileGraph implements IndexedGraph<TileNode> {
         return LineOfSight.check(world, pa, pb);
     }
 
-    private boolean isBlocked(int x, int y) {
-        hit = false;
-        final float cx = (x + 0.5f) * tileSize;
-        final float cy = (y + 0.5f) * tileSize;
-
-        world.QueryAABB(fixture -> {
-            if (!fixture.isSensor()
-                && fixture.getBody().getType() == BodyDef.BodyType.StaticBody
-                && fixture.testPoint(cx, cy)) {
-                hit = true;
-            }
-            return !hit;
-        }, cx - 0.01f, cy - 0.01f, cx + 0.01f, cy + 0.01f);
-
-        return hit;
-    }
-
     public TileNode at(int x, int y)
     {
         if(x < 0 || y < 0 || x>= width || y>= height)
@@ -119,6 +103,49 @@ public class TileGraph implements IndexedGraph<TileNode> {
             return null;
         }
         return nodes[y*width + x];
+    }
+
+    public TileNode nearestWalkable(Vector2 p)
+    {
+        TileNode n = worldToNode(p);
+        if(n != null && n.walkable)
+        {
+            return n;
+        }
+
+        int cx = (int) Math.floor(p.x / tileSize);
+        int cy = (int) Math.floor(p.y / tileSize);
+        for(int r = 1; r <= 3; r++)
+        {
+            TileNode best = null;
+            float bestD = Float.MAX_VALUE;
+            for(int dy = -r; dy <= r; dy++)
+            {
+                for(int dx = -r; dx<= r; dx++)
+                {
+                    if(Math.max(Math.abs(dx), Math.abs(dy)) != r)
+                    {
+                        continue;
+                    }
+                    TileNode c = at(cx + dx, cy + dy);
+                    if(c == null || !c.walkable)
+                    {
+                        continue;
+                    }
+                    float d = dx * dx + dy * dy;
+                    if(d < bestD)
+                    {
+                        bestD = d;
+                        best = c;
+                    }
+                }
+            }
+            if(best != null)
+            {
+                return best;
+            }
+        }
+        return null;
     }
 
     public TileNode worldToNode(Vector2 p)
@@ -134,9 +161,9 @@ public class TileGraph implements IndexedGraph<TileNode> {
     public boolean findPath(Vector2 from, Vector2 to, DefaultGraphPath<TileNode> out)
     {
         out.clear();
-        TileNode s = worldToNode(from);
-        TileNode e = worldToNode(to);
-        if(s == null || e == null || !s.walkable || !e.walkable)
+        TileNode s = nearestWalkable(from);
+        TileNode e = nearestWalkable(to);
+        if(s == null || e == null)
         {
             return false;
         }

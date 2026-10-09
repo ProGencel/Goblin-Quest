@@ -49,6 +49,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final Viewport viewport;
     private final TiledMapReader mapReader;
     private final World world;
+    private TileGraph graph;
 
     private final Viewport dialogViewport;
     private final Stage dialogStage;
@@ -59,7 +60,6 @@ public class GameScreen implements Screen, ChangeMap {
     private final EntityFactory entityFactory;
     private final PortalFactory portalFactory;
     private final StaticBodyBuilder staticBodyBuilder;
-    private TileGraph tileGraph;
 
 
     private final String mapPath;
@@ -120,6 +120,14 @@ public class GameScreen implements Screen, ChangeMap {
         Entity p = entityFactory.createPlayer(spawnPos);
         engine.addEntity(p);
 
+        staticBodyBuilder.createStaticBody();
+        int mapW = tiledMap.getProperties().get("width", Integer.class);
+        int mapH = tiledMap.getProperties().get("height", Integer.class);
+        int tilePx = tiledMap.getProperties().get("tilewidth", Integer.class);
+        float tileSize = tilePx * UNIT_SCALE;
+        graph = new TileGraph(world, mapW, mapH, tileSize);
+        entityFactory.setGraph(graph);
+
         Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");
         for(TiledMapReader.MapTileObject m : mapObjects)
         {
@@ -148,15 +156,10 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
 
-        staticBodyBuilder.createStaticBody();
         portalFactory.buildPortals();
 
-        int mapW = tiledMap.getProperties().get("width", Integer.class);
-        int mapH = tiledMap.getProperties().get("height", Integer.class);
-        int tilePx = tiledMap.getProperties().get("tilewidth", Integer.class);
-        float tileSize = tilePx * UNIT_SCALE;
 
-        tileGraph = new TileGraph(world, mapW, mapH, tileSize);
+
         //tileGraph = new TileGraph(world, mapW * 2, mapH * 2, tileSize / 2f);
 
     }
@@ -201,13 +204,12 @@ public class GameScreen implements Screen, ChangeMap {
             AIDebugRenderer aiDebugRenderer = new AIDebugRenderer(1f);
             aiDebugRenderer.render(camera,aiEntities);
 
-            aiDebugRenderer.renderGrid(camera, tileGraph);
-            aiDebugRenderer.renderConnections(camera, tileGraph);
+            aiDebugRenderer.renderGrid(camera, graph);
+            aiDebugRenderer.renderConnections(camera, graph);
 
-            if (aiEntities.size() > 0) {
-                EnemyAI first = aiEntities.first().getComponent(AIComponent.class).enemyAI;
-                tileGraph.findPath(first.steerable.getPosition(), first.target.getPosition(), testPath);
-                aiDebugRenderer.renderPath(camera, tileGraph, testPath);
+            for (int i = 0; i < aiEntities.size(); i++) {
+                EnemyAI e = aiEntities.get(i).getComponent(AIComponent.class).enemyAI;
+                aiDebugRenderer.renderPath(camera, graph, e.getPath());
             }
         }
 

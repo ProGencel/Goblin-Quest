@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.ai.EnemyAI;
 import com.kitswiki.gquest.ai.SteerableBody;
+import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.map.TiledMapReader;
 
@@ -18,6 +19,7 @@ public class EntityFactory {
     private final World world;
     private final TiledMapReader mapReader;
     private final Engine engine;
+    private TileGraph graph;
 
     public EntityFactory(World world, TiledMapReader mapReader, Engine engine) {
         this.world = world;
@@ -78,7 +80,7 @@ public class EntityFactory {
         steerable.setMaxLinearSpeed(1.5f);
         steerable.setMaxLinearAcceleration(8f);
 
-        ai.enemyAI = new EnemyAI(steerable, player.getComponent(SteerableComponent.class).steerableBody,world);
+        ai.enemyAI = new EnemyAI(steerable, player.getComponent(SteerableComponent.class).steerableBody,world,graph);
 
         e.add(t);
         e.add(b);
@@ -229,6 +231,11 @@ public class EntityFactory {
 
 
         return b;
+    }
+
+    public void setGraph(TileGraph graph)
+    {
+        this.graph = graph;
     }
 
 }

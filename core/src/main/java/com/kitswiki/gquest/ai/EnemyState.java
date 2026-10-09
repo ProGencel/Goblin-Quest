@@ -25,7 +25,7 @@ public enum EnemyState implements State<EnemyAI> {
     CHASE {
         @Override
         public void enter(EnemyAI entity) {
-            entity.steerable.setBehavior(entity.seek);
+            entity.startChase();
         }
 
         @Override
@@ -38,6 +38,10 @@ public enum EnemyState implements State<EnemyAI> {
             else if(dist > entity.loseRange || entity.timeSinceSeen > entity.forgetTime)
             {
                 entity.stateMachine.changeState(IDLE);
+            }
+            else
+            {
+                entity.updateChase();
             }
         }
     },
