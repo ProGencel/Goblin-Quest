@@ -40,7 +40,7 @@ public class EnemyAI {
     public boolean canSeeTarget()
     {
         tmp.set(target.getPosition()).sub(steerable.getPosition());
-        float dist = tmp.len();
+        float dist = tmp.len(); //Calculate between target and enemy distance
 
         if(dist > detectRange)
         {

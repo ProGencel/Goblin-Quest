@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.kitswiki.gquest.ai.EnemyAI;
+import com.kitswiki.gquest.ai.SteerableBody;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.map.TiledMapReader;
 
@@ -44,6 +46,9 @@ public class EntityFactory {
         int PLAYER_FRAME_HEIGHT = 64;
         tex.offsetY = (-PLAYER_FRAME_HEIGHT / 2f + PLAYER_FEET_PADDING) * UNIT_SCALE;
 
+        SteerableComponent s = engine.createComponent(SteerableComponent.class);
+        s.steerableBody = new SteerableBody(b.body,0.5f);
+
         e.add(t);
         e.add(b);
         e.add(new StateComponent());
@@ -52,11 +57,12 @@ public class EntityFactory {
         e.add(new PlayerComponent());
         e.add(new MovementComponent());
         e.add(new ContactComponent());
+        e.add(s);
 
         return e;
     }
 
-    public Entity createBadGoblin(TiledMapReader.MapTileObject mapObject, float offsetY, int frameH)
+    public Entity createBadGoblin(TiledMapReader.MapTileObject mapObject,float OFFSET_Y, int FRAME_H, Entity player)
     {
         Entity e = engine.createEntity();
 
@@ -67,8 +73,16 @@ public class EntityFactory {
         BodyComponent b = engine.createComponent(BodyComponent.class);
         b.body = handleBodyForDynamicRect(mapObject);
 
+        AIComponent ai = engine.createComponent(AIComponent.class);
+        SteerableBody steerable = new SteerableBody(b.body, 0.5f);
+        steerable.setMaxLinearSpeed(1.5f);
+        steerable.setMaxLinearAcceleration(8f);
+
+        ai.enemyAI = new EnemyAI(steerable, player.getComponent(SteerableComponent.class).steerableBody,world);
+
         e.add(t);
         e.add(b);
+        e.add(ai);
 
         return e;
     }

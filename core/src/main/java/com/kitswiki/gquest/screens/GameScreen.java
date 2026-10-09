@@ -3,9 +3,8 @@ package com.kitswiki.gquest.screens;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,10 +19,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.Main;
-import com.kitswiki.gquest.ai.EnemyAI;
-import com.kitswiki.gquest.ai.SteerableBody;
-import com.kitswiki.gquest.components.BodyComponent;
-import com.kitswiki.gquest.components.PlayerComponent;
+import com.kitswiki.gquest.components.AIComponent;
 import com.kitswiki.gquest.debug.AIDebugRenderer;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.factories.PortalFactory;
@@ -34,7 +30,6 @@ import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.*;
 import com.kitswiki.gquest.ui.DialogBox;
 import com.kitswiki.gquest.ui.DialogManager;
-import com.kitswiki.gquest.utils.Constants;
 
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
@@ -67,10 +62,8 @@ public class GameScreen implements Screen, ChangeMap {
     private String pendingMap;
     private String pendingSpawn;
 
-    private SteerableBody playerSteerable;
-    private final Array<EnemyAI> enemies = new Array<>();
-
-    boolean aiDebug = false;
+    private ImmutableArray<Entity> aiEntities;
+    boolean aiDebug = true;
 
     public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId) {
         this.main = main;
@@ -100,6 +93,8 @@ public class GameScreen implements Screen, ChangeMap {
         dialogManager.readJson();
         spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
         camera.position.set(spawnPos,0);
+
+        aiEntities = engine.getEntitiesFor(Family.all(AIComponent.class).get());
     }
 
     @Override
@@ -115,7 +110,6 @@ public class GameScreen implements Screen, ChangeMap {
 
         Entity p = entityFactory.createPlayer(spawnPos);
         engine.addEntity(p);
-        playerSteerable = new SteerableBody(p.getComponent(BodyComponent.class).body,0.5f);
 
         Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");
         for(TiledMapReader.MapTileObject m : mapObjects)
@@ -136,18 +130,15 @@ public class GameScreen implements Screen, ChangeMap {
             {
                 float offsetY = m.getFloat("OFFSET_Y",0);
                 int frameH = m.getInt("FRAME_H",0);
-                Entity badGoblin = entityFactory.createBadGoblin(m,offsetY,frameH);
+                Entity badGoblin = entityFactory.createBadGoblin(m,offsetY,frameH,p);
                 engine.addEntity(badGoblin);
-                SteerableBody steerable = new SteerableBody(badGoblin.getComponent(BodyComponent.class).body, 0.5f);
-                steerable.setMaxLinearSpeed(1.5f);
-                steerable.setMaxLinearAcceleration(8f);
-                enemies.add(new EnemyAI(steerable, playerSteerable,world));
             }
         }
 
         engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
+        engine.addSystem(new AISystem());
 
         staticBodyBuilder.createStaticBody();
         portalFactory.buildPortals();
@@ -188,14 +179,11 @@ public class GameScreen implements Screen, ChangeMap {
     public void render(float delta) {
         ScreenUtils.clear(0,0,0,1);
         engine.update(delta);
-        for (EnemyAI e : enemies) {
-            e.update(delta);
-        }
 
         if(aiDebug)
         {
             AIDebugRenderer aiDebugRenderer = new AIDebugRenderer(1f);
-            aiDebugRenderer.render(camera,enemies);
+            aiDebugRenderer.render(camera,aiEntities);
         }
 
         if(pendingSpawn != null)

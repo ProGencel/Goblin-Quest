@@ -1,5 +1,8 @@
 package com.kitswiki.gquest.debug;
 
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,9 +13,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.ai.EnemyAI;
 import com.kitswiki.gquest.ai.EnemyState;
+import com.kitswiki.gquest.components.AIComponent;
 
 public class AIDebugRenderer {
-
+    private final ComponentMapper<AIComponent> aiMapper = ComponentMapper.getFor(AIComponent.class);
     private final ShapeRenderer sr = new ShapeRenderer();
     private final float ppm;   // kamera metre ile çalışıyorsa 1f, piksel ile çalışıyorsa PPM değerin
 
@@ -20,15 +24,15 @@ public class AIDebugRenderer {
         this.ppm = ppm;
     }
 
-    public void render(OrthographicCamera camera, Array<EnemyAI> enemies) {
+    public void render(OrthographicCamera camera, ImmutableArray<Entity> entities) {
         sr.setProjectionMatrix(camera.combined);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         // 1) Dolu şekiller: görüş konisi (yarı saydam)
         sr.begin(ShapeType.Filled);
-        for (int i = 0; i < enemies.size; i++) {
-            EnemyAI e = enemies.get(i);
+        for (int i = 0; i < entities.size(); i++) {
+            EnemyAI e = aiMapper.get(entities.get(i)).enemyAI;
             Vector2 p = e.steerable.getPosition();
 
             if (e.stateMachine.getCurrentState() == EnemyState.CHASE) sr.setColor(1f, 0.2f, 0.2f, 0.18f);
@@ -43,8 +47,8 @@ public class AIDebugRenderer {
 
         // 2) Çizgiler: menzil daireleri, bakış yönü, oyuncuya giden ray
         sr.begin(ShapeType.Line);
-        for (int i = 0; i < enemies.size; i++) {
-            EnemyAI e = enemies.get(i);
+        for (int i = 0; i < entities.size(); i++) {
+            EnemyAI e = aiMapper.get(entities.get(i)).enemyAI;
             Vector2 p = e.steerable.getPosition();
             Vector2 t = e.target.getPosition();
 
