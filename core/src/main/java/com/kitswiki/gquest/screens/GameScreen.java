@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +20,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.Main;
+import com.kitswiki.gquest.ai.SteerableBody;
+import com.kitswiki.gquest.components.BodyComponent;
 import com.kitswiki.gquest.components.PlayerComponent;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.factories.PortalFactory;
@@ -61,6 +64,9 @@ public class GameScreen implements Screen, ChangeMap {
     private String pendingMap;
     private String pendingSpawn;
 
+    private final Array<SteerableBody> enemySteerables = new Array<>();
+    private SteerableBody playerSteerable;
+
     public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId) {
         this.main = main;
         this.assetManager = assetManager;
@@ -82,7 +88,7 @@ public class GameScreen implements Screen, ChangeMap {
         setDialog();
 
         this.engine = new Engine();
-        this.entityFactory = new EntityFactory(world,mapReader);
+        this.entityFactory = new EntityFactory(world,mapReader,engine);
         this.portalFactory = new PortalFactory(mapReader,engine,world);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
 
@@ -102,8 +108,11 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new MovementSystem(mapReader));
         engine.addSystem(new InputSystem());
 
-        Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");
+        Entity p = entityFactory.createPlayer(spawnPos);
+        engine.addEntity(p);
+        playerSteerable = new SteerableBody(p.getComponent(BodyComponent.class).body,0.5f);
 
+        Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");
         for(TiledMapReader.MapTileObject m : mapObjects)
         {
             if(m.getString("type","").equals("static"))
@@ -118,10 +127,19 @@ public class GameScreen implements Screen, ChangeMap {
                 int frameH = m.getInt("FRAME_H",0);
                 engine.addEntity(entityFactory.createGoblin(m,offsetY,frameH));
             }
+            else if(m.getString("type","").equals("bad_goblin"))
+            {
+                float offsetY = m.getFloat("OFFSET_Y",0);
+                int frameH = m.getInt("FRAME_H",0);
+                Entity badGoblin = entityFactory.createBadGoblin(m,offsetY,frameH);
+                engine.addEntity(badGoblin);
+                SteerableBody steerable = new SteerableBody(badGoblin.getComponent(BodyComponent.class).body, 0.5f);
+                steerable.setMaxLinearSpeed(1.5f);
+                steerable.setMaxLinearAcceleration(8f);
+                steerable.setBehavior(new Seek<>(steerable, playerSteerable));
+                enemySteerables.add(steerable);
+            }
         }
-
-        Entity p = entityFactory.createPlayer(spawnPos);
-        engine.addEntity(p);
 
         engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager));
         engine.addSystem(new InteractSystem(p));
@@ -160,6 +178,22 @@ public class GameScreen implements Screen, ChangeMap {
         pendingMap = null;
     }
 
+
+
+    @Override
+    public void render(float delta) {
+        ScreenUtils.clear(0,0,0,1);
+        engine.update(delta);
+        for (int i = 0; i < enemySteerables.size; i++) {
+            enemySteerables.get(i).update(delta);
+        }
+
+        if(pendingSpawn != null)
+        {
+            changeMapNow();
+        }
+    }
+
     private void setDialog()
     {
         Table mainTable = new Table();
@@ -169,17 +203,6 @@ public class GameScreen implements Screen, ChangeMap {
         mainTable.bottom();
 
         dialogStage.addActor(mainTable);
-    }
-
-    @Override
-    public void render(float delta) {
-        ScreenUtils.clear(0,0,0,1);
-        engine.update(delta);
-
-        if(pendingSpawn != null)
-        {
-            changeMapNow();
-        }
     }
 
     @Override

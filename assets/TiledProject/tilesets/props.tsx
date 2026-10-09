@@ -46,12 +46,20 @@
   </objectgroup>
  </tile>
  <tile id="6" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="48"/>
+   <property name="OFFSET_Y" type="float" value="8"/>
+  </properties>
   <image source="empty_statue.png" width="32" height="48"/>
   <objectgroup draworder="index" id="6">
    <object id="5" x="1.95652" y="26.2609" width="28.087" height="15.6087"/>
   </objectgroup>
  </tile>
  <tile id="7" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="7"/>
+  </properties>
   <image source="coal.png" width="32" height="32"/>
   <objectgroup draworder="index" id="2">
    <object id="1" x="10.1304" y="18.5217" width="11.7826" height="6.21739"/>

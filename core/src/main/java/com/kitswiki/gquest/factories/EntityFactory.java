@@ -1,5 +1,6 @@
 package com.kitswiki.gquest.factories;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -14,10 +15,12 @@ public class EntityFactory {
 
     private final World world;
     private final TiledMapReader mapReader;
+    private final Engine engine;
 
-    public EntityFactory(World world, TiledMapReader mapReader) {
+    public EntityFactory(World world, TiledMapReader mapReader, Engine engine) {
         this.world = world;
         this.mapReader = mapReader;
+        this.engine = engine;
     }
 
     public Entity createPlayer(Vector2 pos)
@@ -49,6 +52,23 @@ public class EntityFactory {
         e.add(new PlayerComponent());
         e.add(new MovementComponent());
         e.add(new ContactComponent());
+
+        return e;
+    }
+
+    public Entity createBadGoblin(TiledMapReader.MapTileObject mapObject, float offsetY, int frameH)
+    {
+        Entity e = engine.createEntity();
+
+        TransformComponent t = engine.createComponent(TransformComponent.class);
+        t.position.x = mapObject.x + mapObject.width / 2f;
+        t.position.y = mapObject.y + mapObject.height / 2f;
+
+        BodyComponent b = engine.createComponent(BodyComponent.class);
+        b.body = handleBodyForDynamicRect(mapObject);
+
+        e.add(t);
+        e.add(b);
 
         return e;
     }
@@ -105,6 +125,37 @@ public class EntityFactory {
         return e;
     }
 
+    private Body handleBodyForDynamicRect(TiledMapReader.MapTileObject mapObject)
+    {
+        Array<TiledMapReader.MapShape> shapes = mapObject.shapes;
+
+        float halfW = mapObject.width / 2f;
+        float halfH = mapObject.height / 2f;
+
+        BodyDef bdef = new BodyDef();
+        bdef.type = BodyDef.BodyType.DynamicBody;
+        bdef.position.x = mapObject.x + halfW;
+        bdef.position.y = mapObject.y + halfH;
+        bdef.fixedRotation = true;
+
+        Body b = world.createBody(bdef);
+
+        for(TiledMapReader.MapShape m : shapes)
+        {
+            Rectangle r = m.bounds;
+            float bodyX = mapObject.x + halfW;
+            float bodyY = mapObject.y + halfH;
+
+            PolygonShape shape = new PolygonShape();
+            Vector2 center = new Vector2(
+                r.x + r.width / 2f - bodyX,
+                r.y + r.height / 2f - bodyY);
+            shape.setAsBox(r.width / 2f, r.height / 2f,center,0f);
+            b.createFixture(shape, 1f);
+            shape.dispose();
+        }
+        return b;
+    }
 
     private Body handleBodyForStaticRect(TiledMapReader.MapTileObject mapTileObject)
     {
