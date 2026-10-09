@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +20,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.Main;
+import com.kitswiki.gquest.ai.EnemyAI;
+import com.kitswiki.gquest.ai.pathfinding.TileGraph;
+import com.kitswiki.gquest.ai.pathfinding.TileNode;
 import com.kitswiki.gquest.components.AIComponent;
 import com.kitswiki.gquest.debug.AIDebugRenderer;
 import com.kitswiki.gquest.factories.EntityFactory;
@@ -55,6 +59,8 @@ public class GameScreen implements Screen, ChangeMap {
     private final EntityFactory entityFactory;
     private final PortalFactory portalFactory;
     private final StaticBodyBuilder staticBodyBuilder;
+    private TileGraph tileGraph;
+
 
     private final String mapPath;
     private final Vector2 spawnPos;
@@ -63,6 +69,7 @@ public class GameScreen implements Screen, ChangeMap {
     private String pendingSpawn;
 
     private ImmutableArray<Entity> aiEntities;
+    private final DefaultGraphPath<TileNode> testPath = new DefaultGraphPath<>();
     boolean aiDebug = true;
 
     public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId) {
@@ -100,6 +107,8 @@ public class GameScreen implements Screen, ChangeMap {
     @Override
     public void show() {
 
+
+        engine.addSystem(new AISystem());
         engine.addSystem(new PhysicSystem(world));
         engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
@@ -138,10 +147,17 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
-        engine.addSystem(new AISystem());
 
         staticBodyBuilder.createStaticBody();
         portalFactory.buildPortals();
+
+        int mapW = tiledMap.getProperties().get("width", Integer.class);
+        int mapH = tiledMap.getProperties().get("height", Integer.class);
+        int tilePx = tiledMap.getProperties().get("tilewidth", Integer.class);
+        float tileSize = tilePx * UNIT_SCALE;
+
+        tileGraph = new TileGraph(world, mapW, mapH, tileSize);
+        //tileGraph = new TileGraph(world, mapW * 2, mapH * 2, tileSize / 2f);
 
     }
 
@@ -184,6 +200,15 @@ public class GameScreen implements Screen, ChangeMap {
         {
             AIDebugRenderer aiDebugRenderer = new AIDebugRenderer(1f);
             aiDebugRenderer.render(camera,aiEntities);
+
+            aiDebugRenderer.renderGrid(camera, tileGraph);
+            aiDebugRenderer.renderConnections(camera, tileGraph);
+
+            if (aiEntities.size() > 0) {
+                EnemyAI first = aiEntities.first().getComponent(AIComponent.class).enemyAI;
+                tileGraph.findPath(first.steerable.getPosition(), first.target.getPosition(), testPath);
+                aiDebugRenderer.renderPath(camera, tileGraph, testPath);
+            }
         }
 
         if(pendingSpawn != null)

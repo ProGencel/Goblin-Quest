@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,6 +15,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.ai.EnemyAI;
 import com.kitswiki.gquest.ai.EnemyState;
+import com.kitswiki.gquest.ai.pathfinding.TileGraph;
+import com.kitswiki.gquest.ai.pathfinding.TileNode;
 import com.kitswiki.gquest.components.AIComponent;
 
 public class AIDebugRenderer {
@@ -75,6 +79,51 @@ public class AIDebugRenderer {
         sr.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
+
+
+    public void renderGrid(OrthographicCamera camera, TileGraph g) {
+        sr.setProjectionMatrix(camera.combined);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        sr.begin(ShapeType.Filled);
+        sr.setColor(1f, 0f, 0f, 0.25f);
+        for (TileNode n : g.nodes) {
+            if (n.walkable) continue;
+            sr.rect(n.x * g.tileSize * ppm, n.y * g.tileSize * ppm,
+                g.tileSize * ppm, g.tileSize * ppm);
+        }
+        sr.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+    }
+
+    public void renderPath(OrthographicCamera camera, TileGraph g, DefaultGraphPath<TileNode> path) {
+        if (path.getCount() < 2) return;
+        sr.setProjectionMatrix(camera.combined);
+        sr.begin(ShapeType.Line);
+        sr.setColor(Color.CYAN);
+        for (int i = 0; i < path.getCount() - 1; i++) {
+            TileNode a = path.get(i), b = path.get(i + 1);
+            sr.line((a.x + 0.5f) * g.tileSize * ppm, (a.y + 0.5f) * g.tileSize * ppm,
+                (b.x + 0.5f) * g.tileSize * ppm, (b.y + 0.5f) * g.tileSize * ppm);
+        }
+        sr.end();
+    }
+
+    public void renderConnections(OrthographicCamera camera, TileGraph g) {
+        sr.setProjectionMatrix(camera.combined);
+        sr.begin(ShapeType.Line);
+        sr.setColor(0.2f, 1f, 0.2f, 1f);
+        for (TileNode n : g.nodes) {
+            for (Connection<TileNode> c : n.connections) {
+                TileNode m = c.getToNode();
+                if (m.x != n.x && m.y != n.y) continue;
+                if (m.x < n.x || m.y < n.y) continue;
+                sr.line((n.x + 0.5f) * g.tileSize * ppm, (n.y + 0.5f) * g.tileSize * ppm,
+                    (m.x + 0.5f) * g.tileSize * ppm, (m.y + 0.5f) * g.tileSize * ppm);
+            }
+        }
+        sr.end();
     }
 
     public void dispose() {
