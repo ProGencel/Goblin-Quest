@@ -7,29 +7,29 @@
         "maps/cave.tmx": {
             "expandedObjectLayers": [
                 8,
+                4,
                 7,
-                9,
-                4
+                9
             ],
             "scale": 5.5,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 352.18181818181824,
-                "y": 124.00000000000001
+                "x": 243.72727272727275,
+                "y": 160
             }
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
                 14,
+                4,
                 15,
-                9,
-                4
+                9
             ],
             "scale": 4,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 918.75,
-                "y": 436
+                "x": 800.125,
+                "y": 560
             }
         },
         "tilesets/SunnySide Environment.tsx": {

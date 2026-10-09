@@ -24,6 +24,7 @@ import com.kitswiki.gquest.ai.EnemyAI;
 import com.kitswiki.gquest.ai.SteerableBody;
 import com.kitswiki.gquest.components.BodyComponent;
 import com.kitswiki.gquest.components.PlayerComponent;
+import com.kitswiki.gquest.debug.AIDebugRenderer;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.factories.PortalFactory;
 import com.kitswiki.gquest.interfaces.ChangeMap;
@@ -33,6 +34,7 @@ import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.*;
 import com.kitswiki.gquest.ui.DialogBox;
 import com.kitswiki.gquest.ui.DialogManager;
+import com.kitswiki.gquest.utils.Constants;
 
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
@@ -67,6 +69,8 @@ public class GameScreen implements Screen, ChangeMap {
 
     private SteerableBody playerSteerable;
     private final Array<EnemyAI> enemies = new Array<>();
+
+    boolean aiDebug = false;
 
     public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId) {
         this.main = main;
@@ -137,7 +141,7 @@ public class GameScreen implements Screen, ChangeMap {
                 SteerableBody steerable = new SteerableBody(badGoblin.getComponent(BodyComponent.class).body, 0.5f);
                 steerable.setMaxLinearSpeed(1.5f);
                 steerable.setMaxLinearAcceleration(8f);
-                enemies.add(new EnemyAI(steerable, playerSteerable));
+                enemies.add(new EnemyAI(steerable, playerSteerable,world));
             }
         }
 
@@ -186,6 +190,12 @@ public class GameScreen implements Screen, ChangeMap {
         engine.update(delta);
         for (EnemyAI e : enemies) {
             e.update(delta);
+        }
+
+        if(aiDebug)
+        {
+            AIDebugRenderer aiDebugRenderer = new AIDebugRenderer(1f);
+            aiDebugRenderer.render(camera,enemies);
         }
 
         if(pendingSpawn != null)

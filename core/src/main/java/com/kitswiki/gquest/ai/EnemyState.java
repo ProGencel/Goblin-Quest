@@ -8,14 +8,14 @@ public enum EnemyState implements State<EnemyAI> {
 
     IDLE {
         @Override
-        public void enter(EnemyAI entity) {System.out.println("IDLE");
+        public void enter(EnemyAI entity) {
             entity.steerable.stop();
         }
 
         @Override
         public void update(EnemyAI entity) {
 
-            if(entity.distaneToTarget() < entity.detectRange)
+            if(entity.canSeeTarget())
             {
                 entity.stateMachine.changeState(CHASE);
             }
@@ -24,18 +24,18 @@ public enum EnemyState implements State<EnemyAI> {
 
     CHASE {
         @Override
-        public void enter(EnemyAI entity) {System.out.println("CHASE");
+        public void enter(EnemyAI entity) {
             entity.steerable.setBehavior(entity.seek);
         }
 
         @Override
         public void update(EnemyAI entity) {
-
+            float dist = entity.distaneToTarget();
             if(entity.distaneToTarget() < entity.attackRange)
             {
                 entity.stateMachine.changeState(ATTACK);
             }
-            else if(entity.distaneToTarget() > entity.loseRange)
+            else if(dist > entity.loseRange || entity.timeSinceSeen > entity.forgetTime)
             {
                 entity.stateMachine.changeState(IDLE);
             }
@@ -44,7 +44,7 @@ public enum EnemyState implements State<EnemyAI> {
 
     ATTACK {
         @Override
-        public void enter(EnemyAI entity) {System.out.println("ATTACK");
+        public void enter(EnemyAI entity) {
             entity.steerable.stop();
         }
 
