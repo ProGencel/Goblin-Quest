@@ -66,6 +66,8 @@ public class EntityFactory {
         e.add(new MovementComponent());
         e.add(new ContactComponent());
         e.add(s);
+        e.add(new HealtComponent());
+        e.add(new DeadComponent());
 
         return e;
     }
@@ -109,6 +111,7 @@ public class EntityFactory {
         e.add(tex);
         e.add(ai);
         e.add(new StateComponent());
+        e.add(new CanDamageComponent());
 
         return e;
     }

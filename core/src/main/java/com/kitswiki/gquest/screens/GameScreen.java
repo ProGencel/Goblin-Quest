@@ -1,16 +1,18 @@
 package com.kitswiki.gquest.screens;
 
+import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -24,8 +26,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.Main;
 import com.kitswiki.gquest.ai.EnemyAI;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
-import com.kitswiki.gquest.ai.pathfinding.TileNode;
 import com.kitswiki.gquest.components.AIComponent;
+import com.kitswiki.gquest.components.DeadComponent;
 import com.kitswiki.gquest.debug.AIDebugRenderer;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.factories.PortalFactory;
@@ -42,6 +44,8 @@ import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 public class GameScreen implements Screen, ChangeMap {
 
     private final Main main;
+
+    private final ComponentMapper<DeadComponent> deadComponent = ComponentMapper.getFor(DeadComponent.class);
 
     private final AssetManager assetManager;
     private final TiledMap tiledMap;
@@ -63,20 +67,26 @@ public class GameScreen implements Screen, ChangeMap {
     private final PortalFactory portalFactory;
     private final StaticBodyBuilder staticBodyBuilder;
 
-
     private final String mapPath;
     private final Vector2 spawnPos;
 
     private String pendingMap;
     private String pendingSpawn;
 
+    private final ShapeRenderer shapeRenderer;
+    private float fadeAlpha;
     private final BitmapFont font;
 
     private ImmutableArray<Entity> aiEntities;
     boolean aiDebug = false;
     private final AIDebugRenderer aiDebugRenderer;
 
-    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId) {
+    private Entity p;
+    private boolean isFadingIn;
+    private boolean isFadingOut;
+
+
+    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId, boolean startFadedIn) {
         this.main = main;
         this.assetManager = assetManager;
         this.mapPath = mapPath;
@@ -102,6 +112,9 @@ public class GameScreen implements Screen, ChangeMap {
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
         this.font = new BitmapFont();
         this.aiDebugRenderer = new AIDebugRenderer(1f);
+        this.shapeRenderer = new ShapeRenderer();
+        this.isFadingIn = startFadedIn;
+        this.fadeAlpha = startFadedIn ? 1.0f : 0.0f;
 
         dialogManager.readJson();
         spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
@@ -113,18 +126,19 @@ public class GameScreen implements Screen, ChangeMap {
     @Override
     public void show() {
 
+        p = entityFactory.createPlayer(spawnPos);
+        engine.addEntity(p);
 
         engine.addSystem(new AISystem());
         engine.addSystem(new PhysicSystem(world));
         engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
+        engine.addSystem(new DamageSystem(p));
+        engine.addSystem(new DeathSystem());
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world,dialogStage));
         engine.addSystem(new MovementSystem(mapReader));
         engine.addSystem(new InputSystem());
-
-        Entity p = entityFactory.createPlayer(spawnPos);
-        engine.addEntity(p);
 
         staticBodyBuilder.createStaticBody();
         int mapW = tiledMap.getProperties().get("width", Integer.class);
@@ -174,53 +188,84 @@ public class GameScreen implements Screen, ChangeMap {
     {
         pendingMap = map;
         pendingSpawn = spawnId;
+        isFadingOut = false;
     }
 
-    private void changeMapNow()
-    {
+    private void changeMapNow(boolean startFadedIn) {
         String mapPath = "";
-        if("cave".equals(pendingMap))
+
+        if ("cave".equals(pendingMap))
         {
             mapPath = "TiledProject/maps/cave.tmx";
         }
-        else if("town".equals(pendingMap))
+        else if ("town".equals(pendingMap))
         {
             mapPath = "TiledProject/maps/town.tmx";
         }
+
         String spawn = pendingSpawn;
         pendingMap = null;
 
-        Screen old = main.getScreen();
-        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn));
-        old.dispose();
+        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn));
 
         pendingSpawn = null;
-        pendingMap = null;
     }
 
-
+    float deathTimer = 0f;
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0,0,0,1);
+        ScreenUtils.clear(0, 0, 0, 1);
         engine.update(delta);
 
-        if(aiDebug)
-        {
+        if (isFadingIn) {
+            fadeAlpha -= 0.8f * delta;
+            if (fadeAlpha <= 0f) {
+                fadeAlpha = 0f;
+                isFadingIn = false;
+            }
+        }
+
+        if (deadComponent.get(p) != null && deadComponent.get(p).dead) {
+            isFadingOut = true;
+            deathTimer += delta;
+            if (deathTimer >= 1.5f && pendingMap == null) {
+                changeMap("town", "begin");
+            }
+        }
+
+        if (!isFadingOut) {
+            if (pendingMap != null) {
+                changeMapNow(true);
+                return;
+            }
+        }
+        else if (isFadingOut) {
+            fadeAlpha += 0.8f * delta;
+            if (fadeAlpha >= 1.0f) {
+                fadeAlpha = 1.0f;
+
+                if (pendingMap != null) {
+                    changeMapNow(true);
+                    return;
+                }
+            }
+        }
+
+        if (fadeAlpha > 0f) {
+            drawFade();
+        }
+
+        if (aiDebug) {
             aiDebugRenderer.render(camera, aiEntities);
             aiDebugRenderer.renderGrid(camera, graph);
             aiDebugRenderer.renderConnections(camera, graph);
-            aiDebugRenderer.renderPatrol(camera, aiEntities);   // ← yeni
+            aiDebugRenderer.renderPatrol(camera, aiEntities);
 
             for (int i = 0; i < aiEntities.size(); i++) {
                 EnemyAI e = aiEntities.get(i).getComponent(AIComponent.class).enemyAI;
                 aiDebugRenderer.renderPath(camera, graph, e.getPath());
             }
-        }
-
-        if(pendingSpawn != null)
-        {
-            changeMapNow();
         }
 
         batch.begin();
@@ -237,6 +282,19 @@ public class GameScreen implements Screen, ChangeMap {
         mainTable.bottom();
 
         dialogStage.addActor(mainTable);
+    }
+
+    private void drawFade() {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, fadeAlpha);
+        shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        shapeRenderer.end();
+
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     @Override
@@ -264,5 +322,7 @@ public class GameScreen implements Screen, ChangeMap {
     public void dispose() {
         mapRenderer.dispose();
         font.dispose();
+        shapeRenderer.dispose();
+        aiDebugRenderer.dispose();
     }
 }

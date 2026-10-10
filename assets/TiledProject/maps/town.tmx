@@ -550,7 +550,7 @@
    </properties>
    <point/>
   </object>
-  <object id="42" x="902.909" y="527.455">
+  <object id="42" x="905" y="535.5">
    <properties>
     <property name="spawnId" value="begin"/>
    </properties>

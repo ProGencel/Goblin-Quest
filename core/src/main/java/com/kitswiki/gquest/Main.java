@@ -26,7 +26,7 @@ public class Main extends Game {
         loadAssets(assetManager);
         this.skin = assetManager.get("UI/dialog/skin/skin.json");
 
-        setScreen(new GameScreen(assetManager,this,"TiledProject/maps/town.tmx","begin"));
+        setScreen(new GameScreen(assetManager,this,"TiledProject/maps/town.tmx","begin", false));
     }
 
     private void loadAssets(AssetManager assetManager)

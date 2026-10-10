@@ -6,10 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.kitswiki.gquest.components.BodyComponent;
-import com.kitswiki.gquest.components.MovementComponent;
-import com.kitswiki.gquest.components.StateComponent;
-import com.kitswiki.gquest.components.TextureComponent;
+import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.enums.CharacterState;
 import com.kitswiki.gquest.map.TiledMapReader;
 
@@ -21,6 +18,7 @@ public class MovementSystem extends IteratingSystem {
     private final ComponentMapper<MovementComponent> m = ComponentMapper.getFor(MovementComponent.class);
     private final ComponentMapper<TextureComponent> t = ComponentMapper.getFor(TextureComponent.class);
     private final ComponentMapper<StateComponent> s = ComponentMapper.getFor(StateComponent.class);
+    private final ComponentMapper<DeadComponent> d = ComponentMapper.getFor(DeadComponent.class);
 
     private final TiledMapReader mapReader;
 
@@ -35,6 +33,13 @@ public class MovementSystem extends IteratingSystem {
         MovementComponent m = this.m.get(entity);
         TextureComponent t = this.t.get(entity);
         StateComponent s = this.s.get(entity);
+        DeadComponent d = this.d.get(entity);
+
+        if(d.dead)
+        {
+            b.body.setLinearVelocity(0,0);
+            return;
+        }
 
         if(s.charState == CharacterState.STOP)
         {
