@@ -4,10 +4,12 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -68,9 +70,11 @@ public class GameScreen implements Screen, ChangeMap {
     private String pendingMap;
     private String pendingSpawn;
 
+    private final BitmapFont font;
+
     private ImmutableArray<Entity> aiEntities;
-    private final DefaultGraphPath<TileNode> testPath = new DefaultGraphPath<>();
-    boolean aiDebug = true;
+    boolean aiDebug = false;
+    private final AIDebugRenderer aiDebugRenderer;
 
     public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId) {
         this.main = main;
@@ -96,6 +100,8 @@ public class GameScreen implements Screen, ChangeMap {
         this.entityFactory = new EntityFactory(world,mapReader,engine);
         this.portalFactory = new PortalFactory(mapReader,engine,world);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
+        this.font = new BitmapFont();
+        this.aiDebugRenderer = new AIDebugRenderer(1f);
 
         dialogManager.readJson();
         spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
@@ -201,11 +207,10 @@ public class GameScreen implements Screen, ChangeMap {
 
         if(aiDebug)
         {
-            AIDebugRenderer aiDebugRenderer = new AIDebugRenderer(1f);
-            aiDebugRenderer.render(camera,aiEntities);
-
+            aiDebugRenderer.render(camera, aiEntities);
             aiDebugRenderer.renderGrid(camera, graph);
             aiDebugRenderer.renderConnections(camera, graph);
+            aiDebugRenderer.renderPatrol(camera, aiEntities);   // ← yeni
 
             for (int i = 0; i < aiEntities.size(); i++) {
                 EnemyAI e = aiEntities.get(i).getComponent(AIComponent.class).enemyAI;
@@ -217,6 +222,10 @@ public class GameScreen implements Screen, ChangeMap {
         {
             changeMapNow();
         }
+
+        batch.begin();
+        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+        batch.end();
     }
 
     private void setDialog()
@@ -254,5 +263,6 @@ public class GameScreen implements Screen, ChangeMap {
     @Override
     public void dispose() {
         mapRenderer.dispose();
+        font.dispose();
     }
 }

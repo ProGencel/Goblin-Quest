@@ -2,10 +2,12 @@ package com.kitswiki.gquest.factories;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
 import com.kitswiki.gquest.ai.EnemyAI;
 import com.kitswiki.gquest.ai.SteerableBody;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
@@ -21,10 +23,14 @@ public class EntityFactory {
     private final Engine engine;
     private TileGraph graph;
 
+    private final FloatArray patrolCords = new FloatArray();
+
     public EntityFactory(World world, TiledMapReader mapReader, Engine engine) {
         this.world = world;
         this.mapReader = mapReader;
         this.engine = engine;
+
+        setPatrolCords();
     }
 
     public Entity createPlayer(Vector2 pos)
@@ -64,7 +70,7 @@ public class EntityFactory {
         return e;
     }
 
-    public Entity createBadGoblin(TiledMapReader.MapTileObject mapObject,float OFFSET_Y, int FRAME_H, Entity player)
+    public Entity createBadGoblin(TiledMapReader.MapTileObject mapObject,float offSetY, int frameH, Entity player)
     {
         Entity e = engine.createEntity();
 
@@ -73,7 +79,13 @@ public class EntityFactory {
         t.position.y = mapObject.y + mapObject.height / 2f;
 
         BodyComponent b = engine.createComponent(BodyComponent.class);
-        b.body = handleBodyForDynamicRect(mapObject);
+        b.body = handleBodyForDynamicCircle(t.position);
+
+        AnimationComponent a = new AnimationComponent();
+        a.layers.add("badGoblin");
+
+        TextureComponent tex = new TextureComponent();
+        tex.offsetY = (-frameH / 2f + offSetY) * UNIT_SCALE;
 
         AIComponent ai = engine.createComponent(AIComponent.class);
         SteerableBody steerable = new SteerableBody(b.body, 0.5f);
@@ -81,10 +93,22 @@ public class EntityFactory {
         steerable.setMaxLinearAcceleration(8f);
 
         ai.enemyAI = new EnemyAI(steerable, player.getComponent(SteerableComponent.class).steerableBody,world,graph);
+        for(int i = 0;i<10;i++)
+        {
+            int randIndex = MathUtils.random(0,patrolCords.size-2);
+            while(randIndex % 2 == 0)
+            {
+                randIndex = MathUtils.random(0,patrolCords.size-2);
+            }
+            addPatrolTile(ai.enemyAI, (int) patrolCords.get(randIndex),(int) patrolCords.get(randIndex-1),graph.height);
+        }
 
         e.add(t);
         e.add(b);
+        e.add(a);
+        e.add(tex);
         e.add(ai);
+        e.add(new StateComponent());
 
         return e;
     }
@@ -231,6 +255,60 @@ public class EntityFactory {
 
 
         return b;
+    }
+
+    public void addPatrolTile(EnemyAI ai,int tx, int tyFromTop, int mapH) {
+        int ty = mapH - 1 - tyFromTop;
+        ai.patrolPoints.add(new Vector2(
+            (tx + 0.5f) * graph.tileSize,
+            (ty + 0.5f) * graph.tileSize));
+    }
+
+    private void setPatrolCords()
+    {
+        for(int x = 31 ; x<=74 ; x++)
+        {
+            for(int y = 68 ; y >= 26 ; y--)
+            {
+                patrolCords.add(x,y);
+            }
+        }
+        for(int x = 93 ; x>=5 ; x--)
+        {
+            for(int y = 90 ; y <= 93 ; y++)
+            {
+                patrolCords.add(x,y);
+            }
+        }
+        for(int x = 56 ; x>=48 ; x--)
+        {
+            for(int y = 91 ; y >= 77 ; y--)
+            {
+                patrolCords.add(x,y);
+            }
+        }
+        for(int x = 10 ; x<=20 ; x++)
+        {
+            for(int y = 10 ; y <= 20 ; y++)
+            {
+                patrolCords.add(x,y);
+            }
+        }
+        for(int x = 89 ; x>=79 ; x--)
+        {
+            for(int y = 20 ; y >= 10 ; y--)
+            {
+                patrolCords.add(x,y);
+            }
+        }
+        for(int x = 88 ; x<=92 ; x++)
+        {
+            for(int y = 19 ; y <= 25 ; y++)
+            {
+                patrolCords.add(x,y);
+            }
+        }
+
     }
 
     public void setGraph(TileGraph graph)

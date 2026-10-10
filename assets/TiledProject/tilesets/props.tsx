@@ -40,9 +40,21 @@
   </objectgroup>
  </tile>
  <tile id="5" type="bad_goblin">
+  <properties>
+   <property name="FRAME_H" type="int" value="64"/>
+   <property name="OFFSET_Y" type="float" value="25"/>
+  </properties>
   <image source="bad_goblin_icon.png" width="18" height="16"/>
   <objectgroup draworder="index" id="2">
-   <object id="1" x="5.78261" y="11.8261" width="6.04348" height="3.21739"/>
+   <object id="2" x="6.62826" y="10.8704" width="0.151503" height="0.0378758">
+    <ellipse/>
+   </object>
+   <object id="3" x="6.59039" y="10.8325" width="4.5451" height="3.97696">
+    <ellipse/>
+   </object>
+   <object id="4" x="11.1355" y="14.8094" width="0.151503" height="0.0378758">
+    <ellipse/>
+   </object>
   </objectgroup>
  </tile>
  <tile id="6" type="static">

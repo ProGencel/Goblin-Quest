@@ -28,6 +28,23 @@ public class AIDebugRenderer {
         this.ppm = ppm;
     }
 
+    public void renderPatrol(OrthographicCamera camera, ImmutableArray<Entity> entities) {
+        sr.setProjectionMatrix(camera.combined);
+        sr.begin(ShapeRenderer.ShapeType.Line);
+
+        for (int i = 0; i < entities.size(); i++) {
+            EnemyAI e = entities.get(i).getComponent(AIComponent.class).enemyAI;
+
+            for (int j = 0; j < e.patrolPoints.size; j++) {
+                Vector2 p = e.patrolPoints.get(j);
+                sr.setColor(j == e.getPatrolIndex() ? Color.YELLOW : Color.CYAN);
+                sr.circle(p.x, p.y, 0.15f, 12);
+            }
+        }
+
+        sr.end();
+    }
+
     public void render(OrthographicCamera camera, ImmutableArray<Entity> entities) {
         sr.setProjectionMatrix(camera.combined);
         Gdx.gl.glEnable(GL20.GL_BLEND);

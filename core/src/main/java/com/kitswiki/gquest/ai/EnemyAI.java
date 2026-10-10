@@ -7,6 +7,7 @@ import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.ai.pathfinding.TileNode;
 import com.kitswiki.gquest.ai.pathfinding.WayPointLocation;
@@ -42,6 +43,14 @@ public class EnemyAI {
     public float timeSinceSeen = 0f;
     public float forgetTime = 8f;
 
+    public final Array<Vector2> patrolPoints = new Array<>();
+    public float patrolWait = 4f;
+    public float patrolReach;
+    private int patrolIndex;
+    private boolean patrolWaiting;
+    private float patrolWaitTimer;
+    private float patrolRepathTimer;
+
     public EnemyAI(SteerableBody steerable, SteerableBody target, World world, TileGraph graph) {
         this.steerable = steerable;
         this.target = target;
@@ -50,10 +59,11 @@ public class EnemyAI {
         this.graph = graph;
 
         this.stateMachine = new DefaultStateMachine<>(this);
-        this.stateMachine.changeState(EnemyState.IDLE);
+        this.stateMachine.changeState(EnemyState.PATROL);
         this.seekWayPoint = new Seek<>(steerable, wayPoint);
 
         this.waypointReach = graph.tileSize * 0.4f;
+        this.patrolReach = graph.tileSize * 0.4f;
     }
 
     public DefaultGraphPath<TileNode> getPath() { return path; }
@@ -61,6 +71,93 @@ public class EnemyAI {
     public void startChase() {
         path.clear();
         repathTimer = 0f;
+    }
+
+    private void followPath(Vector2 finalPos) {
+        int count = path.getCount();
+        while (pathIndex < count) {
+            graph.nodeCenter(path.get(pathIndex), tmp2);
+            if (steerable.getPosition().dst(tmp2) > waypointReach) break;
+            pathIndex++;
+        }
+
+        if (pathIndex < count) graph.nodeCenter(path.get(pathIndex), wayPoint.position);
+        else wayPoint.position.set(finalPos);
+
+        steerable.setBehavior(seekWayPoint);
+    }
+    //TODO disaridaki duvarlarida sayiyor grapha onlari devre disi birak veya pathfndingde oralari sectirme
+
+    public boolean hasPatrol()
+    {
+        return patrolPoints.size > 0;
+    }
+
+    public void startPatrol()
+    {
+        path.clear();
+        patrolRepathTimer = 0f;
+        patrolWaiting = false;
+
+        float best = Float.MAX_VALUE;
+        for(int i = 0; i < patrolPoints.size; i++)
+        {
+            float d = steerable.getPosition().dst2(patrolPoints.get(i));
+            if(d < best)
+            {
+                best = d;
+                patrolIndex = i;
+            }
+        }
+    }
+
+    public void updatePatrol()
+    {
+        if(!hasPatrol())
+        {
+            steerable.stop();
+            return;
+        }
+
+        Vector2 goal = patrolPoints.get(patrolIndex);
+
+        if(patrolWaiting)
+        {
+            steerable.stop();
+            patrolWaitTimer -= dt;
+            if(patrolWaitTimer <= 0f)
+            {
+                patrolWaiting = false;
+                patrolIndex = (patrolIndex + 1) % patrolPoints.size;
+                path.clear();
+                patrolRepathTimer = 0f;
+            }
+            return;
+        }
+
+        if(steerable.getPosition().dst(goal) <= patrolReach)
+        {
+            steerable.stop();
+            patrolWaiting = true;
+            patrolWaitTimer = patrolWait;
+            path.clear();
+            return;
+        }
+
+        patrolRepathTimer -= dt;
+        if(path.getCount() == 0 || patrolRepathTimer <= 0)
+        {
+            patrolRepathTimer = 1.5f;
+            if(!graph.findPath(steerable.getPosition(), goal,path))
+            {
+                patrolIndex = (patrolIndex + 1) % patrolPoints.size;
+                path.clear();
+                return;
+            }
+            pathIndex = path.getCount() > 1 ? 1 : 0;
+        }
+
+        followPath(goal);
     }
 
     public void updateChase() {
@@ -81,17 +178,7 @@ public class EnemyAI {
             pathIndex = 0;
         }
 
-        int count = path.getCount();
-        while (pathIndex < count) {
-            graph.nodeCenter(path.get(pathIndex), tmp2);
-            if (steerable.getPosition().dst(tmp2) > waypointReach) break;
-            pathIndex++;
-        }
-
-        if (pathIndex < count) graph.nodeCenter(path.get(pathIndex), wayPoint.position);
-        else wayPoint.position.set(target.getPosition());
-
-        steerable.setBehavior(seekWayPoint);
+        followPath(target.getPosition());
     }
 
     public boolean canSeeTarget()
@@ -152,5 +239,13 @@ public class EnemyAI {
 
         stateMachine.update();
         steerable.update(dt);
+    }
+
+    public boolean isPatrolWaiting() {
+        return patrolWaiting;
+    }
+
+    public int getPatrolIndex() {
+        return patrolIndex;
     }
 }

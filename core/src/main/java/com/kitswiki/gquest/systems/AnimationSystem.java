@@ -37,9 +37,7 @@ public class AnimationSystem extends IteratingSystem {
         tex.regions.clear();
         for(String layer : anim.layers)
         {
-
             tex.regions.add(getAnimation(layer,st).getKeyFrame(st.stateTime));
-
         }
     }
 

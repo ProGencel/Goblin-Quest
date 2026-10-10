@@ -18,6 +18,17 @@ public enum EnemyState implements State<EnemyAI> {
             if(entity.canSeeTarget())
             {
                 entity.stateMachine.changeState(CHASE);
+                return;
+            }
+            if(!entity.hasPatrol())
+            {
+                return;
+            }
+
+            entity.updatePatrol();
+            if(!entity.isPatrolWaiting())
+            {
+                entity.stateMachine.changeState(PATROL);
             }
         }
     },
@@ -37,7 +48,7 @@ public enum EnemyState implements State<EnemyAI> {
             }
             else if(dist > entity.loseRange || entity.timeSinceSeen > entity.forgetTime)
             {
-                entity.stateMachine.changeState(IDLE);
+                entity.stateMachine.changeState(PATROL);
             }
             else
             {
@@ -59,6 +70,36 @@ public enum EnemyState implements State<EnemyAI> {
             if(dis > entity.attackRange)
             {
                 entity.stateMachine.changeState(CHASE);
+            }
+        }
+    },
+
+    PATROL {
+        @Override
+        public void enter(EnemyAI entity) {
+            if(entity.stateMachine.getPreviousState() != IDLE)
+            {
+                entity.startPatrol();
+            }
+        }
+
+        @Override
+        public void update(EnemyAI entity) {
+            if(entity.canSeeTarget())
+            {
+                entity.stateMachine.changeState(CHASE);
+                return;
+            }
+            if(!entity.hasPatrol())
+            {
+                entity.stateMachine.changeState(IDLE);
+                return;
+            }
+
+            entity.updatePatrol();
+            if(entity.isPatrolWaiting())
+            {
+                entity.stateMachine.changeState(IDLE);
             }
         }
     };
