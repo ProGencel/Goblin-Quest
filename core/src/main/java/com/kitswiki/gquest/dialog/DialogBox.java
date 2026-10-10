@@ -1,4 +1,4 @@
-package com.kitswiki.gquest.ui;
+package com.kitswiki.gquest.dialog;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;

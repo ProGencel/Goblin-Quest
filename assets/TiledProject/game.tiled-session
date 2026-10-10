@@ -1,5 +1,5 @@
 {
-    "activeFile": "maps/cave.tmx",
+    "activeFile": "maps/town.tmx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -22,14 +22,13 @@
             "expandedObjectLayers": [
                 14,
                 9,
-                15,
-                4
+                15
             ],
-            "scale": 4,
-            "selectedLayer": 4,
+            "scale": 2,
+            "selectedLayer": 10,
             "viewCenter": {
-                "x": 859.25,
-                "y": 172.75
+                "x": 690.5,
+                "y": 254.5
             }
         },
         "tilesets/SunnySide Environment.tsx": {
@@ -63,8 +62,8 @@
     "recentFiles": [
         "tilesets/sunnysideworld.tsx",
         "tilesets/props.tsx",
-        "maps/town.tmx",
         "maps/cave.tmx",
+        "maps/town.tmx",
         "tilesets/SunnySide Environment.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",

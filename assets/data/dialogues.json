@@ -1,10 +1,11 @@
 {
-  "goblin_intro": [
-    "Hi friend !",
-    "I lost my golds while i look before shrooms on the east side of the town but some bad goblins stole my stuff !!",
-    "If you can get my golds back maybe i can share a part of my golds !"
-  ],
-  "goblin_idle": [
-    "Go on, don't just stand there."
+  "goblin": [
+    { "id": "reward",  "once": true, "requires": ["goblin.gold_returned"], "lines": ["You found my golds!? You are the best !"] },
+    { "id": "thanks",  "requires": ["goblin.gold_returned"], "lines": ["Thanks again, friend."] },
+    { "id": "intro",   "once": true, "lines": [
+      "Hi friend !",
+      "I lost my golds while i look before shrooms on the east side of the town but some bad goblins stole my stuff !!",
+      "If you can get my golds back maybe i can share a part of my golds !" ] },
+    { "id": "idle",    "lines": ["Go on, don't just stand there."] }
   ]
 }

@@ -133,7 +133,7 @@ public class EntityFactory {
         tex.flipped = mapObject.getBool("isFlipped",true);
 
         DialogComponent d = new DialogComponent();
-        d.dialogId = "goblin_intro";
+        d.dialogId = "goblin";
 
         BodyComponent b = new BodyComponent();
         b.body = handleBodyForStaticRect(mapObject);

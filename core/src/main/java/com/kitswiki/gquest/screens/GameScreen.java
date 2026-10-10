@@ -29,6 +29,7 @@ import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.AIComponent;
 import com.kitswiki.gquest.components.DeadComponent;
 import com.kitswiki.gquest.debug.AIDebugRenderer;
+import com.kitswiki.gquest.dialog.GameState;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.factories.PortalFactory;
 import com.kitswiki.gquest.interfaces.ChangeMap;
@@ -36,8 +37,8 @@ import com.kitswiki.gquest.listeners.GameContactListener;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.*;
-import com.kitswiki.gquest.ui.DialogBox;
-import com.kitswiki.gquest.ui.DialogManager;
+import com.kitswiki.gquest.dialog.DialogBox;
+import com.kitswiki.gquest.dialog.DialogManager;
 
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
@@ -172,7 +173,7 @@ public class GameScreen implements Screen, ChangeMap {
             }
         }
 
-        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager));
+        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager,new GameState()));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
 

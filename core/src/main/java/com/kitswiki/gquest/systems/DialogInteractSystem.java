@@ -5,9 +5,10 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.kitswiki.gquest.components.*;
+import com.kitswiki.gquest.dialog.GameState;
 import com.kitswiki.gquest.enums.CharacterState;
-import com.kitswiki.gquest.ui.DialogBox;
-import com.kitswiki.gquest.ui.DialogManager;
+import com.kitswiki.gquest.dialog.DialogBox;
+import com.kitswiki.gquest.dialog.DialogManager;
 
 public class DialogInteractSystem extends IteratingSystem {
 
@@ -20,12 +21,14 @@ public class DialogInteractSystem extends IteratingSystem {
     private final Entity player;
     private final DialogBox dialogBox;
     private final DialogManager dialogReader;
+    private final GameState gameState;
 
-    public DialogInteractSystem(Entity player, DialogBox dialogBox, DialogManager dialogReader) {
+    public DialogInteractSystem(Entity player, DialogBox dialogBox, DialogManager dialogReader, GameState gameState) {
         super(Family.all(TransformComponent.class, DialogComponent.class).get());
         this.player = player;
         this.dialogBox = dialogBox;
         this.dialogReader = dialogReader;
+        this.gameState = gameState;
     }
 
     @Override
@@ -62,7 +65,7 @@ public class DialogInteractSystem extends IteratingSystem {
         if(p.get(player).interact)
         {
             s.get(player).set(CharacterState.STOP);
-            dialogBox.start(dialogReader.getLines(d.get(entity).dialogId));
+            dialogBox.start(dialogReader.pick(d.get(entity).dialogId, gameState));
         }
     }
 }
