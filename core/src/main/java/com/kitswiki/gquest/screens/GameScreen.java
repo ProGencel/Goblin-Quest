@@ -62,6 +62,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final Stage dialogStage;
     private final DialogManager dialogManager;
     private final DialogBox dialogBox;
+    private final GameState dialogList;
 
     private final Engine engine;
     private final EntityFactory entityFactory;
@@ -87,7 +88,7 @@ public class GameScreen implements Screen, ChangeMap {
     private boolean isFadingOut;
 
 
-    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId, boolean startFadedIn) {
+    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId, boolean startFadedIn, GameState dialogList) {
         this.main = main;
         this.assetManager = assetManager;
         this.mapPath = mapPath;
@@ -104,6 +105,7 @@ public class GameScreen implements Screen, ChangeMap {
         this.dialogStage = new Stage(dialogViewport,batch);
         this.dialogManager = new DialogManager();
         this.dialogBox = new DialogBox(assetManager.get("UI/dialog/skin/skin.json"));
+        this.dialogList = dialogList;
 
         setDialog();
 
@@ -173,7 +175,7 @@ public class GameScreen implements Screen, ChangeMap {
             }
         }
 
-        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager,new GameState()));
+        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager,dialogList));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
 
@@ -197,17 +199,18 @@ public class GameScreen implements Screen, ChangeMap {
 
         if ("cave".equals(pendingMap))
         {
+            dialogList.set("goblin.cave_entry");
             mapPath = "TiledProject/maps/cave.tmx";
         }
         else if ("town".equals(pendingMap))
         {
             mapPath = "TiledProject/maps/town.tmx";
         }
-
+        //main.saveGame();
         String spawn = pendingSpawn;
         pendingMap = null;
 
-        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn));
+        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn, dialogList));
 
         pendingSpawn = null;
     }

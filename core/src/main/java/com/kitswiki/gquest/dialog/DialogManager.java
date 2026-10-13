@@ -1,6 +1,7 @@
 package com.kitswiki.gquest.dialog;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -14,6 +15,16 @@ public class DialogManager {
         public String[] requires;
         public String[] excludes;
         public String[] lines;
+        public Choice[] choices;
+    }
+
+    public static class Choice
+    {
+        public String text;
+        public String[] requires;
+        public String[] excludes;
+        public String[] set;
+        public String next;
     }
 
     private ObjectMap<String, DialogEntry[]> dialogs;
@@ -25,7 +36,7 @@ public class DialogManager {
         dialogs = json.fromJson(ObjectMap.class, DialogEntry[].class, Gdx.files.internal("data/dialogues.json"));
     }
 
-    public String[] pick(String npcId, GameState state)
+    public DialogEntry pick(String npcId, GameState state)
     {
         DialogEntry[] entries = dialogs.get(npcId);
         if(entries == null)
@@ -47,10 +58,28 @@ public class DialogManager {
                 state.set(onceFlag);
             }
 
-            return e.lines;
+            return e;
         }
 
         throw new GdxRuntimeException("There is no records with wanted properties");
+    }
+
+    public Array<Choice> visibleChoices(DialogEntry entry, GameState gameState)
+    {
+        if(entry.choices == null)
+        {
+            return null;
+        }
+        Array<Choice> results = new Array<>();
+        for(Choice c : entry.choices)
+        {
+            if(hasAll(c.requires, gameState) && !hasAny(c.excludes, gameState))
+            {
+                results.add(c);
+            }
+        }
+
+        return results.size > 0 ? results : null;
     }
 
     private boolean hasAll(String[] flags, GameState state)

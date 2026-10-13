@@ -6,35 +6,41 @@
     "fileStates": {
         "maps/cave.tmx": {
             "expandedObjectLayers": [
-                9,
+                4,
                 7,
-                8,
-                4
+                9,
+                8
             ],
             "scale": 2,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 434.5,
-                "y": 1469.5
+                "x": 773.75,
+                "y": 845
             }
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
-                14,
                 9,
-                15
+                15,
+                14,
+                4
             ],
-            "scale": 2,
-            "selectedLayer": 10,
+            "scale": 4,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 690.5,
-                "y": 254.5
+                "x": 988.25,
+                "y": 393.25
             }
         },
         "tilesets/SunnySide Environment.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 4,
             "scaleInEditor": 5.5
+        },
+        "tilesets/duck.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 8,
+            "scaleInEditor": 8
         },
         "tilesets/props.tsx": {
             "dynamicWrapping": true,
@@ -44,31 +50,33 @@
         "tilesets/sunnysideworld.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 4,
-            "scaleInEditor": 5.5
+            "scaleInEditor": 4
         }
     },
+    "frame.defaultDuration": 200,
     "last.imagePath": "C:/Desktop/libGDX/GoblinQuests/assets/TiledProject/tilesets",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "openFiles": [
         "tilesets/sunnysideworld.tsx",
-        "tilesets/props.tsx",
         "maps/town.tmx",
-        "maps/cave.tmx"
+        "tilesets/props.tsx",
+        "tilesets/duck.tsx"
     ],
     "project": "game.tiled-project",
-    "property.type": "float",
+    "property.type": "bool",
     "recentFiles": [
         "tilesets/sunnysideworld.tsx",
+        "tilesets/duck.tsx",
         "tilesets/props.tsx",
-        "maps/cave.tmx",
         "maps/town.tmx",
+        "maps/cave.tmx",
         "tilesets/SunnySide Environment.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
-    "tileset.margin": 1,
-    "tileset.spacing": 2,
+    "tileset.margin": 0,
+    "tileset.spacing": 0,
     "tileset.tileSize": {
         "height": 16,
         "width": 16

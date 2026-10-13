@@ -2,6 +2,7 @@ package com.kitswiki.gquest;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -12,12 +13,18 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.kitswiki.gquest.datas.SavedData;
+import com.kitswiki.gquest.dialog.GameState;
 import com.kitswiki.gquest.screens.GameScreen;
+import com.progencel.kitswikiengine.crypto.DataManager;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
 
+    private final DataManager dataManager = new DataManager("Goblin Quest");
+
     private Skin skin;
+    private GameState gameState;
 
     @Override
     public void create() {
@@ -25,8 +32,27 @@ public class Main extends Game {
         AssetManager assetManager = new AssetManager();
         loadAssets(assetManager);
         this.skin = assetManager.get("UI/dialog/skin/skin.json");
+        this.gameState = new GameState();
+        loadData();
 
-        setScreen(new GameScreen(assetManager,this,"TiledProject/maps/town.tmx","begin", false));
+        setScreen(new GameScreen(assetManager,this,"TiledProject/maps/town.tmx","begin", false,gameState));
+    }
+
+    private void loadData()
+    {
+        try {
+            gameState.readFrom(dataManager.load(SavedData.class));
+        }catch (Exception e)
+        {
+            Gdx.app.error("SAVE","Save cannot loaded");
+        }
+    }
+
+    public void saveGame()
+    {
+        SavedData data = new SavedData();
+        gameState.writeTo(data);
+        dataManager.save(data);
     }
 
     private void loadAssets(AssetManager assetManager)
@@ -52,6 +78,7 @@ public class Main extends Game {
     @Override
     public void dispose() {
         Screen current = getScreen();
+        //saveGame();           TODO : After build change this and on everywhere !!!!!
         super.dispose();
         if(current != null)
         {

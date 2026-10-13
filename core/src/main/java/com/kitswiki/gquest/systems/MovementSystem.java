@@ -64,14 +64,16 @@ public class MovementSystem extends IteratingSystem {
         }
 
         //IF PLAYER SPRITE CHANGED THIS CODE HAS TO CHANGE MANUALLY
-        float textureWidth = 8 * UNIT_SCALE;
-        float textureHeight = 8 * UNIT_SCALE;
+        float textureWidthH = 8 * UNIT_SCALE;
+        float textureHeightH = 8 * UNIT_SCALE;
 
-        if(b.body.getPosition().x + textureWidth > mapReader.getWidthWorld() && m.dir.x > 0)
+        if(b.body.getPosition().x + textureWidthH > mapReader.getWidthWorld() && m.dir.x > 0 ||
+        b.body.getPosition().x - textureWidthH < 0 && m.dir.x < 0)
         {
             m.dir.x = 0;
         }
-        if(b.body.getPosition().y + textureHeight > mapReader.getHeightWorld() && m.dir.y > 0)
+        if(b.body.getPosition().y + textureHeightH > mapReader.getHeightWorld() && m.dir.y > 0 ||
+        b.body.getPosition().y - textureHeightH < 0 && m.dir.y < 0)
         {
             m.dir.y = 0;
         }

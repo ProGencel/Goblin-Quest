@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="112" tileheight="112" tilecount="6" columns="0">
+<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="112" tileheight="112" tilecount="15" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0" type="static">
   <properties>
@@ -32,6 +32,7 @@
   <properties>
    <property name="FRAME_H" type="int" value="64"/>
    <property name="OFFSET_Y" type="float" value="25"/>
+   <property name="identity" value="def"/>
    <property name="isFlipped" type="bool" value="true"/>
   </properties>
   <image source="goblin_icon.png" width="18" height="16"/>
@@ -76,5 +77,62 @@
   <objectgroup draworder="index" id="2">
    <object id="1" x="10.1304" y="18.5217" width="11.7826" height="6.21739"/>
   </objectgroup>
+ </tile>
+ <tile id="9" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="8"/>
+  </properties>
+  <image source="bush_big.png" width="32" height="32"/>
+ </tile>
+ <tile id="10" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="8"/>
+  </properties>
+  <image source="bush_green_fruit.png" width="32" height="32"/>
+ </tile>
+ <tile id="11" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="8"/>
+  </properties>
+  <image source="bush_red_fruit.png" width="32" height="32"/>
+ </tile>
+ <tile id="12" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="64"/>
+  </properties>
+  <image source="house_green.png" width="80" height="64"/>
+ </tile>
+ <tile id="13" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="48"/>
+   <property name="OFFSET_Y" type="float" value="11"/>
+  </properties>
+  <image source="tree1.png" width="32" height="48"/>
+ </tile>
+ <tile id="14" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="48"/>
+   <property name="OFFSET_Y" type="float" value="2"/>
+  </properties>
+  <image source="tree2.png" width="16" height="48"/>
+ </tile>
+ <tile id="15" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="48"/>
+   <property name="OFFSET_Y" type="float" value="17"/>
+  </properties>
+  <image source="tree3.png" width="32" height="48"/>
+ </tile>
+ <tile id="16" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="96"/>
+  </properties>
+  <image source="house_red.png" width="80" height="96"/>
+ </tile>
+ <tile id="17">
+  <image source="duck_tired.png" width="16" height="16"/>
  </tile>
 </tileset>

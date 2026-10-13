@@ -2,6 +2,10 @@ package com.kitswiki.gquest.factories;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -116,6 +120,8 @@ public class EntityFactory {
         return e;
     }
 
+    String[] hairs = {"bowlhair","curlyhair","longhair","mophair","shorthair","spikeyhair","nohair"};
+
     public Entity createGoblin(TiledMapReader.MapTileObject mapObject, float offSetY, int frameH)
     {
         Entity e = new Entity();
@@ -127,13 +133,19 @@ public class EntityFactory {
 
         AnimationComponent a = new AnimationComponent();
         a.layers.add("spr");
+        int id  = mapObject.allProperties.get("id", Integer.class);
+        id %= 6;
+        if(!(id == 5))
+        {
+            a.layers.add(hairs[id]);
+        }
 
         TextureComponent tex = new TextureComponent();
         tex.offsetY = (-frameH / 2f + offSetY) * UNIT_SCALE;
         tex.flipped = mapObject.getBool("isFlipped",true);
 
         DialogComponent d = new DialogComponent();
-        d.dialogId = "goblin";
+        d.dialogId = mapObject.allProperties.get("identity", String.class);
 
         BodyComponent b = new BodyComponent();
         b.body = handleBodyForStaticRect(mapObject);
@@ -162,8 +174,24 @@ public class EntityFactory {
         TextureComponent tex = new TextureComponent();
         tex.regions.add(mapObject.region);
         tex.offsetY = ( -frameH / 2f + offsetY ) * UNIT_SCALE;
+        tex.flipped = mapObject.getBool("isFlipped",true);
         e.add(t);
         e.add(tex);
+
+        if(mapObject.getBool("isAnim",false))
+        {
+            AnimationComponent a = new AnimationComponent();
+            AnimatedTiledMapTile animTile = (AnimatedTiledMapTile) mapObject.tile;
+            Array<TextureRegion> frames = new Array<>();
+            for(StaticTiledMapTile ft : animTile.getFrameTiles())
+            {
+                frames.add(ft.getTextureRegion());
+            }
+            float frameDuration = animTile.getAnimationIntervals()[0] / 1000f;
+            a.tileAnim = new Animation<>(frameDuration,frames, Animation.PlayMode.LOOP);
+            e.add(a);
+            e.add(new StateComponent());
+        }
 
         return e;
     }

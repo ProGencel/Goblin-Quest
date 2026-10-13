@@ -5,7 +5,37 @@
     { "id": "intro",   "once": true, "lines": [
       "Hi friend !",
       "I lost my golds while i look before shrooms on the east side of the town but some bad goblins stole my stuff !!",
-      "If you can get my golds back maybe i can share a part of my golds !" ] },
-    { "id": "idle",    "lines": ["Go on, don't just stand there."] }
+      "If you can get my golds back maybe i can share a part of my golds !" ],
+      "choices": [
+        {"text": "Sure why not !","set": ["goblin.quest_accepted"],"next": "goblin_accept"},
+        {"text": "Not my problem thanks for offer","next": "goblin_refuse"}
+      ]},
+    { "id": "after_cave","once": true, "requires":  ["goblin.cave_entry"], "lines": [
+      "Uhm..",
+      "I forgot the tell they are a lot of and has weapons sorry",
+      "I am really want to help you about that but as you can guess i dont have any gold or weapon",
+      "But weaponsmith is friend of mine ! \nIf you give my name to him i am sure he is make a discount",
+      "Have a good luck!"
+    ]
+    },
+    { "id": "idle",    "lines": ["Bye my friend"] }
+  ],
+
+  "goblin_accept": [{"id": "r","lines": ["thanks !"]}],
+  "goblin_refuse": [{"id": "r","lines": ["ok !"]}],
+
+  "duckGob": [
+    {"id": "intro", "once": true, "lines": [
+      "Hi",
+      "Yes my duck is lost and i could not find it :(",
+      "Its my only friend in this town if you can find my duck i will give you 100 golds",
+      "Please help me"
+    ]}
+  ],
+
+  "def": [
+    { "id": "intro", "lines": [
+      "Developer forgot the set my identity :)"
+    ] }
   ]
 }

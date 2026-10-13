@@ -82,21 +82,23 @@ public class TiledMapReader {
     public static class MapTileObject {
         public final String name;
         public final TextureRegion region;
-        public final float x, y;          // sol alt köşe, dünya birimi
-        public final float width, height; // dünya birimi
-        public final MapProperties properties;      // sadece nesnenin kendi property'leri
-        public final MapProperties tileProperties;  // tileset'te tile'a eklenenler
-        public final MapProperties allProperties;   // birleşik (nesne, tile'ı ezer)
+        public final float x, y;
+        public final float width, height;
+        public final MapProperties properties;
+        public final MapProperties tileProperties;
+        public final MapProperties allProperties;
         public final Array<MapShape> shapes;
+        public final TiledMapTile tile;
 
         MapTileObject(String name, TextureRegion region, float x, float y, float w, float h,
-                      MapProperties objProps, MapProperties tileProps, Array<MapShape> shapes) {
+                      MapProperties objProps, MapProperties tileProps, Array<MapShape> shapes, TiledMapTile tile) {
             this.name = name;
             this.region = region; this.x = x; this.y = y;
             this.width = w; this.height = h;
             this.properties = objProps;
             this.tileProperties = tileProps;
             this.shapes = shapes;
+            this.tile = tile;
             this.allProperties = new MapProperties();
             this.allProperties.putAll(tileProps);
             this.allProperties.putAll(objProps);
@@ -259,7 +261,7 @@ public class TiledMapReader {
         return new MapTileObject(t.getName(), r,
             t.getX() * scale, t.getY() * scale,
             r.getRegionWidth() * scale, r.getRegionHeight() * scale,
-            t.getProperties(), t.getTile().getProperties(), shapes);
+            t.getProperties(), t.getTile().getProperties(), shapes, t.getTile());
     }
 
     /** Tile-yerel şekli; nesnenin konum/flip/scale/rotation değerlerine göre haritaya yerleştirir. */

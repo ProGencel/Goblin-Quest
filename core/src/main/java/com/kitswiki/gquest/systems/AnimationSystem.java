@@ -22,7 +22,7 @@ public class AnimationSystem extends IteratingSystem {
     private final ObjectMap<String, Animation<TextureRegion>> cache;
 
     public AnimationSystem(TextureAtlas atlas) {
-        super(Family.all(StateComponent.class, TextureComponent.class, AnimationComponent.class, StateComponent.class).get());
+        super(Family.all(StateComponent.class, TextureComponent.class, AnimationComponent.class).get());
         this.cache = new ObjectMap<>();
         this.atlas = atlas;
     }
@@ -35,10 +35,16 @@ public class AnimationSystem extends IteratingSystem {
 
         st.stateTime += deltaTime;
         tex.regions.clear();
+
+        if (anim.tileAnim != null) {
+            tex.regions.add(anim.tileAnim.getKeyFrame(st.stateTime));
+            return;
+        }
         for(String layer : anim.layers)
         {
             tex.regions.add(getAnimation(layer,st).getKeyFrame(st.stateTime));
         }
+
     }
 
     private Animation<TextureRegion> getAnimation(String layer, StateComponent st)

@@ -27,10 +27,15 @@ public class InputSystem extends IteratingSystem {
         p.interact = Gdx.input.isKeyJustPressed(Input.Keys.E);
 
         m.dir.set(0, 0);
+        p.menuMove = 0;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) m.dir.y += 1;
         if (Gdx.input.isKeyPressed(Input.Keys.S)) m.dir.y -= 1;
         if (Gdx.input.isKeyPressed(Input.Keys.A)) m.dir.x -= 1;
         if (Gdx.input.isKeyPressed(Input.Keys.D)) m.dir.x += 1;
         m.dir.nor();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.W)) p.menuMove = -1;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.S)) p.menuMove = 1;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) p.menuMove = 2;
     }
 }

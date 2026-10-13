@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.kitswiki.gquest.ai.EnemyState;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.dialog.GameState;
 import com.kitswiki.gquest.enums.CharacterState;
@@ -37,13 +38,24 @@ public class DialogInteractSystem extends IteratingSystem {
 
         if(dialogBox.isOpen())
         {
+            if(dialogBox.isChoosing() && p.menuMove != 0)
+            {
+                if(p.menuMove == 2)
+                {
+                    dialogBox.confirmChoice();
+                    onDialogClose(p);
+                }
+                else {
+                    dialogBox.moveSelection(p.menuMove);
+                }
+
+            }
             if(p.interact)
             {
                 dialogBox.advance();
                 if(!dialogBox.isOpen())
                 {
-                    s.get(player).set(CharacterState.IDLE);
-                    p.interact = false;
+                    onDialogClose(p);
                 }
             }
             return;
@@ -65,7 +77,35 @@ public class DialogInteractSystem extends IteratingSystem {
         if(p.get(player).interact)
         {
             s.get(player).set(CharacterState.STOP);
-            dialogBox.start(dialogReader.pick(d.get(entity).dialogId, gameState));
+            startDialog(d.get(entity).dialogId);
         }
+    }
+
+    private void startDialog(String dialogId)
+    {
+        DialogManager.DialogEntry e = dialogReader.pick(dialogId,gameState);
+        dialogBox.start(e.lines,dialogReader.visibleChoices(e,gameState));
+    }
+
+    private void onDialogClose(PlayerComponent p)
+    {
+        p.interact = false;
+        DialogManager.Choice c = dialogBox.consumePicked();
+        if(c != null)
+        {
+            if(c.set != null)
+            {
+                for(String f : c.set)
+                {
+                    gameState.set(f);
+                }
+            }
+            if(c.next != null)
+            {
+                startDialog(c.next);
+                return;
+            }
+        }
+        s.get(player).set(EnemyState.IDLE);
     }
 }
