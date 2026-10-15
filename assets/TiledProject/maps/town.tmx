@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="70" tilewidth="16" tileheight="16" infinite="0" nextlayerid="23" nextobjectid="88">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="70" tilewidth="16" tileheight="16" infinite="0" nextlayerid="24" nextobjectid="91">
  <tileset firstgid="1" source="../tilesets/props.tsx"/>
  <tileset firstgid="19" source="../tilesets/sunnysideworld.tsx"/>
  <tileset firstgid="4115" source="../tilesets/duck.tsx"/>
@@ -669,7 +669,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="4" name="objects">
+ <objectgroup id="4" name="static_objects">
   <object id="4" type="static" gid="1" x="1216" y="656" width="32" height="48">
    <properties>
     <property name="OFFSET_Y" type="float" value="10"/>
@@ -686,18 +686,16 @@
   <object id="64" gid="17" x="1456" y="864" width="80" height="96"/>
   <object id="65" gid="17" x="368" y="112" width="80" height="96"/>
   <object id="66" gid="17" x="128" y="416" width="80" height="96"/>
-  <object id="67" gid="2147483653" x="129.727" y="440" width="18" height="16">
+  <object id="67" gid="2147483653" x="416.394" y="548.667" width="18" height="16">
    <properties>
     <property name="identity" value="duckGob"/>
     <property name="isFlipped" type="bool" value="false"/>
    </properties>
   </object>
-  <object id="86" type="static" gid="2147487763" x="64.9091" y="431.909" width="16" height="16">
-   <properties>
-    <property name="isFlipped" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="87" gid="2147483666" x="1200" y="1008" width="16" height="16">
+ </objectgroup>
+ <objectgroup id="23" name="static_but_characteristic_objects">
+  <object id="89" gid="18" x="879" y="532.333" width="16" height="16"/>
+  <object id="90" gid="2147487763" x="472.666" y="476.334" width="16" height="16">
    <properties>
     <property name="isFlipped" type="bool" value="true"/>
    </properties>

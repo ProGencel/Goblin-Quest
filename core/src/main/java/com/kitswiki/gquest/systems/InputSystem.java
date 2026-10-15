@@ -36,6 +36,6 @@ public class InputSystem extends IteratingSystem {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.W)) p.menuMove = -1;
         if (Gdx.input.isKeyJustPressed(Input.Keys.S)) p.menuMove = 1;
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) p.menuMove = 2;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.E)) p.menuMove = 2;
     }
 }

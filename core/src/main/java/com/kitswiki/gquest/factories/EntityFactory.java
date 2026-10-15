@@ -18,6 +18,8 @@ import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.map.TiledMapReader;
 
+import java.util.function.Supplier;
+
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
 public class EntityFactory {
@@ -72,6 +74,7 @@ public class EntityFactory {
         e.add(s);
         e.add(new HealtComponent());
         e.add(new DeadComponent());
+        e.add(new InventoryComponent());
 
         return e;
     }
@@ -174,7 +177,7 @@ public class EntityFactory {
         TextureComponent tex = new TextureComponent();
         tex.regions.add(mapObject.region);
         tex.offsetY = ( -frameH / 2f + offsetY ) * UNIT_SCALE;
-        tex.flipped = mapObject.getBool("isFlipped",true);
+        tex.flipped = mapObject.getBool("isFlipped",false);
         e.add(t);
         e.add(tex);
 
@@ -195,6 +198,44 @@ public class EntityFactory {
 
         return e;
     }
+
+    public Entity createCollectableObjects(TiledMapReader.MapTileObject mapObject, float offsetY, int frameH)
+    {
+        Entity e = engine.createEntity();
+
+        TransformComponent t = engine.createComponent(TransformComponent.class);
+        t.position.x = mapObject.x + mapObject.width/2;
+        t.position.y = mapObject.y + mapObject.height/2;
+
+        TextureComponent tex = engine.createComponent(TextureComponent.class);
+        tex.regions.add(mapObject.region);
+        tex.offsetY = ( -frameH / 2f + offsetY ) * UNIT_SCALE;
+        tex.flipped = mapObject.getBool("isFlipped",false);
+
+        BodyComponent b = engine.createComponent(BodyComponent.class);
+        b.body = handleBodyForStaticRect(mapObject);
+        b.body.setUserData(e);
+
+        CollectableComponent c = engine.createComponent(CollectableComponent.class);
+        c.id = mapObject.getString("cid","");
+
+        e.add(t);
+        e.add(tex);
+        e.add(c);
+        e.add(b);
+
+        engine.addEntity(e);
+
+        return e;
+    }
+
+
+
+
+
+
+
+
 
     private Body handleBodyForDynamicRect(TiledMapReader.MapTileObject mapObject)
     {

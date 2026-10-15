@@ -132,7 +132,15 @@
   </properties>
   <image source="house_red.png" width="80" height="96"/>
  </tile>
- <tile id="17">
+ <tile id="17" type="collectable">
+  <properties>
+   <property name="FRAME_H" type="int" value="16"/>
+   <property name="OFFSET_Y" type="float" value="3"/>
+   <property name="cid" value="duck"/>
+  </properties>
   <image source="duck_tired.png" width="16" height="16"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="collectable" x="4.06667" y="10.1111" width="7.97778" height="1.88889"/>
+  </objectgroup>
  </tile>
 </tileset>

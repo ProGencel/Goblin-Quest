@@ -26,7 +26,7 @@ public class StaticBodyBuilder {
 
     public Body createStaticBody() {
         addShapesFromLayer("collisions", false);
-        addShapesFromLayer("objects", true);
+        addShapesFromLayer("static_objects", true);
 
         return body;
     }

@@ -48,6 +48,8 @@ public class GameScreen implements Screen, ChangeMap {
 
     private final ComponentMapper<DeadComponent> deadComponent = ComponentMapper.getFor(DeadComponent.class);
 
+    private DelayedSpawnSystem delayedSpawnSystem;
+
     private final AssetManager assetManager;
     private final TiledMap tiledMap;
     private final SpriteBatch batch;
@@ -62,7 +64,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final Stage dialogStage;
     private final DialogManager dialogManager;
     private final DialogBox dialogBox;
-    private final GameState dialogList;
+    private final GameState gameState;
 
     private final Engine engine;
     private final EntityFactory entityFactory;
@@ -101,14 +103,15 @@ public class GameScreen implements Screen, ChangeMap {
         this.world = new World(new Vector2(0,0),true);
         this.world.setContactListener(new GameContactListener());
 
+
         this.dialogViewport = new FitViewport(480,270);
         this.dialogStage = new Stage(dialogViewport,batch);
         this.dialogManager = new DialogManager();
         this.dialogBox = new DialogBox(assetManager.get("UI/dialog/skin/skin.json"));
-        this.dialogList = dialogList;
-
+        this.gameState = dialogList;
         setDialog();
 
+        this.delayedSpawnSystem = new DelayedSpawnSystem(dialogList);
         this.engine = new Engine();
         this.entityFactory = new EntityFactory(world,mapReader,engine);
         this.portalFactory = new PortalFactory(mapReader,engine,world);
@@ -142,6 +145,7 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world,dialogStage));
         engine.addSystem(new MovementSystem(mapReader));
         engine.addSystem(new InputSystem());
+        engine.addSystem(delayedSpawnSystem);
 
         staticBodyBuilder.createStaticBody();
         int mapW = tiledMap.getProperties().get("width", Integer.class);
@@ -151,7 +155,7 @@ public class GameScreen implements Screen, ChangeMap {
         graph = new TileGraph(world, mapW, mapH, tileSize);
         entityFactory.setGraph(graph);
 
-        Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("objects");
+        Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("static_objects");
         for(TiledMapReader.MapTileObject m : mapObjects)
         {
             if(m.getString("type","").equals("static"))
@@ -175,9 +179,32 @@ public class GameScreen implements Screen, ChangeMap {
             }
         }
 
-        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager,dialogList));
+        Array<TiledMapReader.MapTileObject> mapObjects2 = mapReader.getTileObjects("static_but_characteristic_objects");
+        for(TiledMapReader.MapTileObject m : mapObjects2)
+        {
+            String raw = m.getString("spawn_flags","");
+            if(m.getString("type","").equals("collectable"))
+            {
+                float offsetY = m.getFloat("OFFSET_Y",0);
+                int frameH = m.getInt("FRAME_H",0);
+                if("".equals(raw))
+                {
+                    entityFactory.createCollectableObjects(m,offsetY,frameH);
+                }
+                else
+                {
+                    String[] flags = raw.split("\\s*,\\s*");
+                    delayedSpawnSystem.addPending(flags,
+                        () -> entityFactory.createCollectableObjects(m,offsetY,frameH));
+                }
+            }
+        }
+
+
+        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager, gameState));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
+        engine.addSystem(new CollectableInteractSystem(gameState));
 
         portalFactory.buildPortals();
 
@@ -199,7 +226,7 @@ public class GameScreen implements Screen, ChangeMap {
 
         if ("cave".equals(pendingMap))
         {
-            dialogList.set("goblin.cave_entry");
+            gameState.set("goblin.cave_entry");
             mapPath = "TiledProject/maps/cave.tmx";
         }
         else if ("town".equals(pendingMap))
@@ -210,7 +237,7 @@ public class GameScreen implements Screen, ChangeMap {
         String spawn = pendingSpawn;
         pendingMap = null;
 
-        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn, dialogList));
+        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn, gameState));
 
         pendingSpawn = null;
     }

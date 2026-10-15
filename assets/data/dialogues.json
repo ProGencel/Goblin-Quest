@@ -30,7 +30,9 @@
       "Yes my duck is lost and i could not find it :(",
       "Its my only friend in this town if you can find my duck i will give you 100 golds",
       "Please help me"
-    ]}
+    ]},
+    {"id": "thanks", "once": true, "requires": ["duckGob.duck_collected"], "lines": ["thanks"]},
+    {"id": "idle","lines": ["thanks again!"]}
   ],
 
   "def": [
