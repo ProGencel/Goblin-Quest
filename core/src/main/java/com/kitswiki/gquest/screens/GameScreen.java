@@ -183,6 +183,7 @@ public class GameScreen implements Screen, ChangeMap {
         for(TiledMapReader.MapTileObject m : mapObjects2)
         {
             String raw = m.getString("spawn_flags","");
+            String nearId = m.getString("spawnNearDialog","");
             if(m.getString("type","").equals("collectable"))
             {
                 float offsetY = m.getFloat("OFFSET_Y",0);
@@ -194,8 +195,10 @@ public class GameScreen implements Screen, ChangeMap {
                 else
                 {
                     String[] flags = raw.split("\\s*,\\s*");
+                    float radius = m.getFloat("spawnRadius",0f);
                     delayedSpawnSystem.addPending(flags,
-                        () -> entityFactory.createCollectableObjects(m,offsetY,frameH));
+                        () -> entityFactory.createCollectableObjects(m,offsetY,frameH),
+                        nearId.isEmpty() ? null : nearId, radius);
                 }
             }
         }

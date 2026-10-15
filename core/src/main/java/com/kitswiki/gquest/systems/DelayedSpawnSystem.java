@@ -17,7 +17,20 @@ import java.util.function.Supplier;
 
 public class DelayedSpawnSystem extends IntervalSystem {
 
-    private record Pending(String[] flags, Supplier<Entity> creator) {}
+    private static class Pending {
+        final String[] flags;
+        final Supplier<Entity> creator;
+        final String nearDialogId;
+        final float radius;
+        boolean wasNear;
+
+        public Pending(Supplier<Entity> creator, String[] flags, String nearDialogId, float radius) {
+            this.creator = creator;
+            this.flags = flags;
+            this.nearDialogId = nearDialogId;
+            this.radius = radius;
+        }
+    }
 
     private Array<Pending> pendings = new Array<>();
 
@@ -25,18 +38,9 @@ public class DelayedSpawnSystem extends IntervalSystem {
     private final ComponentMapper<BodyComponent> bodyM = ComponentMapper.getFor(BodyComponent.class);
 
     private ImmutableArray<Entity> players;
-    private ImmutableArray<Entity> goblins;
+    private ImmutableArray<Entity> dialogNpcs;
 
     private final GameState gameState;
-
-    private final float REQ_DIST = 20f;
-
-    @Override
-    public void addedToEngine(Engine engine) {
-        super.addedToEngine(engine);
-        goblins = engine.getEntitiesFor(Family.all(DialogComponent.class).get());
-        players = engine.getEntitiesFor(Family.all(PlayerComponent.class).get());
-    }
 
     public DelayedSpawnSystem(GameState gameState) {
         super(0.2f);
@@ -44,53 +48,87 @@ public class DelayedSpawnSystem extends IntervalSystem {
     }
 
     @Override
+    public void addedToEngine(Engine engine) {
+        super.addedToEngine(engine);
+        dialogNpcs = engine.getEntitiesFor(Family.all(DialogComponent.class).get());
+        players = engine.getEntitiesFor(Family.all(PlayerComponent.class).get());
+    }
+
+    @Override
     protected void updateInterval() {
 
-        if (players.size() > 0) {
-            Vector2 playerPos = bodyM.get(players.first()).body.getPosition();
-
-            for (Entity npc : goblins) {
-                String id = dialogM.get(npc).dialogId;
-                Vector2 npcPos = bodyM.get(npc).body.getPosition();
-
-                if (!"duckGob".equals(id))
-                {
-                    continue;
-                }
-                if (npcPos.dst2(playerPos) <= REQ_DIST * REQ_DIST && gameState.has("duckGob.duck_collected")) {
-                    gameState.set("player.rangewduckgob");
-                }
-                if(gameState.has("player.rangewduckgob") && npcPos.dst2(playerPos) >= REQ_DIST * REQ_DIST)
-                {
-                    gameState.set("duck_can_show");
-                }
-            }
+        if(pendings.size == 0)
+        {
+            return;
         }
-        for (int i = pendings.size - 1; i >= 0; i--) {
-            Pending pending = pendings.get(i);
-            boolean isReqsOk = true;
-            for(String s : pending.flags)
+
+        Vector2 playerPos = bodyM.get(players.first()).body.getPosition();
+
+        for(int i = pendings.size - 1;i>=0;i--)
+        {
+            Pending p = pendings.get(i);
+            if(isReady(p,playerPos))
             {
-                if(!gameState.has(s))
-                {
-                    isReqsOk = false;
-                }
-            }
-            if(isReqsOk)
-            {
-                pending.creator.get();
+                p.creator.get();
                 pendings.removeIndex(i);
             }
         }
     }
 
-    public void addPending(String[] flags, Supplier<Entity> creator)
+    private boolean isReady(Pending p, Vector2 playerPos)
     {
-        pendings.add(new Pending(flags, creator));
+        for(String s: p.flags)
+        {
+            if(!gameState.has(s))
+            {
+                return false;
+            }
+        }
+
+        if (p.nearDialogId == null)
+        {
+            return true;
+        }
+
+        if(playerPos == null)
+        {
+            return false;
+        }
+
+        Vector2 npcPos = findNpcPos(p.nearDialogId);
+        if(npcPos == null)
+        {
+            return false;
+        }
+
+        boolean near = npcPos.dst2(playerPos) <= p.radius * p.radius;
+        if(near)
+        {
+            p.wasNear = true;
+        }
+
+        return !near && p.wasNear;
     }
 
-    public void clearPending()
+    private Vector2 findNpcPos(String dialogId)
     {
-        pendings.clear();
+        for(Entity npc : dialogNpcs)
+        {
+            if(dialogId.equals(dialogM.get(npc).dialogId))
+            {
+                return bodyM.get(npc).body.getPosition();
+            }
+        }
+        return null;
+    }
+
+    public void addPending(String[] flags, Supplier<Entity> creator, String nearDialogId, float radius)
+    {
+        pendings.add(new Pending(creator, flags,nearDialogId,radius));
+    }
+
+    public void addPending(String[] flags, Supplier<Entity> creator)
+    {
+        addPending(flags,creator,null,0);
     }
 }

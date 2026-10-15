@@ -181,20 +181,7 @@ public class EntityFactory {
         e.add(t);
         e.add(tex);
 
-        if(mapObject.getBool("isAnim",false))
-        {
-            AnimationComponent a = new AnimationComponent();
-            AnimatedTiledMapTile animTile = (AnimatedTiledMapTile) mapObject.tile;
-            Array<TextureRegion> frames = new Array<>();
-            for(StaticTiledMapTile ft : animTile.getFrameTiles())
-            {
-                frames.add(ft.getTextureRegion());
-            }
-            float frameDuration = animTile.getAnimationIntervals()[0] / 1000f;
-            a.tileAnim = new Animation<>(frameDuration,frames, Animation.PlayMode.LOOP);
-            e.add(a);
-            e.add(new StateComponent());
-        }
+        isAnimCheck(mapObject, e);
 
         return e;
     }
@@ -219,6 +206,8 @@ public class EntityFactory {
         CollectableComponent c = engine.createComponent(CollectableComponent.class);
         c.id = mapObject.getString("cid","");
 
+        isAnimCheck(mapObject, e);
+
         e.add(t);
         e.add(tex);
         e.add(c);
@@ -229,12 +218,22 @@ public class EntityFactory {
         return e;
     }
 
-
-
-
-
-
-
+    private void isAnimCheck(TiledMapReader.MapTileObject mapObject, Entity e) {
+        if(mapObject.getBool("isAnim",false))
+        {
+            AnimationComponent a = new AnimationComponent();
+            AnimatedTiledMapTile animTile = (AnimatedTiledMapTile) mapObject.tile;
+            Array<TextureRegion> frames = new Array<>();
+            for(StaticTiledMapTile ft : animTile.getFrameTiles())
+            {
+                frames.add(ft.getTextureRegion());
+            }
+            float frameDuration = animTile.getAnimationIntervals()[0] / 1000f;
+            a.tileAnim = new Animation<>(frameDuration,frames, Animation.PlayMode.LOOP);
+            e.add(a);
+            e.add(new StateComponent());
+        }
+    }
 
 
     private Body handleBodyForDynamicRect(TiledMapReader.MapTileObject mapObject)

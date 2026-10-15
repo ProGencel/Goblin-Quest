@@ -65,7 +65,7 @@
         "tilesets/duck.tsx"
     ],
     "project": "game.tiled-project",
-    "property.type": "string",
+    "property.type": "float",
     "recentFiles": [
         "tilesets/sunnysideworld.tsx",
         "maps/town.tmx",
