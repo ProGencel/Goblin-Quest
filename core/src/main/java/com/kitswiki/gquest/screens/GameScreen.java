@@ -1,6 +1,5 @@
 package com.kitswiki.gquest.screens;
 
-import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -8,32 +7,30 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.Main;
-import com.kitswiki.gquest.ai.EnemyAI;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.AIComponent;
-import com.kitswiki.gquest.components.DeadComponent;
 import com.kitswiki.gquest.debug.AIDebugRenderer;
+import com.kitswiki.gquest.debug.DebugPhsic;
 import com.kitswiki.gquest.dialog.GameState;
+import com.kitswiki.gquest.effects.ScreenFade;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.factories.PortalFactory;
 import com.kitswiki.gquest.interfaces.ChangeMap;
 import com.kitswiki.gquest.listeners.GameContactListener;
+import com.kitswiki.gquest.map.MapObjectBuilder;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.*;
@@ -46,9 +43,7 @@ public class GameScreen implements Screen, ChangeMap {
 
     private final Main main;
 
-    private final ComponentMapper<DeadComponent> deadComponent = ComponentMapper.getFor(DeadComponent.class);
-
-    private DelayedSpawnSystem delayedSpawnSystem;
+    private final DelayedSpawnSystem delayedSpawnSystem;
 
     private final AssetManager assetManager;
     private final TiledMap tiledMap;
@@ -60,7 +55,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final World world;
     private TileGraph graph;
 
-    private final Viewport dialogViewport;
+    private final Viewport uiViewport;
     private final Stage dialogStage;
     private final DialogManager dialogManager;
     private final DialogBox dialogBox;
@@ -68,160 +63,106 @@ public class GameScreen implements Screen, ChangeMap {
 
     private final Engine engine;
     private final EntityFactory entityFactory;
+    private final MapObjectBuilder mapObjectBuilder;
     private final PortalFactory portalFactory;
     private final StaticBodyBuilder staticBodyBuilder;
 
-    private final String mapPath;
     private final Vector2 spawnPos;
 
     private String pendingMap;
     private String pendingSpawn;
 
-    private final ShapeRenderer shapeRenderer;
     private float fadeAlpha;
-    private final BitmapFont font;
+    private final ScreenFade fade;
 
     private ImmutableArray<Entity> aiEntities;
-    boolean aiDebug = false;
     private final AIDebugRenderer aiDebugRenderer;
+    private final DebugPhsic debugPhsic;
 
     private Entity p;
-    private boolean isFadingIn;
-    private boolean isFadingOut;
 
 
-    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId, boolean startFadedIn, GameState dialogList) {
+    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId, boolean startFadedIn, GameState dialogList, DialogManager dialogManager) {
         this.main = main;
+
         this.assetManager = assetManager;
-        this.mapPath = mapPath;
         this.tiledMap = assetManager.get(mapPath);
         this.batch = new SpriteBatch();
+        this.engine = new Engine();
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, UNIT_SCALE,batch);
         this.camera = new OrthographicCamera();
         this.viewport = new FitViewport(480f * UNIT_SCALE, 270f * UNIT_SCALE,camera);
-        this.mapReader = new TiledMapReader(tiledMap, UNIT_SCALE);
         this.world = new World(new Vector2(0,0),true);
-        this.world.setContactListener(new GameContactListener());
+        this.graph = new TileGraph(world, tiledMap);
 
+        this.mapReader = new TiledMapReader(tiledMap, UNIT_SCALE);
 
-        this.dialogViewport = new FitViewport(480,270);
-        this.dialogStage = new Stage(dialogViewport,batch);
-        this.dialogManager = new DialogManager();
+        this.uiViewport = new FitViewport(480,270);
+        this.dialogManager = dialogManager;
+        this.dialogStage = new Stage(uiViewport,batch);
         this.dialogBox = new DialogBox(assetManager.get("UI/dialog/skin/skin.json"));
         this.gameState = dialogList;
-        setDialog();
+        this.setDialog();
 
         this.delayedSpawnSystem = new DelayedSpawnSystem(dialogList);
-        this.engine = new Engine();
-        this.entityFactory = new EntityFactory(world,mapReader,engine);
+
         this.portalFactory = new PortalFactory(mapReader,engine,world);
+        this.entityFactory = new EntityFactory(world,mapReader,engine);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
-        this.font = new BitmapFont();
-        this.aiDebugRenderer = new AIDebugRenderer(1f);
-        this.shapeRenderer = new ShapeRenderer();
-        this.isFadingIn = startFadedIn;
+        this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory);
+
         this.fadeAlpha = startFadedIn ? 1.0f : 0.0f;
+        this.fade = new ScreenFade(startFadedIn);
 
-        dialogManager.readJson();
+        this.aiDebugRenderer = new AIDebugRenderer(1f);
+        this.debugPhsic = new DebugPhsic(camera,engine,world);
+
         spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
-        camera.position.set(spawnPos,0);
-
         aiEntities = engine.getEntitiesFor(Family.all(AIComponent.class).get());
     }
 
     @Override
     public void show() {
 
+        entityFactory.setGraph(graph);
         p = entityFactory.createPlayer(spawnPos);
         engine.addEntity(p);
 
-        engine.addSystem(new AISystem());
-        engine.addSystem(new PhysicSystem(world));
-        engine.addSystem(new PhysicSyncSystem());
-        engine.addSystem(new CameraSystem(camera,mapReader,viewport));
-        engine.addSystem(new DamageSystem(p));
-        engine.addSystem(new DeathSystem());
-        engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
-        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,world,dialogStage));
-        engine.addSystem(new MovementSystem(mapReader));
-        engine.addSystem(new InputSystem());
-        engine.addSystem(delayedSpawnSystem);
+        camera.position.set(spawnPos,0);
+        world.setContactListener(new GameContactListener());
+        mapObjectBuilder.setP(p);
 
         staticBodyBuilder.createStaticBody();
-        int mapW = tiledMap.getProperties().get("width", Integer.class);
-        int mapH = tiledMap.getProperties().get("height", Integer.class);
-        int tilePx = tiledMap.getProperties().get("tilewidth", Integer.class);
-        float tileSize = tilePx * UNIT_SCALE;
-        graph = new TileGraph(world, mapW, mapH, tileSize);
-        entityFactory.setGraph(graph);
-
-        Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("static_objects");
-        for(TiledMapReader.MapTileObject m : mapObjects)
-        {
-            if(m.getString("type","").equals("static"))
-            {
-                float offsetY = m.getFloat("OFFSET_Y",0);
-                int frameH = m.getInt("FRAME_H",48);
-                engine.addEntity(entityFactory.createStaticObjects(m,offsetY,frameH));
-            }
-            else if(m.getString("type","").equals("goblin"))
-            {
-                float offsetY = m.getFloat("OFFSET_Y",0);
-                int frameH = m.getInt("FRAME_H",0);
-                engine.addEntity(entityFactory.createGoblin(m,offsetY,frameH));
-            }
-            else if(m.getString("type","").equals("bad_goblin"))
-            {
-                float offsetY = m.getFloat("OFFSET_Y",0);
-                int frameH = m.getInt("FRAME_H",0);
-                Entity badGoblin = entityFactory.createBadGoblin(m,offsetY,frameH,p);
-                engine.addEntity(badGoblin);
-            }
-        }
-
-        Array<TiledMapReader.MapTileObject> mapObjects2 = mapReader.getTileObjects("static_but_characteristic_objects");
-        for(TiledMapReader.MapTileObject m : mapObjects2)
-        {
-            String raw = m.getString("spawn_flags","");
-            String nearId = m.getString("spawnNearDialog","");
-            if(m.getString("type","").equals("collectable"))
-            {
-                float offsetY = m.getFloat("OFFSET_Y",0);
-                int frameH = m.getInt("FRAME_H",0);
-                if("".equals(raw))
-                {
-                    entityFactory.createCollectableObjects(m,offsetY,frameH);
-                }
-                else
-                {
-                    String[] flags = raw.split("\\s*,\\s*");
-                    float radius = m.getFloat("spawnRadius",0f);
-                    delayedSpawnSystem.addPending(flags,
-                        () -> entityFactory.createCollectableObjects(m,offsetY,frameH),
-                        nearId.isEmpty() ? null : nearId, radius);
-                }
-            }
-        }
+        portalFactory.buildPortals();
+        mapObjectBuilder.loadObjects();
 
 
+        engine.addSystem(new InputSystem());
+        engine.addSystem(new AISystem());
+        engine.addSystem(new MovementSystem(mapReader));
+        engine.addSystem(new PhysicSystem(world));
+        engine.addSystem(new PhysicSyncSystem());
+        engine.addSystem(new DamageSystem(p));
+        engine.addSystem(new DeathSystem(this,"town","begin"));
+        engine.addSystem(delayedSpawnSystem);
         engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager, gameState));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
         engine.addSystem(new CollectableInteractSystem(gameState));
-
-        portalFactory.buildPortals();
-
-
-
-        //tileGraph = new TileGraph(world, mapW * 2, mapH * 2, tileSize / 2f);
-
+        engine.addSystem(new CameraSystem(camera,mapReader,viewport));
+        engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
+        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage));
     }
 
     public void changeMap(String map, String spawnId)
     {
+        if(pendingMap != null)
+        {
+            return;
+        }
         pendingMap = map;
         pendingSpawn = spawnId;
-        isFadingOut = false;
+        fade.fadeOut();
     }
 
     private void changeMapNow(boolean startFadedIn) {
@@ -240,70 +181,31 @@ public class GameScreen implements Screen, ChangeMap {
         String spawn = pendingSpawn;
         pendingMap = null;
 
-        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn, gameState));
+        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn, gameState,dialogManager));
 
         pendingSpawn = null;
     }
 
-    float deathTimer = 0f;
-
     @Override
     public void render(float delta) {
+        delta = Math.min(delta, 1/30f);
+
         ScreenUtils.clear(0, 0, 0, 1);
         engine.update(delta);
+        fade.update(delta);
+        fade.draw();
 
-        if (isFadingIn) {
-            fadeAlpha -= 0.8f * delta;
-            if (fadeAlpha <= 0f) {
-                fadeAlpha = 0f;
-                isFadingIn = false;
-            }
+        if(pendingMap != null && fade.isFadedOut())
+        {
+            changeMapNow(true);
+            return;
         }
 
-        if (deadComponent.get(p) != null && deadComponent.get(p).dead) {
-            isFadingOut = true;
-            deathTimer += delta;
-            if (deathTimer >= 1.5f && pendingMap == null) {
-                changeMap("town", "begin");
-            }
-        }
-
-        if (!isFadingOut) {
-            if (pendingMap != null) {
-                changeMapNow(true);
-                return;
-            }
-        }
-        else if (isFadingOut) {
-            fadeAlpha += 0.8f * delta;
-            if (fadeAlpha >= 1.0f) {
-                fadeAlpha = 1.0f;
-
-                if (pendingMap != null) {
-                    changeMapNow(true);
-                    return;
-                }
-            }
-        }
-
-        if (fadeAlpha > 0f) {
-            drawFade();
-        }
-
-        if (aiDebug) {
-            aiDebugRenderer.render(camera, aiEntities);
-            aiDebugRenderer.renderGrid(camera, graph);
-            aiDebugRenderer.renderConnections(camera, graph);
-            aiDebugRenderer.renderPatrol(camera, aiEntities);
-
-            for (int i = 0; i < aiEntities.size(); i++) {
-                EnemyAI e = aiEntities.get(i).getComponent(AIComponent.class).enemyAI;
-                aiDebugRenderer.renderPath(camera, graph, e.getPath());
-            }
-        }
+        aiDebugRenderer.update(camera,aiEntities,graph);
+        debugPhsic.update();
 
         batch.begin();
-        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+        new BitmapFont().draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); //MEMORY LEAK SAKIN ACIK UNUTMA !!!!
         batch.end();
     }
 
@@ -318,23 +220,10 @@ public class GameScreen implements Screen, ChangeMap {
         dialogStage.addActor(mainTable);
     }
 
-    private void drawFade() {
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        shapeRenderer.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, fadeAlpha);
-        shapeRenderer.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        shapeRenderer.end();
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-    }
-
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        dialogViewport.update(width, height, true);
+        uiViewport.update(width, height, true);
     }
 
     @Override
@@ -355,8 +244,9 @@ public class GameScreen implements Screen, ChangeMap {
     @Override
     public void dispose() {
         mapRenderer.dispose();
-        font.dispose();
-        shapeRenderer.dispose();
         aiDebugRenderer.dispose();
+        world.dispose();
+        batch.dispose();
+        dialogStage.dispose();
     }
 }

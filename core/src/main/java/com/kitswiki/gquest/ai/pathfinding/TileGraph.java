@@ -6,11 +6,14 @@ import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.ai.pfa.Heuristic;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.ai.LineOfSight;
+
+import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
 public class TileGraph implements IndexedGraph<TileNode> {
 
@@ -31,11 +34,13 @@ public class TileGraph implements IndexedGraph<TileNode> {
     private final Vector2 pa = new Vector2();
     private final Vector2 pb = new Vector2();
 
-    public TileGraph(World world, int width, int height, float tileSize) {
+    public TileGraph(World world, TiledMap tiledMap) {
         this.world = world;
-        this.width = width;
-        this.height = height;
-        this.tileSize = tileSize;
+
+        this.width = tiledMap.getProperties().get("width", Integer.class);
+        this.height = tiledMap.getProperties().get("height", Integer.class);
+        int tilePx = tiledMap.getProperties().get("tilewidth", Integer.class);
+        this.tileSize = tilePx * UNIT_SCALE;
 
         this.nodes = new TileNode[width * height];
 

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
@@ -17,8 +18,6 @@ import com.kitswiki.gquest.ai.SteerableBody;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.map.TiledMapReader;
-
-import java.util.function.Supplier;
 
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
@@ -47,7 +46,7 @@ public class EntityFactory {
         t.position.set(pos);
 
         BodyComponent b = new BodyComponent();
-        b.body = handleBodyForDynamicCircle(pos);
+        b.body = handleBodyForDynamicCircle(pos,1);
         b.body.setUserData(e);
 
         AnimationComponent a = new AnimationComponent();
@@ -72,14 +71,14 @@ public class EntityFactory {
         e.add(new MovementComponent());
         e.add(new ContactComponent());
         e.add(s);
-        e.add(new HealtComponent());
+        e.add(new HealthComponent());
         e.add(new DeadComponent());
         e.add(new InventoryComponent());
 
         return e;
     }
 
-    public Entity createBadGoblin(TiledMapReader.MapTileObject mapObject,float offSetY, int frameH, Entity player)
+    public Entity createBadGoblin(TiledMapReader.MapTileObject mapObject, Entity player)
     {
         Entity e = engine.createEntity();
 
@@ -88,17 +87,17 @@ public class EntityFactory {
         t.position.y = mapObject.y + mapObject.height / 2f;
 
         BodyComponent b = engine.createComponent(BodyComponent.class);
-        b.body = handleBodyForDynamicCircle(t.position);
+        b.body = handleBodyForDynamicCircle(t.position,1);
 
         AnimationComponent a = new AnimationComponent();
         a.layers.add("badGoblin");
 
         TextureComponent tex = new TextureComponent();
-        tex.offsetY = (-frameH / 2f + offSetY) * UNIT_SCALE;
+        tex.offsetY = spriteOffsetY(mapObject);
 
         AIComponent ai = engine.createComponent(AIComponent.class);
         SteerableBody steerable = new SteerableBody(b.body, 0.5f);
-        steerable.setMaxLinearSpeed(1.5f);
+        steerable.setMaxLinearSpeed(3f);
         steerable.setMaxLinearAcceleration(8f);
 
         ai.enemyAI = new EnemyAI(steerable, player.getComponent(SteerableComponent.class).steerableBody,world,graph);
@@ -125,7 +124,7 @@ public class EntityFactory {
 
     String[] hairs = {"bowlhair","curlyhair","longhair","mophair","shorthair","spikeyhair","nohair"};
 
-    public Entity createGoblin(TiledMapReader.MapTileObject mapObject, float offSetY, int frameH)
+    public Entity createGoblin(TiledMapReader.MapTileObject mapObject)
     {
         Entity e = new Entity();
 
@@ -144,7 +143,7 @@ public class EntityFactory {
         }
 
         TextureComponent tex = new TextureComponent();
-        tex.offsetY = (-frameH / 2f + offSetY) * UNIT_SCALE;
+        tex.offsetY = spriteOffsetY(mapObject);
         tex.flipped = mapObject.getBool("isFlipped",true);
 
         DialogComponent d = new DialogComponent();
@@ -166,7 +165,7 @@ public class EntityFactory {
         return e;
     }
 
-    public Entity createStaticObjects(TiledMapReader.MapTileObject mapObject, float offsetY, int frameH)
+    public Entity createStaticObjects(TiledMapReader.MapTileObject mapObject)
     {
         Entity e = new Entity();
 
@@ -176,17 +175,17 @@ public class EntityFactory {
 
         TextureComponent tex = new TextureComponent();
         tex.regions.add(mapObject.region);
-        tex.offsetY = ( -frameH / 2f + offsetY ) * UNIT_SCALE;
+        tex.offsetY = spriteOffsetY(mapObject);
         tex.flipped = mapObject.getBool("isFlipped",false);
         e.add(t);
         e.add(tex);
 
-        isAnimCheck(mapObject, e);
+        addAnimIfAnim(mapObject, e);
 
         return e;
     }
 
-    public Entity createCollectableObjects(TiledMapReader.MapTileObject mapObject, float offsetY, int frameH)
+    public Entity createCollectableObjects(TiledMapReader.MapTileObject mapObject)
     {
         Entity e = engine.createEntity();
 
@@ -196,7 +195,7 @@ public class EntityFactory {
 
         TextureComponent tex = engine.createComponent(TextureComponent.class);
         tex.regions.add(mapObject.region);
-        tex.offsetY = ( -frameH / 2f + offsetY ) * UNIT_SCALE;
+        tex.offsetY = spriteOffsetY(mapObject);
         tex.flipped = mapObject.getBool("isFlipped",false);
 
         BodyComponent b = engine.createComponent(BodyComponent.class);
@@ -206,7 +205,7 @@ public class EntityFactory {
         CollectableComponent c = engine.createComponent(CollectableComponent.class);
         c.id = mapObject.getString("cid","");
 
-        isAnimCheck(mapObject, e);
+        addAnimIfAnim(mapObject, e);
 
         e.add(t);
         e.add(tex);
@@ -218,7 +217,15 @@ public class EntityFactory {
         return e;
     }
 
-    private void isAnimCheck(TiledMapReader.MapTileObject mapObject, Entity e) {
+
+
+
+    private float spriteOffsetY(TiledMapReader.MapTileObject m) {
+        int frameH = m.getInt("FRAME_H", 48);
+        return (-frameH / 2f + m.getFloat("OFFSET_Y", 0f)) * UNIT_SCALE;
+    }
+
+    private void addAnimIfAnim(TiledMapReader.MapTileObject mapObject, Entity e) {
         if(mapObject.getBool("isAnim",false))
         {
             AnimationComponent a = new AnimationComponent();
@@ -300,8 +307,7 @@ public class EntityFactory {
         return b;
     }
 
-
-    private Body handleBodyForDynamicCircle(Vector2 pos)
+    private Body handleBodyForDynamicCircle(Vector2 pos, float radius)
     {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -317,7 +323,7 @@ public class EntityFactory {
         shape.dispose();
 
         CircleShape sensorShape = new CircleShape();
-        sensorShape.setRadius(1f);
+        sensorShape.setRadius(radius);
         FixtureDef fdef = new FixtureDef();
         fdef.isSensor = true;
         fdef.shape = sensorShape;

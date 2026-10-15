@@ -43,6 +43,7 @@ public class MovementSystem extends IteratingSystem {
 
         if(s.charState == CharacterState.STOP)
         {
+            b.body.setLinearVelocity(0,0);
             return;
         }
         else if(!m.dir.equals(new Vector2(0,0)))

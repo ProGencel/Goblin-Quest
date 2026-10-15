@@ -156,9 +156,7 @@ public class TiledMapReader {
     }
 
     public MapLayer getLayer(String name) {
-        MapLayer layer = map.getLayers().get(name);
-        if (layer == null) throw new IllegalStateException("Katman yok: " + name);
-        return layer;
+        return map.getLayers().get(name);
     }
 
     public TiledMapTileLayer getTileLayer(String name) {
@@ -189,7 +187,12 @@ public class TiledMapReader {
 
     public Array<MapTileObject> getTileObjects(String objectLayerName) {
         Array<MapTileObject> result = new Array<>();
-        for (MapObject obj : getLayer(objectLayerName).getObjects()) {
+        if(getLayer(objectLayerName) == null)
+        {
+            return null;
+        }
+        MapObjects mapObjects = getLayer(objectLayerName).getObjects();
+        for (MapObject obj : mapObjects) {
             if (!(obj instanceof TiledMapTileMapObject)) continue;
             result.add(toTileObject((TiledMapTileMapObject) obj));
         }

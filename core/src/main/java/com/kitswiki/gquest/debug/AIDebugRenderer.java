@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.graphics.Color;
@@ -23,6 +24,7 @@ public class AIDebugRenderer {
     private final ComponentMapper<AIComponent> aiMapper = ComponentMapper.getFor(AIComponent.class);
     private final ShapeRenderer sr = new ShapeRenderer();
     private final float ppm;   // kamera metre ile çalışıyorsa 1f, piksel ile çalışıyorsa PPM değerin
+    private boolean isDebug = false;
 
     public AIDebugRenderer(float ppm) {
         this.ppm = ppm;
@@ -43,6 +45,30 @@ public class AIDebugRenderer {
         }
 
         sr.end();
+    }
+
+    public void update(OrthographicCamera camera, ImmutableArray<Entity> aiEntities,
+                       TileGraph graph)
+    {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.F3))
+        {
+            isDebug = !isDebug;
+        }
+
+        if(!isDebug)
+        {
+            return;
+        }
+
+        render(camera, aiEntities);
+        renderGrid(camera, graph);
+        renderConnections(camera, graph);
+        renderPatrol(camera, aiEntities);
+
+        for (int i = 0; i < aiEntities.size(); i++) {
+            EnemyAI e = aiEntities.get(i).getComponent(AIComponent.class).enemyAI;
+            renderPath(camera, graph, e.getPath());
+        }
     }
 
     public void render(OrthographicCamera camera, ImmutableArray<Entity> entities) {

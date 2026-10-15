@@ -5,31 +5,53 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.kitswiki.gquest.components.DeadComponent;
-import com.kitswiki.gquest.components.HealtComponent;
+import com.kitswiki.gquest.components.HealthComponent;
+import com.kitswiki.gquest.components.PlayerComponent;
 import com.kitswiki.gquest.components.StateComponent;
 import com.kitswiki.gquest.enums.CharacterState;
+import com.kitswiki.gquest.interfaces.ChangeMap;
 
 public class DeathSystem extends IteratingSystem {
 
-    private final ComponentMapper<HealtComponent> h = ComponentMapper.getFor(HealtComponent.class);
+    private final ComponentMapper<HealthComponent> h = ComponentMapper.getFor(HealthComponent.class);
     private final ComponentMapper<StateComponent> s = ComponentMapper.getFor(StateComponent.class);
     private final ComponentMapper<DeadComponent> d = ComponentMapper.getFor(DeadComponent.class);
+    private final ComponentMapper<PlayerComponent> p = ComponentMapper.getFor(PlayerComponent.class);
 
-    public DeathSystem() {
-        super(Family.all(HealtComponent.class).get());
+    private final float SPAWN_TIME = 1.5f;
+    private String respawnMap;
+    private String respawnSpawn;
+
+    private final ChangeMap screen;
+
+    public DeathSystem(ChangeMap screen, String respawnMap, String respawnSpawn) {
+        super(Family.all(HealthComponent.class).get());
+
+        this.screen = screen;
+        this.respawnMap = respawnMap;
+        this.respawnSpawn = respawnSpawn;
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
 
-        HealtComponent h = this.h.get(entity);
+        HealthComponent h = this.h.get(entity);
         StateComponent s = this.s.get(entity);
         DeadComponent d = this.d.get(entity);
 
-        if(h.currentHealth <= 0f && !s.charState.equals(CharacterState.DEATH))
+        if(!d.dead)
         {
-            d.dead = true;
-            s.set(CharacterState.DEATH);
+            if(h.currentHealth <= 0f)
+            {
+                d.dead = true;
+                s.set(CharacterState.DEATH);
+            }
+            return;
+        }
+        d.timeSinceDeath += deltaTime;
+        if(p.has(entity) && d.timeSinceDeath >= SPAWN_TIME)
+        {
+            screen.changeMap(respawnMap,respawnSpawn);
         }
     }
 }

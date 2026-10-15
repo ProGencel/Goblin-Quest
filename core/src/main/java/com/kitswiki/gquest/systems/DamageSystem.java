@@ -5,18 +5,18 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.kitswiki.gquest.components.CanDamageComponent;
-import com.kitswiki.gquest.components.HealtComponent;
+import com.kitswiki.gquest.components.HealthComponent;
 import com.kitswiki.gquest.components.StateComponent;
 import com.kitswiki.gquest.enums.CharacterState;
 
 public class DamageSystem extends IteratingSystem {
 
-    private ComponentMapper<HealtComponent> h = ComponentMapper.getFor(HealtComponent.class);
+    private ComponentMapper<HealthComponent> h = ComponentMapper.getFor(HealthComponent.class);
     private final ComponentMapper<CanDamageComponent> c = ComponentMapper.getFor(CanDamageComponent.class);
     private final ComponentMapper<StateComponent> s = ComponentMapper.getFor(StateComponent.class);
 
     private final Entity player;
-    private final HealtComponent ph;
+    private final HealthComponent ph;
 
     private float elapsedTime = 0f;
 

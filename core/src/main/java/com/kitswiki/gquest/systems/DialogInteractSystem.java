@@ -15,9 +15,7 @@ public class DialogInteractSystem extends IteratingSystem {
 
     private final ComponentMapper<DialogComponent> d = ComponentMapper.getFor(DialogComponent.class);
     private final ComponentMapper<PlayerComponent> p = ComponentMapper.getFor(PlayerComponent.class);
-    private final ComponentMapper<ContactComponent> c = ComponentMapper.getFor(ContactComponent.class);
     private final ComponentMapper<StateComponent> s = ComponentMapper.getFor(StateComponent.class);
-    private final ComponentMapper<InteractComponent> i = ComponentMapper.getFor(InteractComponent.class);
 
     private final Entity player;
     private final DialogBox dialogBox;
@@ -76,8 +74,8 @@ public class DialogInteractSystem extends IteratingSystem {
 
         if(p.get(player).interact)
         {
-            s.get(player).set(CharacterState.STOP);
             startDialog(d.get(entity).dialogId);
+            s.get(player).set(CharacterState.STOP);
         }
     }
 

@@ -65,7 +65,14 @@ public class AnimationSystem extends IteratingSystem {
             TextureRegion strip = atlas.findRegion(key);
             TextureRegion[] frames = strip.split(96,64)[0];
             a = new Animation<>(0.12f, frames);
-            a.setPlayMode(Animation.PlayMode.LOOP);
+            if(st.charState.equals(CharacterState.DEATH))
+            {
+                a.setPlayMode(Animation.PlayMode.NORMAL);
+            }
+            else
+            {
+                a.setPlayMode(Animation.PlayMode.LOOP);
+            }
             cache.put(key, a);
         }
 
