@@ -38,7 +38,7 @@ public class EntityFactory {
         setPatrolCords();
     }
 
-    public Entity createPlayer(Vector2 pos)
+    public Entity createPlayer(Vector2 pos, InventoryComponent i)
     {
         Entity e = new Entity();
 
@@ -73,7 +73,7 @@ public class EntityFactory {
         e.add(s);
         e.add(new HealthComponent());
         e.add(new DeadComponent());
-        e.add(new InventoryComponent());
+        e.add(i);
 
         return e;
     }

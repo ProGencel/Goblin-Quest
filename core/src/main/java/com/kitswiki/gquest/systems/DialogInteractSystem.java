@@ -67,12 +67,15 @@ public class DialogInteractSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        if(entity != p.get(player).interactTarget)
+
+        Entity pInteractTarget = p.get(player).interactTarget;
+
+        if(entity != pInteractTarget)
         {
             return;
         }
 
-        if(p.get(player).interact)
+        if(p.get(player).interact && d.has(pInteractTarget))
         {
             startDialog(d.get(entity).dialogId);
             s.get(player).set(CharacterState.STOP);

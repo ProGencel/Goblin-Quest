@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.datas.SavedData;
 import com.kitswiki.gquest.dialog.DialogManager;
 import com.kitswiki.gquest.dialog.GameState;
@@ -23,6 +24,7 @@ import com.progencel.kitswikiengine.crypto.DataManager;
 public class Main extends Game {
 
     private final DataManager dataManager = new DataManager("Goblin Quest");
+    private final InventoryComponent i = new InventoryComponent();
 
     private AssetManager assetManager;
     private DialogManager dialogManager;
@@ -32,13 +34,14 @@ public class Main extends Game {
     public void create() {
 
         this.assetManager = new AssetManager();
-        this.dialogManager = new DialogManager();
+        this.dialogManager = new DialogManager(i);
         loadAssets(assetManager);
         dialogManager.readJson();
         this.gameState = new GameState();
         loadData();
 
-        setScreen(new GameScreen(assetManager,this,"TiledProject/maps/town.tmx","begin", false,gameState,dialogManager));
+        setScreen(new GameScreen(assetManager,this,"TiledProject/maps/town.tmx",
+            "begin", false,gameState,dialogManager,i));
     }
 
     private void loadData()

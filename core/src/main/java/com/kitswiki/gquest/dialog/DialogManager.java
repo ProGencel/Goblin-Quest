@@ -1,12 +1,18 @@
 package com.kitswiki.gquest.dialog;
 
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.kitswiki.gquest.components.InventoryComponent;
 
 public class DialogManager {
+
+    private final InventoryComponent i;
+    private ObjectMap<String, DialogEntry[]> dialogs;
 
     public static class DialogEntry
     {
@@ -16,6 +22,7 @@ public class DialogManager {
         public String[] excludes;
         public String[] lines;
         public Choice[] choices;
+        public String[] give;
     }
 
     public static class Choice
@@ -27,7 +34,9 @@ public class DialogManager {
         public String next;
     }
 
-    private ObjectMap<String, DialogEntry[]> dialogs;
+    public DialogManager(InventoryComponent i) {
+        this.i = i;
+    }
 
     public void readJson()
     {
@@ -58,6 +67,7 @@ public class DialogManager {
                 state.set(onceFlag);
             }
 
+            applyGive(e);
             return e;
         }
 
@@ -82,6 +92,23 @@ public class DialogManager {
         return results.size > 0 ? results : null;
     }
 
+    private void applyGive(DialogEntry entry)
+    {
+        if(entry.give == null)
+        {
+            return;
+        }
+        for(String s : entry.give)
+        {
+            String[] ss = s.split(":");
+            switch (ss[0])
+            {
+                case "gold" -> i.gold += Integer.parseInt(ss[1]);
+                default -> throw new GdxRuntimeException("Unknown type :" + s);
+            }
+        }
+    }
+
     private boolean hasAll(String[] flags, GameState state)
     {
         if(flags == null)
@@ -98,7 +125,6 @@ public class DialogManager {
         }
 
         return true;
-
     }
 
     private boolean hasAny(String[] flags, GameState state)

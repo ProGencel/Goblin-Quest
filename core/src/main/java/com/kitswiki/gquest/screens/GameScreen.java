@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.Main;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.AIComponent;
+import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.debug.AIDebugRenderer;
 import com.kitswiki.gquest.debug.DebugPhsic;
 import com.kitswiki.gquest.dialog.GameState;
@@ -80,9 +81,11 @@ public class GameScreen implements Screen, ChangeMap {
     private final DebugPhsic debugPhsic;
 
     private Entity p;
+    private final InventoryComponent i;
 
 
-    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId, boolean startFadedIn, GameState dialogList, DialogManager dialogManager) {
+    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId,
+                      boolean startFadedIn, GameState dialogList, DialogManager dialogManager, InventoryComponent i) {
         this.main = main;
 
         this.assetManager = assetManager;
@@ -116,6 +119,7 @@ public class GameScreen implements Screen, ChangeMap {
 
         this.aiDebugRenderer = new AIDebugRenderer(1f);
         this.debugPhsic = new DebugPhsic(camera,engine,world);
+        this.i = i;
 
         spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
         aiEntities = engine.getEntitiesFor(Family.all(AIComponent.class).get());
@@ -125,7 +129,7 @@ public class GameScreen implements Screen, ChangeMap {
     public void show() {
 
         entityFactory.setGraph(graph);
-        p = entityFactory.createPlayer(spawnPos);
+        p = entityFactory.createPlayer(spawnPos,i);
         engine.addEntity(p);
 
         camera.position.set(spawnPos,0);
@@ -152,6 +156,7 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage));
+        engine.addSystem(new InGameUiSystem(assetManager,p));
     }
 
     public void changeMap(String map, String spawnId)
@@ -181,7 +186,7 @@ public class GameScreen implements Screen, ChangeMap {
         String spawn = pendingSpawn;
         pendingMap = null;
 
-        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn, gameState,dialogManager));
+        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn, gameState,dialogManager,i));
 
         pendingSpawn = null;
     }

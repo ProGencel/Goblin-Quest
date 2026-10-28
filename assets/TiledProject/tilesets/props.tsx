@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="112" tileheight="112" tilecount="15" columns="0">
+<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="112" tileheight="112" tilecount="16" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0" type="static">
   <properties>
@@ -104,6 +104,9 @@
    <property name="FRAME_H" type="int" value="64"/>
   </properties>
   <image source="house_green.png" width="80" height="64"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="11.125" y="40.625" width="58.125" height="22.5"/>
+  </objectgroup>
  </tile>
  <tile id="13" type="static">
   <properties>
@@ -131,6 +134,9 @@
    <property name="FRAME_H" type="int" value="96"/>
   </properties>
   <image source="house_red.png" width="80" height="96"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="10.875" y="46.625" width="59.25" height="48.75"/>
+  </objectgroup>
  </tile>
  <tile id="17" type="collectable">
   <properties>
@@ -141,6 +147,12 @@
   <image source="duck_tired.png" width="16" height="16"/>
   <objectgroup draworder="index" id="2">
    <object id="1" type="collectable" x="4.06667" y="10.1111" width="7.97778" height="1.88889"/>
+  </objectgroup>
+ </tile>
+ <tile id="18" type="static">
+  <image source="stand.png" width="96" height="48"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="4.25" y="28.125" width="86.375" height="7.375"/>
   </objectgroup>
  </tile>
 </tileset>
