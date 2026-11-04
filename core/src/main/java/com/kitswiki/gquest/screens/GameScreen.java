@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.Main;
+import com.kitswiki.gquest.ShopManager;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.AIComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
@@ -149,7 +150,7 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new DamageSystem(p));
         engine.addSystem(new DeathSystem(this,"town","begin"));
         engine.addSystem(delayedSpawnSystem);
-        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager, gameState));
+        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager, gameState, new ShopManager()));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
         engine.addSystem(new CollectableInteractSystem(gameState));

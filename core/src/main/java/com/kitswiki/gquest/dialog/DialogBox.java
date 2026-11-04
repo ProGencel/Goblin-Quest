@@ -23,6 +23,9 @@ public class DialogBox extends Table {
     private final int MAX_CHOICES_ON_SCREEN = 5;
     private int scrollOffSet;
 
+    private boolean shopMode;
+    private String header;
+
     public DialogBox(Skin skin) {
         super(skin);
 
@@ -45,6 +48,8 @@ public class DialogBox extends Table {
         this.visibleChars = 0;
         this.charTimer = 0;
         this.open = true;
+        this.header = null;
+        this.shopMode = false;
         label.setText("");
         setVisible(true);
     }
@@ -110,6 +115,11 @@ public class DialogBox extends Table {
 
         StringBuilder sb = new StringBuilder();
 
+        if (header != null)
+        {
+            sb.append(header).append('\n');
+        }
+
         for(int i = scrollOffSet;i <end;i++)
         {
             if (i > scrollOffSet)
@@ -124,6 +134,10 @@ public class DialogBox extends Table {
     public void confirmChoice()
     {
         picked = choices.get(selected);
+        if(picked.shop != null || shopMode)
+        {
+            return;
+        }
         choosing = false;
         close();
     }
@@ -137,7 +151,26 @@ public class DialogBox extends Table {
 
     public void close() {
         this.open = false;
+        this.shopMode = false;
         setVisible(false);
+    }
+
+    public void showShop(Array<DialogManager.Choice> shopChoices, String header)
+    {
+        this.choices = shopChoices;
+        this.header = header;
+        this.shopMode = true;
+        this.choosing = true;
+        this.picked = null;
+        this.selected = 0;
+        this.scrollOffSet = 0;
+        refreshChoices();
+    }
+
+    public void setHeader(String header)
+    {
+        this.header = header;
+        refreshChoices();
     }
 
     public boolean isOpen() {

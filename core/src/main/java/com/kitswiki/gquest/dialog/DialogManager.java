@@ -32,6 +32,7 @@ public class DialogManager {
         public String[] excludes;
         public String[] set;
         public String next;
+        public String shop;
     }
 
     public DialogManager(InventoryComponent i) {
