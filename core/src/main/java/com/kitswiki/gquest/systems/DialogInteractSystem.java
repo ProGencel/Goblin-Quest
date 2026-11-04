@@ -10,7 +10,7 @@ import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.dialog.DialogBox;
 import com.kitswiki.gquest.dialog.DialogManager;
 import com.kitswiki.gquest.dialog.GameState;
-import com.kitswiki.gquest.ShopManager;
+import com.kitswiki.gquest.dialog.ShopManager;
 import com.kitswiki.gquest.enums.CharacterState;
 
 public class DialogInteractSystem extends IteratingSystem {

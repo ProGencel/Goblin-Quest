@@ -19,8 +19,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.Main;
-import com.kitswiki.gquest.ShopManager;
+import com.kitswiki.gquest.dialog.ShopManager;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.AIComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
@@ -44,6 +45,7 @@ import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 public class GameScreen implements Screen, ChangeMap {
 
     private final Main main;
+    private final GameSession gameSession;
 
     private final DelayedSpawnSystem delayedSpawnSystem;
 
@@ -55,11 +57,12 @@ public class GameScreen implements Screen, ChangeMap {
     private final Viewport viewport;
     private final TiledMapReader mapReader;
     private final World world;
-    private TileGraph graph;
+    private final TileGraph graph;
 
     private final Viewport uiViewport;
     private final Stage dialogStage;
     private final DialogManager dialogManager;
+    private final ShopManager shopManager;
     private final DialogBox dialogBox;
     private final GameState gameState;
 
@@ -74,7 +77,6 @@ public class GameScreen implements Screen, ChangeMap {
     private String pendingMap;
     private String pendingSpawn;
 
-    private float fadeAlpha;
     private final ScreenFade fade;
 
     private ImmutableArray<Entity> aiEntities;
@@ -85,11 +87,12 @@ public class GameScreen implements Screen, ChangeMap {
     private final InventoryComponent i;
 
 
-    public GameScreen(AssetManager assetManager, Main main, String mapPath, String spawnId,
-                      boolean startFadedIn, GameState dialogList, DialogManager dialogManager, InventoryComponent i) {
-        this.main = main;
+    public GameScreen(GameSession gameSession, String mapPath, String spawnId,
+                      boolean startFadedIn) {
+        this.main = gameSession.getMain();
+        this.gameSession = gameSession;
 
-        this.assetManager = assetManager;
+        this.assetManager = gameSession.getAssetManager();
         this.tiledMap = assetManager.get(mapPath);
         this.batch = new SpriteBatch();
         this.engine = new Engine();
@@ -102,25 +105,25 @@ public class GameScreen implements Screen, ChangeMap {
         this.mapReader = new TiledMapReader(tiledMap, UNIT_SCALE);
 
         this.uiViewport = new FitViewport(480,270);
-        this.dialogManager = dialogManager;
+        this.dialogManager = gameSession.getDialogManager();
+        this.shopManager = gameSession.getShopManager();
         this.dialogStage = new Stage(uiViewport,batch);
         this.dialogBox = new DialogBox(assetManager.get("UI/dialog/skin/skin.json"));
-        this.gameState = dialogList;
+        this.gameState = gameSession.getGameState();
         this.setDialog();
 
-        this.delayedSpawnSystem = new DelayedSpawnSystem(dialogList);
+        this.delayedSpawnSystem = new DelayedSpawnSystem(gameSession.getGameState());
 
         this.portalFactory = new PortalFactory(mapReader,engine,world);
         this.entityFactory = new EntityFactory(world,mapReader,engine);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
         this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory);
 
-        this.fadeAlpha = startFadedIn ? 1.0f : 0.0f;
         this.fade = new ScreenFade(startFadedIn);
 
         this.aiDebugRenderer = new AIDebugRenderer(1f);
         this.debugPhsic = new DebugPhsic(camera,engine,world);
-        this.i = i;
+        this.i = gameSession.getInv();
 
         spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
         aiEntities = engine.getEntitiesFor(Family.all(AIComponent.class).get());
@@ -130,7 +133,7 @@ public class GameScreen implements Screen, ChangeMap {
     public void show() {
 
         entityFactory.setGraph(graph);
-        p = entityFactory.createPlayer(spawnPos,i);
+        p = entityFactory.createPlayer(spawnPos,i,gameSession.getHealthC());
         engine.addEntity(p);
 
         camera.position.set(spawnPos,0);
@@ -150,7 +153,7 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new DamageSystem(p));
         engine.addSystem(new DeathSystem(this,"town","begin"));
         engine.addSystem(delayedSpawnSystem);
-        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager, gameState, new ShopManager()));
+        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager, gameState,shopManager));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
         engine.addSystem(new CollectableInteractSystem(gameState));
@@ -172,24 +175,14 @@ public class GameScreen implements Screen, ChangeMap {
     }
 
     private void changeMapNow(boolean startFadedIn) {
-        String mapPath = "";
 
         if ("cave".equals(pendingMap))
         {
             gameState.set("goblin.cave_entry");
-            mapPath = "TiledProject/maps/cave.tmx";
         }
-        else if ("town".equals(pendingMap))
-        {
-            mapPath = "TiledProject/maps/town.tmx";
-        }
-        //main.saveGame();
-        String spawn = pendingSpawn;
-        pendingMap = null;
 
-        main.setScreen(new GameScreen(assetManager, main, mapPath, spawn, startFadedIn, gameState,dialogManager,i));
-
-        pendingSpawn = null;
+        String mapPath = "TiledProject/maps/" + pendingMap + ".tmx";
+        main.setScreen(new GameScreen(gameSession,mapPath,pendingSpawn,startFadedIn));
     }
 
     @Override

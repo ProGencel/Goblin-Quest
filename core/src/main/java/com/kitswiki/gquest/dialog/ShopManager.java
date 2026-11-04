@@ -1,4 +1,4 @@
-package com.kitswiki.gquest;
+package com.kitswiki.gquest.dialog;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;

@@ -13,10 +13,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.kitswiki.gquest.components.HealthComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.datas.SavedData;
 import com.kitswiki.gquest.dialog.DialogManager;
 import com.kitswiki.gquest.dialog.GameState;
+import com.kitswiki.gquest.dialog.ShopManager;
 import com.kitswiki.gquest.screens.GameScreen;
 import com.progencel.kitswikiengine.crypto.DataManager;
 
@@ -28,6 +30,7 @@ public class Main extends Game {
 
     private AssetManager assetManager;
     private DialogManager dialogManager;
+    private ShopManager shopManager;
     private GameState gameState;
 
     @Override
@@ -35,13 +38,17 @@ public class Main extends Game {
 
         this.assetManager = new AssetManager();
         this.dialogManager = new DialogManager(i);
+        this.shopManager = new ShopManager();
+
         loadAssets(assetManager);
         dialogManager.readJson();
         this.gameState = new GameState();
         loadData();
 
-        setScreen(new GameScreen(assetManager,this,"TiledProject/maps/town.tmx",
-            "begin", false,gameState,dialogManager,i));
+        GameSession gameSession = new GameSession(this,assetManager,gameState,dialogManager,shopManager,i, new HealthComponent());
+
+        setScreen(new GameScreen(gameSession,"TiledProject/maps/town.tmx",
+            "begin", false));
     }
 
     private void loadData()
