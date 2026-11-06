@@ -221,7 +221,7 @@ public class EntityFactory {
 
 
     private float spriteOffsetY(TiledMapReader.MapTileObject m) {
-        int frameH = m.getInt("FRAME_H", 48);
+        int frameH = m.getInt("FRAME_H", 16);
         return (-frameH / 2f + m.getFloat("OFFSET_Y", 0f)) * UNIT_SCALE;
     }
 

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.kitswiki.gquest.components.RoofComponent;
 import com.kitswiki.gquest.components.TextureComponent;
 import com.kitswiki.gquest.components.TransformComponent;
 
@@ -23,6 +25,8 @@ public class RenderSystem extends SortedIteratingSystem {
 
     private final ComponentMapper<TextureComponent> tc = ComponentMapper.getFor(TextureComponent.class);
     private final ComponentMapper<TransformComponent> tsc = ComponentMapper.getFor(TransformComponent.class);
+    private final ComponentMapper<RoofComponent> r = ComponentMapper.getFor(RoofComponent.class);
+
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
     private final OrthogonalTiledMapRenderer mapRenderer;
@@ -31,8 +35,10 @@ public class RenderSystem extends SortedIteratingSystem {
     private final int aboveIndex;
     private final MapLayer aboveLayer;
 
+    private final Family roofFamily = Family.all(RoofComponent.class).get();
+
     public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, Stage dialogStage) {
-        super(Family.all(TransformComponent.class, TextureComponent.class).get(),new YComparator());
+        super(Family.all(TransformComponent.class, TextureComponent.class).exclude(RoofComponent.class).get(),new YComparator());
         this.batch = batch;
         this.camera = camera;
         this.mapRenderer = mapRenderer;
@@ -56,6 +62,7 @@ public class RenderSystem extends SortedIteratingSystem {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         super.update(deltaTime);
+        drawRoofs();
         batch.end();
 
         if(aboveLayer != null)
@@ -89,6 +96,40 @@ public class RenderSystem extends SortedIteratingSystem {
             {
                 batch.draw(region,x + w,y,-w,h);
             }
+        }
+    }
+
+    private void drawRoofs()
+    {
+        for(Entity entity : getEngine().getEntitiesFor(roofFamily))
+        {
+            RoofComponent r = this.r.get(entity);
+            if(r.alpha <= 0)
+            {
+                continue;
+            }
+
+            Vector2 pos = tsc.get(entity).position;
+            TextureComponent tc = this.tc.get(entity);
+
+            for(TextureRegion region : this.tc.get(entity).regions)
+            {
+                float w = region.getRegionWidth() * UNIT_SCALE;
+                float h = region.getRegionHeight() * UNIT_SCALE;
+                float x = pos.x - w/2;
+                float y = pos.y - h/2;
+
+                batch.setColor(1f,1f,1f,r.alpha);
+                if(!tc.flipped)
+                {
+                    batch.draw(region,x,y,w,h);
+                }
+                else
+                {
+                    batch.draw(region,x + w,y,-w,h);
+                }
+            }
+            batch.setColor(Color.WHITE);
         }
     }
 

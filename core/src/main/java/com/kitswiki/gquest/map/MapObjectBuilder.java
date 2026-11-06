@@ -2,7 +2,11 @@ package com.kitswiki.gquest.map;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.kitswiki.gquest.components.RoofComponent;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.systems.DelayedSpawnSystem;
 
@@ -33,11 +37,43 @@ public class MapObjectBuilder {
                 case "static" -> engine.addEntity(entityFactory.createStaticObjects(m));
                 case "goblin" -> engine.addEntity(entityFactory.createGoblin(m));
                 case "bad_goblin" -> engine.addEntity(entityFactory.createBadGoblin(m,p));
+                default -> engine.addEntity(entityFactory.createStaticObjects(m));
             }
         }
 
-        Array<TiledMapReader.MapTileObject> mapObjects2 = mapReader.getTileObjects("static_but_characteristic_objects");
+        Array<TiledMapReader.MapTileObject> mapObjects2 = mapReader.getTileObjects("roofs");
         for(TiledMapReader.MapTileObject m : mapObjects2)
+        {
+            String type = m.getString("type", "");
+            Entity e = null;
+            switch (type)
+            {
+                case "static" -> e = entityFactory.createStaticObjects(m);
+            }
+            RoofComponent r = new RoofComponent();
+            r.roof_id = m.getString("identity","");
+            e.add(r);
+            engine.addEntity(e);
+        }
+
+        Array<TiledMapReader.MapShape> mapObjects3 = mapReader.getShapes("roof_rec");
+        for(TiledMapReader.MapShape m : mapObjects3)
+        {
+            String target = m.getString("target_id", "");
+            ImmutableArray<Entity> roofs = engine.getEntitiesFor(Family.all(RoofComponent.class).get());
+            for(Entity roof : roofs)
+            {
+                RoofComponent r = roof.getComponent(RoofComponent.class);
+                if(r.roof_id.equals(target))
+                {
+                    r.rectangles.add(new Rectangle(m.bounds));
+                }
+            }
+
+        }
+
+        Array<TiledMapReader.MapTileObject> mapObjects5 = mapReader.getTileObjects("static_but_characteristic_objects");
+        for(TiledMapReader.MapTileObject m : mapObjects5)
         {
             String raw = m.getString("spawn_flags","");
             String nearId = m.getString("spawnNearDialog","");

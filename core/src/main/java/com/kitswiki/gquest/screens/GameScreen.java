@@ -159,6 +159,7 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new CollectableInteractSystem(gameState));
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
+        engine.addSystem(new RoofSystem());
         engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage));
         engine.addSystem(new InGameUiSystem(assetManager,p));
     }
