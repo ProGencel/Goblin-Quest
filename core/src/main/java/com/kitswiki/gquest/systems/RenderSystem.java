@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kitswiki.gquest.components.RoofComponent;
 import com.kitswiki.gquest.components.TextureComponent;
 import com.kitswiki.gquest.components.TransformComponent;
@@ -74,6 +75,8 @@ public class RenderSystem extends SortedIteratingSystem {
 
         dialogStage.act();
         dialogStage.draw();
+
+        getEngine().getSystem(DayNightSystem.class).drawOverlay(batch, dialogStage.getViewport());
     }
 
     @Override

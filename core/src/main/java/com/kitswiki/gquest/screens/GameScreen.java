@@ -48,6 +48,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final GameSession gameSession;
 
     private final DelayedSpawnSystem delayedSpawnSystem;
+    private final DayNightSystem dayNightSystem;
 
     private final AssetManager assetManager;
     private final TiledMap tiledMap;
@@ -113,6 +114,7 @@ public class GameScreen implements Screen, ChangeMap {
         this.setDialog();
 
         this.delayedSpawnSystem = new DelayedSpawnSystem(gameSession.getGameState());
+        this.dayNightSystem = new DayNightSystem();
 
         this.portalFactory = new PortalFactory(mapReader,engine,world);
         this.entityFactory = new EntityFactory(world,mapReader,engine);
@@ -145,6 +147,7 @@ public class GameScreen implements Screen, ChangeMap {
         mapObjectBuilder.loadObjects();
 
 
+        engine.addSystem(dayNightSystem);
         engine.addSystem(new InputSystem());
         engine.addSystem(new AISystem());
         engine.addSystem(new MovementSystem(mapReader));
@@ -248,5 +251,6 @@ public class GameScreen implements Screen, ChangeMap {
         world.dispose();
         batch.dispose();
         dialogStage.dispose();
+        dayNightSystem.dispose();
     }
 }

@@ -42,21 +42,28 @@ public class MapObjectBuilder {
         }
 
         Array<TiledMapReader.MapTileObject> mapObjects2 = mapReader.getTileObjects("roofs");
-        for(TiledMapReader.MapTileObject m : mapObjects2)
+        if(mapObjects2 != null)
         {
-            String type = m.getString("type", "");
-            Entity e = null;
-            switch (type)
+            for(TiledMapReader.MapTileObject m : mapObjects2)
             {
-                case "static" -> e = entityFactory.createStaticObjects(m);
+                String type = m.getString("type", "");
+                Entity e = null;
+                switch (type)
+                {
+                    case "static" -> e = entityFactory.createStaticObjects(m);
+                }
+                RoofComponent r = new RoofComponent();
+                r.roof_id = m.getString("identity","");
+                e.add(r);
+                engine.addEntity(e);
             }
-            RoofComponent r = new RoofComponent();
-            r.roof_id = m.getString("identity","");
-            e.add(r);
-            engine.addEntity(e);
         }
 
-        Array<TiledMapReader.MapShape> mapObjects3 = mapReader.getShapes("roof_rec");
+        Array<TiledMapReader.MapShape> mapObjects3 = new Array<>();
+        if(mapReader.hasLayer("roof_rec"))
+        {
+            mapObjects3 = mapReader.getShapes("roof_rec");
+        }
         for(TiledMapReader.MapShape m : mapObjects3)
         {
             String target = m.getString("target_id", "");
@@ -69,7 +76,6 @@ public class MapObjectBuilder {
                     r.rectangles.add(new Rectangle(m.bounds));
                 }
             }
-
         }
 
         Array<TiledMapReader.MapTileObject> mapObjects5 = mapReader.getTileObjects("static_but_characteristic_objects");
