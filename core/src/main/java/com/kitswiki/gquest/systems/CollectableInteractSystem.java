@@ -8,7 +8,7 @@ import com.kitswiki.gquest.components.CollectableComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.components.ContactComponent;
 import com.kitswiki.gquest.components.PlayerComponent;
-import com.kitswiki.gquest.dialog.GameState;
+import com.kitswiki.gquest.hud.GameState;
 
 public class CollectableInteractSystem extends IteratingSystem {
 

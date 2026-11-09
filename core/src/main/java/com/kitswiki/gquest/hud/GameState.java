@@ -1,4 +1,4 @@
-package com.kitswiki.gquest.dialog;
+package com.kitswiki.gquest.hud;
 
 import com.badlogic.gdx.utils.ObjectSet;
 import com.kitswiki.gquest.datas.SavedData;

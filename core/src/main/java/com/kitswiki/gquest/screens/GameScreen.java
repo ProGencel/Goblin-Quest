@@ -15,19 +15,19 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.Main;
-import com.kitswiki.gquest.dialog.ShopManager;
+import com.kitswiki.gquest.hud.Hud;
+import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.AIComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.debug.AIDebugRenderer;
 import com.kitswiki.gquest.debug.DebugPhsic;
-import com.kitswiki.gquest.dialog.GameState;
+import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.effects.ScreenFade;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.factories.PortalFactory;
@@ -37,8 +37,7 @@ import com.kitswiki.gquest.map.MapObjectBuilder;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.*;
-import com.kitswiki.gquest.dialog.DialogBox;
-import com.kitswiki.gquest.dialog.DialogManager;
+import com.kitswiki.gquest.hud.DialogManager;
 
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
@@ -64,7 +63,6 @@ public class GameScreen implements Screen, ChangeMap {
     private final Stage dialogStage;
     private final DialogManager dialogManager;
     private final ShopManager shopManager;
-    private final DialogBox dialogBox;
     private final GameState gameState;
 
     private final Engine engine;
@@ -72,6 +70,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final MapObjectBuilder mapObjectBuilder;
     private final PortalFactory portalFactory;
     private final StaticBodyBuilder staticBodyBuilder;
+    private final Hud hud;
 
     private final Vector2 spawnPos;
 
@@ -109,9 +108,7 @@ public class GameScreen implements Screen, ChangeMap {
         this.dialogManager = gameSession.getDialogManager();
         this.shopManager = gameSession.getShopManager();
         this.dialogStage = new Stage(uiViewport,batch);
-        this.dialogBox = new DialogBox(assetManager.get("UI/dialog/skin/skin.json"));
         this.gameState = gameSession.getGameState();
-        this.setDialog();
 
         this.delayedSpawnSystem = new DelayedSpawnSystem(gameSession.getGameState());
         this.dayNightSystem = new DayNightSystem();
@@ -119,7 +116,9 @@ public class GameScreen implements Screen, ChangeMap {
         this.portalFactory = new PortalFactory(mapReader,engine,world);
         this.entityFactory = new EntityFactory(world,mapReader,engine);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
+        this.hud = new Hud(dialogStage,assetManager,dayNightSystem);
         this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory);
+        hud.setDialog();
 
         this.fade = new ScreenFade(startFadedIn);
 
@@ -156,7 +155,7 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new DamageSystem(p));
         engine.addSystem(new DeathSystem(this,"town","begin"));
         engine.addSystem(delayedSpawnSystem);
-        engine.addSystem(new DialogInteractSystem(p,dialogBox,dialogManager, gameState,shopManager));
+        engine.addSystem(new DialogInteractSystem(p,hud.getDialogBox(),dialogManager, gameState,shopManager));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
         engine.addSystem(new CollectableInteractSystem(gameState));
@@ -210,17 +209,6 @@ public class GameScreen implements Screen, ChangeMap {
         batch.begin();
         new BitmapFont().draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); //MEMORY LEAK SAKIN ACIK UNUTMA !!!!
         batch.end();
-    }
-
-    private void setDialog()
-    {
-        Table mainTable = new Table();
-        mainTable.setFillParent(true);
-
-        mainTable.add(dialogBox).growX().height(100).pad(10);
-        mainTable.bottom();
-
-        dialogStage.addActor(mainTable);
     }
 
     @Override

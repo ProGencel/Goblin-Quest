@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.components.BodyComponent;
 import com.kitswiki.gquest.components.DialogComponent;
 import com.kitswiki.gquest.components.PlayerComponent;
-import com.kitswiki.gquest.dialog.GameState;
+import com.kitswiki.gquest.hud.GameState;
 
 import java.util.function.Supplier;
 

@@ -1,7 +1,5 @@
-package com.kitswiki.gquest.dialog;
+package com.kitswiki.gquest.hud;
 
-import com.badlogic.ashley.core.ComponentMapper;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;

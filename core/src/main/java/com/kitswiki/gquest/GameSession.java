@@ -3,9 +3,9 @@ package com.kitswiki.gquest;
 import com.badlogic.gdx.assets.AssetManager;
 import com.kitswiki.gquest.components.HealthComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
-import com.kitswiki.gquest.dialog.DialogManager;
-import com.kitswiki.gquest.dialog.GameState;
-import com.kitswiki.gquest.dialog.ShopManager;
+import com.kitswiki.gquest.hud.DialogManager;
+import com.kitswiki.gquest.hud.GameState;
+import com.kitswiki.gquest.hud.ShopManager;
 
 public class GameSession {
 

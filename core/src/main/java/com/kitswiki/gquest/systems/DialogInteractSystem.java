@@ -7,10 +7,10 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.ai.EnemyState;
 import com.kitswiki.gquest.components.*;
-import com.kitswiki.gquest.dialog.DialogBox;
-import com.kitswiki.gquest.dialog.DialogManager;
-import com.kitswiki.gquest.dialog.GameState;
-import com.kitswiki.gquest.dialog.ShopManager;
+import com.kitswiki.gquest.hud.customActors.DialogBox;
+import com.kitswiki.gquest.hud.DialogManager;
+import com.kitswiki.gquest.hud.GameState;
+import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.enums.CharacterState;
 
 public class DialogInteractSystem extends IteratingSystem {

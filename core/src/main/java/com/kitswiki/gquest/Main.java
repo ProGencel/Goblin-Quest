@@ -1,24 +1,20 @@
 package com.kitswiki.gquest;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.kitswiki.gquest.components.HealthComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.datas.SavedData;
-import com.kitswiki.gquest.dialog.DialogManager;
-import com.kitswiki.gquest.dialog.GameState;
-import com.kitswiki.gquest.dialog.ShopManager;
+import com.kitswiki.gquest.hud.DialogManager;
+import com.kitswiki.gquest.hud.GameState;
+import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.screens.GameScreen;
 import com.progencel.kitswikiengine.crypto.DataManager;
 

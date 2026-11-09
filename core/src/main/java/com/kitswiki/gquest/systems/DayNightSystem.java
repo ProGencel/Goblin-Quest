@@ -11,21 +11,21 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class DayNightSystem extends EntitySystem {
 
-    private static final float DAY_LENGTH_SECONDS = 60f * 8f; //1 oyun gunu
+    private static final float DAY_LENGTH_SECONDS = 60f * 8f; // 1 oyun gunu
 
     private static final float[][] KEYS = {
-        { 0f,   0.18f, 0.24f, 0.48f}, // gece (mavi gökyüzü, koyu)
+        { 0f,   0.18f, 0.24f, 0.48f}, // gece
         { 5f,   0.22f, 0.28f, 0.52f},
-        { 6f,   0.55f, 0.45f, 0.60f}, // şafak öncesi, mor geçiş
-        { 7f,   1.00f, 0.75f, 0.58f}, // şafak (sodium vapor)
-        { 8.5f, 1.00f, 0.95f, 0.88f}, // sabah (halogen)
+        { 6f,   0.55f, 0.45f, 0.60f}, // şafak öncesi
+        { 7f,   1.00f, 0.75f, 0.58f}, // şafak
+        { 8.5f, 1.00f, 0.95f, 0.88f}, // sabah
         {10f,   1.00f, 1.00f, 1.00f}, // gün ışığı
         {16f,   1.00f, 1.00f, 1.00f},
-        {17.5f, 1.00f, 0.84f, 0.67f}, // öğleden sonra (tungsten)
+        {17.5f, 1.00f, 0.84f, 0.67f}, // öğleden sonra
         {19f,   1.00f, 0.65f, 0.40f}, // gün batımı
-        {20.5f, 0.55f, 0.45f, 0.65f}, // alacakaranlık, mor geçiş
+        {20.5f, 0.55f, 0.45f, 0.65f}, // alacakaranlık
         {22f,   0.25f, 0.28f, 0.50f},
-        {24f,   0.18f, 0.24f, 0.48f}, // 0f ile aynı, wrap'te sıçrama yok
+        {24f,   0.18f, 0.24f, 0.48f},
     };
 
     private float hour = 8f;
@@ -46,7 +46,6 @@ public class DayNightSystem extends EntitySystem {
     @Override
     public void update(float deltaTime) {
         hour += deltaTime * (24f / DAY_LENGTH_SECONDS);
-        System.out.println(hour);
         if(hour >= 24f)
         {
             hour -= 24f;

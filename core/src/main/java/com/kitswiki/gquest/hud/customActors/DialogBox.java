@@ -1,10 +1,11 @@
-package com.kitswiki.gquest.dialog;
+package com.kitswiki.gquest.hud.customActors;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.kitswiki.gquest.hud.DialogManager;
 
 public class DialogBox extends Table {
 
