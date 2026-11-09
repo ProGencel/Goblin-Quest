@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="112" tileheight="112" tilecount="16" columns="0">
+<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="288" tileheight="192" tilecount="22" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0" type="static">
   <properties>
@@ -150,9 +150,45 @@
   </objectgroup>
  </tile>
  <tile id="18" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="48"/>
+   <property name="OFFSET_Y" type="float" value="12"/>
+  </properties>
   <image source="stand.png" width="96" height="48"/>
   <objectgroup draworder="index" id="2">
    <object id="1" x="4.25" y="28.125" width="86.375" height="7.375"/>
+  </objectgroup>
+ </tile>
+ <tile id="20" type="static">
+  <image source="bigHouseRoof.png" width="288" height="192"/>
+ </tile>
+ <tile id="22" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="22"/>
+  </properties>
+  <image source="BigHouse/wall1.png" width="144" height="22"/>
+ </tile>
+ <tile id="23" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="22"/>
+  </properties>
+  <image source="BigHouse/wall2.png" width="53" height="22"/>
+ </tile>
+ <tile id="24" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="22"/>
+  </properties>
+  <image source="BigHouse/wall3.png" width="48" height="22"/>
+ </tile>
+ <tile id="25">
+  <image source="bigHouseInterior.png" width="288" height="192"/>
+ </tile>
+ <tile id="26" type="skeleton">
+  <image source="skeleton.png" width="13" height="16"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="4.08696" y="10.4783" width="6.04348" height="5.82609">
+    <ellipse/>
+   </object>
   </objectgroup>
  </tile>
 </tileset>

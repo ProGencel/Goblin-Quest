@@ -1,9 +1,38 @@
 {
-    "activeFile": "maps/town.tmx",
+    "activeFile": "C:/Desktop/libGDX/02-MyAssets/world.tmx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx": {
+            "scale": 0.6448124999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 799.4572065522923,
+                "y": 800.2326257633034
+            }
+        },
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx#GrassTileset": {
+            "scaleInDock": 1
+        },
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx#beet": {
+            "scaleInDock": 1
+        },
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx#bush": {
+            "scaleInDock": 1
+        },
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx#carrot": {
+            "scaleInDock": 1
+        },
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx#pepper": {
+            "scaleInDock": 1
+        },
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx#potato": {
+            "scaleInDock": 1
+        },
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx#tree": {
+            "scaleInDock": 1
+        },
         "maps/cave.tmx": {
             "expandedObjectLayers": [
                 8,
@@ -20,16 +49,16 @@
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
-                9,
-                4,
                 15,
-                14
+                14,
+                4,
+                9
             ],
-            "scale": 5.5,
-            "selectedLayer": 9,
+            "scale": 4,
+            "selectedLayer": 14,
             "viewCenter": {
-                "x": 476.72727272727275,
-                "y": 140.36363636363635
+                "x": 805.125,
+                "y": 560
             }
         },
         "tilesets/SunnySide Environment.tsx": {
@@ -44,8 +73,8 @@
         },
         "tilesets/props.tsx": {
             "dynamicWrapping": true,
-            "scaleInDock": 1,
-            "scaleInEditor": 1.5
+            "scaleInDock": 0.5,
+            "scaleInEditor": 0.75
         },
         "tilesets/sunnysideworld.tsx": {
             "dynamicWrapping": false,
@@ -62,15 +91,17 @@
         "tilesets/sunnysideworld.tsx",
         "maps/town.tmx",
         "tilesets/props.tsx",
-        "tilesets/duck.tsx"
+        "tilesets/duck.tsx",
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx"
     ],
     "project": "game.tiled-project",
-    "property.type": "float",
+    "property.type": "string",
     "recentFiles": [
         "tilesets/sunnysideworld.tsx",
-        "tilesets/duck.tsx",
-        "tilesets/props.tsx",
         "maps/town.tmx",
+        "tilesets/props.tsx",
+        "tilesets/duck.tsx",
+        "C:/Desktop/libGDX/02-MyAssets/world.tmx",
         "maps/cave.tmx",
         "tilesets/SunnySide Environment.tsx"
     ],

@@ -90,6 +90,24 @@
     }
   ],
 
+  "weaponsmith": [
+    {
+      "id": "intro",
+      "lines": [
+        "Welcome to my little shop !",
+        "Have a look to weapons and tell me if you buying!"
+      ],
+      "choices": [
+        { "text": "Let me see your goods", "shop": "weaponsmith" },
+        { "text": "Maybe later", "next": "weaponsmith_bye" }
+      ]
+    }
+  ],
+
+  "weaponsmith_bye": [
+    { "id": "r", "lines": ["Come back anytime!"] }
+  ],
+
   "def": [
     {
       "id": "intro",

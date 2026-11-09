@@ -1,0 +1,11 @@
+{
+  "weaponsmith": [
+    {"id": "sword", "name": "Sword","price": "50"},
+    {"id": "sword", "name": "Sword","price": "60"},
+    {"id": "sword", "name": "Sword","price": "70"},
+    {"id": "sword", "name": "Sword","price": "80"},
+    {"id": "sword", "name": "Sword","price": "90"},
+    {"id": "sword", "name": "Sword","price": "530"},
+    {"id": "sword", "name": "Sword","price": "503"}
+  ]
+}

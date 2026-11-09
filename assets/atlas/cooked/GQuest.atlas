@@ -45,6 +45,8 @@ shorthair_idle
 bounds:2,416,864,64
 shorthair_run
 bounds:1252,548,768,64
+skeleton_idle
+bounds:868,86,576,64
 spikeyhair_death
 bounds:2,746,1248,64
 spikeyhair_idle
