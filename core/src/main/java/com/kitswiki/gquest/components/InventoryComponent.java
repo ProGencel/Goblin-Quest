@@ -6,6 +6,6 @@ import com.badlogic.gdx.utils.Array;
 public class InventoryComponent implements Component {
 
     public Array<String> inventory = new Array<>();
-    public int gold = 0;
+    public int gold = 100;
 
 }

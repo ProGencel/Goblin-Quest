@@ -32,6 +32,14 @@
       ]
     },
     {
+      "id": "goblin_accept",
+      "lines": ["thanks !"]
+    },
+    {
+      "id": "goblin_refuse",
+      "lines": ["ok !"]
+    },
+    {
       "id": "after_cave",
       "once": true,
       "requires": ["goblin.cave_entry"],
@@ -46,20 +54,6 @@
     {
       "id": "idle",
       "lines": ["Bye my friend"]
-    }
-  ],
-
-  "goblin_accept": [
-    {
-      "id": "r",
-      "lines": ["thanks !"]
-    }
-  ],
-
-  "goblin_refuse": [
-    {
-      "id": "r",
-      "lines": ["ok !"]
     }
   ],
 
@@ -90,6 +84,82 @@
     }
   ],
 
+  "boss": [
+    {
+      "id": "intro",
+      "lines": [
+        "Whats up?",
+        "You gotta be careful here"
+      ],
+      "once": true
+    },
+    {
+      "id": "ready",
+      "reqObj": "ske_chip",
+      "lines": [
+        "Oh so you bought that",
+        "Whats the business",
+        "Yeah we do that kind of business",
+        "But its pricey like 50 golds"
+      ],
+      "choices": [
+        {
+          "text" : "yea i can do that",
+          "next" : "accept"
+        },
+        {
+          "text" : "sorry i cant do that",
+          "next" : "refuse"
+        }
+      ]
+    },
+    {
+      "id": "accept",
+      "linkOnly": true,
+      "lines": [
+        "Okay what do you want?",
+        "Oh okay thats going to be hard that cave contains a lot of goblins but okay"
+      ]
+    },
+    {
+      "id": "refuse",
+      "linkOnly": true,
+      "lines": [
+        "let us know if you change mind"
+      ]
+    },
+    {
+      "id": "idle",
+      "lines": ["Buy a chip and come back"]
+    }
+  ],
+
+  "skelet1": [
+    {
+      "id": "intro",
+      "lines": ["Whats up"]
+    }
+  ],
+
+  "skelet2": [
+    {
+      "id": "intro",
+      "lines": ["...."]
+    }
+  ],
+
+  "skelet3": [
+    {
+      "id": "once",
+      "once": true,
+      "lines": ["Whats up","If you have a business for us","talk with the boss"]
+    },
+    {
+      "id": "intro",
+      "lines": ["Whats up"]
+    }
+  ],
+
   "weaponsmith": [
     {
       "id": "intro",
@@ -101,11 +171,11 @@
         { "text": "Let me see your goods", "shop": "weaponsmith" },
         { "text": "Maybe later", "next": "weaponsmith_bye" }
       ]
+    },
+    {
+      "id": "weaponsmith_bye",
+      "lines": ["Come back anytime!"]
     }
-  ],
-
-  "weaponsmith_bye": [
-    { "id": "r", "lines": ["Come back anytime!"] }
   ],
 
   "def": [

@@ -21,6 +21,8 @@ public class DialogManager {
         public String[] lines;
         public Choice[] choices;
         public String[] give;
+        public boolean linkOnly;
+        public String reqObj;
     }
 
     public static class Choice
@@ -51,12 +53,15 @@ public class DialogManager {
         {
             throw new GdxRuntimeException("Dialog cannot find : " + npcId);
         }
-
         for(DialogEntry e : entries)
         {
             String onceFlag = npcId + "." + e.id;
 
-            if(e.once && state.has(onceFlag) || !hasAll(e.requires, state) || hasAny(e.excludes, state))
+            if(e.linkOnly || e.once && state.has(onceFlag) || !hasAll(e.requires, state) || hasAny(e.excludes, state))
+            {
+                continue;
+            }
+            if(e.reqObj != null && !checkInv(e))
             {
                 continue;
             }
@@ -71,6 +76,26 @@ public class DialogManager {
         }
 
         throw new GdxRuntimeException("There is no records with wanted properties");
+    }
+
+    public DialogEntry goTo(String npcId, String entryId)
+    {
+        DialogEntry[] entries = dialogs.get(npcId);
+        if(entries == null)
+        {
+            throw new GdxRuntimeException("Dialog cannot find : "+npcId);
+        }
+
+        for(DialogEntry e : entries)
+        {
+            if(entryId.equals(e.id))
+            {
+                applyGive(e);
+                return e;
+            }
+        }
+
+        throw new GdxRuntimeException("Dialog entry cannot find : "+npcId+"."+entryId);
     }
 
     public Array<Choice> visibleChoices(DialogEntry entry, GameState gameState)
@@ -89,6 +114,15 @@ public class DialogManager {
         }
 
         return results.size > 0 ? results : null;
+    }
+
+    private boolean checkInv(DialogEntry entry)
+    {
+        if(i.inventory.contains(entry.reqObj, false))
+        {
+            return true;
+        }
+        return false;
     }
 
     private void applyGive(DialogEntry entry)

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.SortedIteratingSystem;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kitswiki.gquest.components.RoofComponent;
 import com.kitswiki.gquest.components.TextureComponent;
 import com.kitswiki.gquest.components.TransformComponent;
+import com.kitswiki.gquest.screens.GameScreen;
 
 import java.util.Comparator;
 
@@ -32,18 +34,20 @@ public class RenderSystem extends SortedIteratingSystem {
     private final OrthographicCamera camera;
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final Stage dialogStage;
+    private final GameScreen currScreen;
 
     private final int aboveIndex;
     private final MapLayer aboveLayer;
 
     private final Family roofFamily = Family.all(RoofComponent.class).get();
 
-    public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, Stage dialogStage) {
+    public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, Stage dialogStage, GameScreen screen) {
         super(Family.all(TransformComponent.class, TextureComponent.class).exclude(RoofComponent.class).get(),new YComparator());
         this.batch = batch;
         this.camera = camera;
         this.mapRenderer = mapRenderer;
         this.dialogStage = dialogStage;
+        this.currScreen = screen;
 
         aboveLayer = map.getLayers().get("above");
         aboveIndex = map.getLayers().getIndex("above");
@@ -73,10 +77,13 @@ public class RenderSystem extends SortedIteratingSystem {
             aboveLayer.setVisible(false);
         }
 
+        if(currScreen.isOutside())
+        {
+            getEngine().getSystem(DayNightSystem.class).drawOverlay(batch, dialogStage.getViewport());
+        }
+
         dialogStage.act();
         dialogStage.draw();
-
-        getEngine().getSystem(DayNightSystem.class).drawOverlay(batch, dialogStage.getViewport());
     }
 
     @Override

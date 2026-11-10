@@ -42,12 +42,12 @@ public class AnimationSystem extends IteratingSystem {
         }
         for(String layer : anim.layers)
         {
-            tex.regions.add(getAnimation(layer,st).getKeyFrame(st.stateTime));
+            tex.regions.add(getAnimation(layer,st,anim).getKeyFrame(st.stateTime));
         }
 
     }
 
-    private Animation<TextureRegion> getAnimation(String layer, StateComponent st)
+    private Animation<TextureRegion> getAnimation(String layer, StateComponent st,AnimationComponent anim)
     {
         String key;
         if(st.charState.equals(CharacterState.STOP))
@@ -64,7 +64,7 @@ public class AnimationSystem extends IteratingSystem {
         {
             TextureRegion strip = atlas.findRegion(key);
             TextureRegion[] frames = strip.split(96,64)[0];
-            a = new Animation<>(0.12f, frames);
+            a = new Animation<>(anim.frameDuration, frames);
             if(st.charState.equals(CharacterState.DEATH))
             {
                 a.setPlayMode(Animation.PlayMode.NORMAL);

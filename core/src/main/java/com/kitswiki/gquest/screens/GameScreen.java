@@ -76,6 +76,7 @@ public class GameScreen implements Screen, ChangeMap {
 
     private String pendingMap;
     private String pendingSpawn;
+    private String currMap;
 
     private final ScreenFade fade;
 
@@ -94,6 +95,7 @@ public class GameScreen implements Screen, ChangeMap {
 
         this.assetManager = gameSession.getAssetManager();
         this.tiledMap = assetManager.get(mapPath);
+        this.currMap = mapPath.contains("town") ? "town" : "cave";
         this.batch = new SpriteBatch();
         this.engine = new Engine();
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, UNIT_SCALE,batch);
@@ -111,7 +113,7 @@ public class GameScreen implements Screen, ChangeMap {
         this.gameState = gameSession.getGameState();
 
         this.delayedSpawnSystem = new DelayedSpawnSystem(gameSession.getGameState());
-        this.dayNightSystem = new DayNightSystem();
+        this.dayNightSystem = new DayNightSystem(gameSession.getDay(),gameSession.getHour());
 
         this.portalFactory = new PortalFactory(mapReader,engine,world);
         this.entityFactory = new EntityFactory(world,mapReader,engine);
@@ -153,7 +155,7 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new PhysicSystem(world));
         engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new DamageSystem(p));
-        engine.addSystem(new DeathSystem(this,"town","begin"));
+        engine.addSystem(new DeathSystem(this,"town","begin",gameSession));
         engine.addSystem(delayedSpawnSystem);
         engine.addSystem(new DialogInteractSystem(p,hud.getDialogBox(),dialogManager, gameState,shopManager));
         engine.addSystem(new InteractSystem(p));
@@ -162,7 +164,7 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RoofSystem());
-        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage));
+        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage,this));
         engine.addSystem(new InGameUiSystem(assetManager,p));
     }
 
@@ -183,7 +185,8 @@ public class GameScreen implements Screen, ChangeMap {
         {
             gameState.set("goblin.cave_entry");
         }
-
+        gameSession.setDay(dayNightSystem.getDay());
+        gameSession.setHour(dayNightSystem.getHour());
         String mapPath = "TiledProject/maps/" + pendingMap + ".tmx";
         main.setScreen(new GameScreen(gameSession,mapPath,pendingSpawn,startFadedIn));
     }
@@ -230,6 +233,11 @@ public class GameScreen implements Screen, ChangeMap {
     @Override
     public void hide() {
 
+    }
+
+    public boolean isOutside()
+    {
+        return "town".equals(currMap);
     }
 
     @Override

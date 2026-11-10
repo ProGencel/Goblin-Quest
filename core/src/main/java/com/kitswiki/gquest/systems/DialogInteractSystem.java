@@ -25,6 +25,7 @@ public class DialogInteractSystem extends IteratingSystem {
     private final DialogManager dialogReader;
     private final GameState gameState;
     private final ShopManager shopManager;
+    private String currentDialogId;
 
     private ShopManager.ShopItem[] shopItems;
     private Array<DialogManager.Choice> shopChoices;
@@ -91,7 +92,17 @@ public class DialogInteractSystem extends IteratingSystem {
 
     private void startDialog(String dialogId)
     {
-        DialogManager.DialogEntry e = dialogReader.pick(dialogId, gameState);
+        currentDialogId = dialogId;
+        show(dialogReader.pick(dialogId, gameState));
+    }
+
+    private void goToEntry(String entryId)
+    {
+        show(dialogReader.goTo(currentDialogId, entryId));
+    }
+
+    private void show(DialogManager.DialogEntry e)
+    {
         dialogBox.start(e.lines, dialogReader.visibleChoices(e, gameState));
     }
 
@@ -162,7 +173,7 @@ public class DialogInteractSystem extends IteratingSystem {
             }
             if(c.next != null)
             {
-                startDialog(c.next);
+                goToEntry(c.next);
                 return;
             }
         }

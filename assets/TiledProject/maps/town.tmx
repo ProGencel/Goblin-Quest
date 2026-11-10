@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="70" tilewidth="16" tileheight="16" infinite="0" nextlayerid="30" nextobjectid="385">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="70" tilewidth="16" tileheight="16" infinite="0" nextlayerid="30" nextobjectid="389">
  <tileset firstgid="1" source="../tilesets/props.tsx"/>
  <tileset firstgid="28" source="../tilesets/sunnysideworld.tsx"/>
  <tileset firstgid="4124" source="../tilesets/duck.tsx"/>
@@ -669,96 +669,6 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="4" name="static_objects">
-  <object id="4" type="static" gid="1" x="1216" y="656" width="32" height="48">
-   <properties>
-    <property name="OFFSET_Y" type="float" value="10"/>
-   </properties>
-  </object>
-  <object id="13" type="static" gid="3" x="848" y="512" width="112" height="112"/>
-  <object id="24" gid="5" x="1200.67" y="619.333" width="18" height="16">
-   <properties>
-    <property name="identity" value="goblin"/>
-   </properties>
-  </object>
-  <object id="60" gid="13" x="320" y="848" width="80" height="64"/>
-  <object id="64" gid="17" x="1456" y="864" width="80" height="96"/>
-  <object id="65" gid="17" x="375" y="112" width="80" height="96"/>
-  <object id="66" gid="17" x="128" y="416" width="80" height="96"/>
-  <object id="67" gid="2147483653" x="139.144" y="455.834" width="18" height="16">
-   <properties>
-    <property name="identity" value="duckGob"/>
-    <property name="isFlipped" type="bool" value="false"/>
-   </properties>
-  </object>
-  <object id="116" gid="19" x="451.455" y="120.364" width="96" height="48"/>
-  <object id="126" gid="2147483653" x="478.727" y="106.273" width="18" height="16">
-   <properties>
-    <property name="identity" value="weaponsmith"/>
-    <property name="isFlipped" type="bool" value="true"/>
-   </properties>
-  </object>
-  <object id="365" gid="24" x="1350" y="304" width="53" height="22"/>
-  <object id="366" gid="23" x="1408" y="336" width="144" height="22">
-   <properties>
-    <property name="FRAME_H" type="int" value="22"/>
-   </properties>
-  </object>
-  <object id="367" gid="25" x="1296" y="336" width="48" height="22"/>
-  <object id="370" gid="2129" x="1391.45" y="281.455" width="16" height="16"/>
-  <object id="371" gid="2129" x="1340.36" y="280.909" width="16" height="16"/>
-  <object id="381" gid="2307" x="1359.64" y="286.545" width="16" height="16"/>
-  <object id="382" gid="2307" x="1375.64" y="286.545" width="16" height="16"/>
-  <object id="384" gid="27" x="1003.59" y="501.045" width="13" height="16">
-   <properties>
-    <property name="identity" value="skeleton1"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="24" name="roofs" visible="0">
-  <properties>
-   <property name="identity" value="orange_roof"/>
-  </properties>
-  <object id="130" gid="21" x="1280" y="336" width="288" height="192">
-   <properties>
-    <property name="FRAME_H" type="int" value="0"/>
-    <property name="identity" value="orange_roof"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="25" name="roof_rec" visible="0">
-  <object id="143" x="1407" y="218.25" width="146" height="110.568">
-   <properties>
-    <property name="target_id" value="orange_roof"/>
-   </properties>
-  </object>
-  <object id="144" x="1501.78" y="164.693" width="52.125" height="60.125">
-   <properties>
-    <property name="target_id" value="orange_roof"/>
-   </properties>
-  </object>
-  <object id="146" x="1343.55" y="227.989" width="66" height="71.375">
-   <properties>
-    <property name="target_id" value="orange_roof"/>
-   </properties>
-  </object>
-  <object id="147" x="1294.59" y="229.92" width="51.5" height="101.625">
-   <properties>
-    <property name="target_id" value="orange_roof"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup id="23" name="static_but_characteristic_objects">
-  <object id="89" gid="18" x="1200" y="1008" width="16" height="16"/>
-  <object id="90" gid="2147487772" x="64" y="448" width="16" height="16">
-   <properties>
-    <property name="isFlipped" type="bool" value="true"/>
-    <property name="spawnNearDialog" value="duckGob"/>
-    <property name="spawnRadius" type="float" value="19"/>
-    <property name="spawn_flags" value="duckGob.duck_collected"/>
-   </properties>
-  </object>
- </objectgroup>
  <layer id="12" name="above_above_ground" width="100" height="70">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,480,480,480,480,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -981,6 +891,112 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="4" name="static_objects">
+  <object id="4" type="static" gid="1" x="1216" y="656" width="32" height="48">
+   <properties>
+    <property name="OFFSET_Y" type="float" value="10"/>
+   </properties>
+  </object>
+  <object id="13" type="static" gid="3" x="848" y="512" width="112" height="112"/>
+  <object id="24" gid="5" x="1200.67" y="619.333" width="18" height="16">
+   <properties>
+    <property name="identity" value="goblin"/>
+   </properties>
+  </object>
+  <object id="60" gid="13" x="320" y="848" width="80" height="64"/>
+  <object id="64" gid="17" x="1456" y="864" width="80" height="96"/>
+  <object id="65" gid="17" x="375" y="112" width="80" height="96"/>
+  <object id="66" gid="17" x="128" y="416" width="80" height="96"/>
+  <object id="67" gid="2147483653" x="139.144" y="455.834" width="18" height="16">
+   <properties>
+    <property name="identity" value="duckGob"/>
+    <property name="isFlipped" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="116" gid="19" x="451.455" y="120.364" width="96" height="48"/>
+  <object id="126" gid="2147483653" x="478.727" y="106.273" width="18" height="16">
+   <properties>
+    <property name="identity" value="weaponsmith"/>
+    <property name="isFlipped" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="365" gid="24" x="1350" y="304" width="53" height="22"/>
+  <object id="366" gid="23" x="1408" y="336" width="144" height="22">
+   <properties>
+    <property name="FRAME_H" type="int" value="22"/>
+   </properties>
+  </object>
+  <object id="367" gid="25" x="1296" y="336" width="48" height="22"/>
+  <object id="370" gid="2129" x="1391.45" y="281.455" width="16" height="16"/>
+  <object id="371" gid="2129" x="1340.36" y="280.909" width="16" height="16"/>
+  <object id="381" gid="2307" x="1359.64" y="286.545" width="16" height="16"/>
+  <object id="382" gid="2307" x="1375.64" y="286.545" width="16" height="16"/>
+  <object id="384" gid="27" x="1413.59" y="306.545" width="13" height="16">
+   <properties>
+    <property name="identity" value="boss"/>
+   </properties>
+  </object>
+  <object id="386" gid="27" x="1485.77" y="251.205" width="13" height="16">
+   <properties>
+    <property name="identity" value="skelet1"/>
+   </properties>
+  </object>
+  <object id="387" gid="27" x="1298.3" y="251.545" width="13" height="16">
+   <properties>
+    <property name="identity" value="skelet2"/>
+   </properties>
+  </object>
+  <object id="388" gid="2147483675" x="1519.64" y="192.727" width="13" height="16">
+   <properties>
+    <property name="identity" value="skelet3"/>
+    <property name="isFlipped" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="24" name="roofs" visible="0">
+  <properties>
+   <property name="identity" value="orange_roof"/>
+  </properties>
+  <object id="130" gid="21" x="1280" y="336" width="288" height="192">
+   <properties>
+    <property name="FRAME_H" type="int" value="0"/>
+    <property name="identity" value="orange_roof"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="25" name="roof_rec" visible="0">
+  <object id="143" x="1407" y="218.25" width="146" height="110.568">
+   <properties>
+    <property name="target_id" value="orange_roof"/>
+   </properties>
+  </object>
+  <object id="144" x="1501.78" y="164.693" width="52.125" height="60.125">
+   <properties>
+    <property name="target_id" value="orange_roof"/>
+   </properties>
+  </object>
+  <object id="146" x="1343.55" y="227.989" width="66" height="71.375">
+   <properties>
+    <property name="target_id" value="orange_roof"/>
+   </properties>
+  </object>
+  <object id="147" x="1294.59" y="229.92" width="51.5" height="101.625">
+   <properties>
+    <property name="target_id" value="orange_roof"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="23" name="static_but_characteristic_objects">
+  <object id="89" gid="18" x="1200" y="1008" width="16" height="16"/>
+  <object id="90" gid="2147487772" x="64" y="448" width="16" height="16">
+   <properties>
+    <property name="isFlipped" type="bool" value="true"/>
+    <property name="spawnNearDialog" value="duckGob"/>
+    <property name="spawnRadius" type="float" value="19"/>
+    <property name="spawn_flags" value="duckGob.duck_collected"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup id="9" name="collisions" visible="0">
   <object id="31" x="608" y="16">
    <polyline points="0,-16 0,0 16,16 32,16 48,32 112,32 144,64 160,64 192,96 192,112 208,128 288,128 288,112 320,112 320,128 404,128 600,128 992,128"/>

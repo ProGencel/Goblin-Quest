@@ -13,6 +13,8 @@ base_idle
 bounds:2,284,864,64
 base_run
 bounds:1252,944,768,64
+boss_idle
+bounds:868,20,576,64
 bowlhair_death
 bounds:2,812,1248,64
 bowlhair_idle

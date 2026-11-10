@@ -46,7 +46,7 @@ public class EntityFactory {
         t.position.set(pos);
 
         BodyComponent b = new BodyComponent();
-        b.body = handleBodyForDynamicCircle(pos,1);
+        b.body = handleBodyForDynamicCircle(pos,1,true);
         b.body.setUserData(e);
 
         AnimationComponent a = new AnimationComponent();
@@ -78,6 +78,46 @@ public class EntityFactory {
         return e;
     }
 
+    public Entity createSkeleton(TiledMapReader.MapTileObject mapObject,String type)
+    {
+        Entity e = engine.createEntity();
+
+        TransformComponent t = engine.createComponent(TransformComponent.class);
+        t.position.x = mapObject.x + mapObject.width / 2f;
+        t.position.y = mapObject.y + mapObject.height / 2f;
+
+        BodyComponent b = engine.createComponent(BodyComponent.class);
+        b.body = handleBodyForDynamicCircle(t.position,1,false);
+        b.body.setUserData(e);
+
+        AnimationComponent a = new AnimationComponent();
+        if("boss".equals(type))
+        {
+            a.layers.add("boss");
+        }
+        else
+        {
+            a.layers.add("skeleton");
+        }
+        a.frameDuration = 0.14f;
+
+        TextureComponent tex = new TextureComponent();
+        tex.offsetY = spriteOffsetY(mapObject);
+
+        DialogComponent d = new DialogComponent();
+        d.dialogId = mapObject.allProperties.get("identity", String.class);
+
+        e.add(t);
+        e.add(new StateComponent());
+        e.add(b);
+        e.add(a);
+        e.add(tex);
+        e.add(d);
+        e.add(new InteractComponent());
+
+        return e;
+    }
+
     public Entity createBadGoblin(TiledMapReader.MapTileObject mapObject, Entity player)
     {
         Entity e = engine.createEntity();
@@ -87,7 +127,7 @@ public class EntityFactory {
         t.position.y = mapObject.y + mapObject.height / 2f;
 
         BodyComponent b = engine.createComponent(BodyComponent.class);
-        b.body = handleBodyForDynamicCircle(t.position,1);
+        b.body = handleBodyForDynamicCircle(t.position,1,true);
 
         AnimationComponent a = new AnimationComponent();
         a.layers.add("badGoblin");
@@ -122,8 +162,6 @@ public class EntityFactory {
         return e;
     }
 
-    String[] hairs = {"bowlhair","curlyhair","longhair","mophair","shorthair","spikeyhair","nohair"};
-
     public Entity createGoblin(TiledMapReader.MapTileObject mapObject)
     {
         Entity e = new Entity();
@@ -135,12 +173,7 @@ public class EntityFactory {
 
         AnimationComponent a = new AnimationComponent();
         a.layers.add("spr");
-        int id  = mapObject.allProperties.get("id", Integer.class);
-        id %= 6;
-        if(!(id == 5))
-        {
-            a.layers.add(hairs[id]);
-        }
+        setRandomHair(mapObject,a);
 
         TextureComponent tex = new TextureComponent();
         tex.offsetY = spriteOffsetY(mapObject);
@@ -151,7 +184,7 @@ public class EntityFactory {
 
         BodyComponent b = new BodyComponent();
         b.body = handleBodyForStaticRect(mapObject);
-        b.body.setUserData(e);
+        b.body.setUserData(e); //INTERACT ICIN ONEMLI !!!!
 
 
         e.add(t);
@@ -217,8 +250,17 @@ public class EntityFactory {
         return e;
     }
 
+    private void setRandomHair(TiledMapReader.MapTileObject mapObject, AnimationComponent a)
+    {
+        String[] hairs = {"bowlhair","curlyhair","longhair","mophair","shorthair","spikeyhair","nohair"};
 
-
+        int id  = mapObject.allProperties.get("id", Integer.class);
+        id %= 6;
+        if(!(id == 5))
+        {
+            a.layers.add(hairs[id]);
+        }
+    }
 
     private float spriteOffsetY(TiledMapReader.MapTileObject m) {
         int frameH = m.getInt("FRAME_H", 16);
@@ -241,7 +283,6 @@ public class EntityFactory {
             e.add(new StateComponent());
         }
     }
-
 
     private Body handleBodyForDynamicRect(TiledMapReader.MapTileObject mapObject)
     {
@@ -307,7 +348,7 @@ public class EntityFactory {
         return b;
     }
 
-    private Body handleBodyForDynamicCircle(Vector2 pos, float radius)
+    private Body handleBodyForDynamicCircle(Vector2 pos, float radius, boolean isSensor)
     {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -322,13 +363,16 @@ public class EntityFactory {
         b.createFixture(shape,1);
         shape.dispose();
 
-        CircleShape sensorShape = new CircleShape();
-        sensorShape.setRadius(radius);
-        FixtureDef fdef = new FixtureDef();
-        fdef.isSensor = true;
-        fdef.shape = sensorShape;
-        b.createFixture(fdef);
-        sensorShape.dispose();
+        if(isSensor)
+        {
+            CircleShape sensorShape = new CircleShape();
+            sensorShape.setRadius(radius);
+            FixtureDef fdef = new FixtureDef();
+            fdef.isSensor = true;
+            fdef.shape = sensorShape;
+            b.createFixture(fdef);
+            sensorShape.dispose();
+        }
 
 
         return b;

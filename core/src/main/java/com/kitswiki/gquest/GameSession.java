@@ -17,6 +17,9 @@ public class GameSession {
     private final InventoryComponent i;
     private final HealthComponent h;
 
+    private int day = 1;
+    private float hour = 8f;
+
     public GameSession(Main main, AssetManager assetManager, GameState gameState, DialogManager dialogManager,ShopManager shopManager, InventoryComponent i,
                        HealthComponent h) {
         this.main = main;
@@ -26,6 +29,27 @@ public class GameSession {
         this.shopManager = shopManager;
         this.i = i;
         this.h = h;
+    }
+
+    public void setHealth(float health)
+    {
+        h.currentHealth = health;
+    }
+
+    public float getHour() {
+        return hour;
+    }
+
+    public void setHour(float hour) {
+        this.hour = hour;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
     }
 
     public HealthComponent getHealthC()

@@ -28,12 +28,15 @@ public class DayNightSystem extends EntitySystem {
         {24f,   0.18f, 0.24f, 0.48f},
     };
 
-    private float hour = 8f;
-    private int day = 1;
+    private float hour;
+    private int day;
     private final Color ambient = new Color(Color.WHITE);
     private final Texture whitePixel;
 
-    public DayNightSystem() {
+    public DayNightSystem(int day, float hour) {
+
+        this.day = day;
+        this.hour = hour;
 
         Pixmap pm = new Pixmap(1,1, Pixmap.Format.RGBA8888);
         pm.setColor(Color.WHITE);
@@ -45,6 +48,7 @@ public class DayNightSystem extends EntitySystem {
 
     @Override
     public void update(float deltaTime) {
+        //deltaTime *= 10f;
         hour += deltaTime * (24f / DAY_LENGTH_SECONDS);
         if(hour >= 24f)
         {

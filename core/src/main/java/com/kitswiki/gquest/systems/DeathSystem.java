@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.components.DeadComponent;
 import com.kitswiki.gquest.components.HealthComponent;
 import com.kitswiki.gquest.components.PlayerComponent;
@@ -23,13 +24,15 @@ public class DeathSystem extends IteratingSystem {
     private String respawnSpawn;
 
     private final ChangeMap screen;
+    private final GameSession gameSession;
 
-    public DeathSystem(ChangeMap screen, String respawnMap, String respawnSpawn) {
+    public DeathSystem(ChangeMap screen, String respawnMap, String respawnSpawn, GameSession gameSession) {
         super(Family.all(HealthComponent.class).get());
 
         this.screen = screen;
         this.respawnMap = respawnMap;
         this.respawnSpawn = respawnSpawn;
+        this.gameSession = gameSession;
     }
 
     @Override
@@ -52,6 +55,7 @@ public class DeathSystem extends IteratingSystem {
         if(p.has(entity) && d.timeSinceDeath >= SPAWN_TIME)
         {
             screen.changeMap(respawnMap,respawnSpawn);
+            gameSession.setHealth(10);
         }
     }
 }

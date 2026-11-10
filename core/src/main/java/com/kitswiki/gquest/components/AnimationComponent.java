@@ -10,5 +10,6 @@ public class AnimationComponent implements Component {
 
     public final Array<String> layers = new Array<>();
     public Animation<TextureRegion> tileAnim;
+    public float frameDuration = 0.12f;
 
 }

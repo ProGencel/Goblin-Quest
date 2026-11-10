@@ -31,12 +31,14 @@ public class MapObjectBuilder {
         for(TiledMapReader.MapTileObject m : mapObjects)
         {
             String type = m.getString("type", "");
+            String identity = m.getString("identity","");
 
             switch (type)
             {
                 case "static" -> engine.addEntity(entityFactory.createStaticObjects(m));
                 case "goblin" -> engine.addEntity(entityFactory.createGoblin(m));
                 case "bad_goblin" -> engine.addEntity(entityFactory.createBadGoblin(m,p));
+                case "skeleton" -> engine.addEntity(entityFactory.createSkeleton(m,identity));
                 default -> engine.addEntity(entityFactory.createStaticObjects(m));
             }
         }
