@@ -1,0 +1,150 @@
+<template>
+<style>
+
+@font-face{font-family:"Minecraft";src:url("assets/fonts/Minecraft.ttf") format("truetype");font-weight:400;font-style:normal}
+#root{position:absolute;inset:0;overflow:hidden;background:#181425;font-family:"Minecraft",monospace;color:#ffffff}
+#root *{box-sizing:border-box}
+.cam,.zoom,.pan{position:absolute;left:0;top:0;width:0;height:0}
+.cam{left:960px;top:410px}
+.void{position:absolute;left:-4000px;top:-4000px;width:9600px;height:9600px}
+.map{position:absolute;left:0;top:0;display:block;image-rendering:pixelated}
+.spr{position:absolute;left:0;top:0;width:96px;height:64px;background-repeat:no-repeat;background-position:0px 0px;background-size:auto 64px;image-rendering:pixelated}
+.actor{position:absolute;width:96px;height:64px}
+.tint{position:absolute;inset:0;mix-blend-mode:multiply;z-index:5}
+.glow{position:absolute;inset:0;z-index:6;opacity:0;background:radial-gradient(ellipse at 50% 42%,rgba(254,174,52,0) 40%,rgba(254,174,52,.55) 100%)}
+.fade{position:absolute;inset:0;background:#000000;opacity:0;z-index:40}
+.flash{position:absolute;inset:0;background:#ffffff;opacity:0;z-index:41}
+.hud-gold{position:absolute;left:48px;top:36px;height:84px;padding:0 30px 0 20px;display:flex;align-items:center;gap:18px;background:#181425;border:4px solid #c0cbdc;font-size:56px;line-height:64px;color:#fee761;z-index:30}
+.hud-gold img{width:64px;height:64px;image-rendering:pixelated;display:block}
+.hud-gold .num{position:relative;width:104px;height:64px}
+.hud-gold .num span{position:absolute;left:0;top:0}
+.hud-clock{position:absolute;right:48px;top:36px;width:208px;height:100px;padding:6px 18px;background:#181425;border:4px solid #c0cbdc;font-size:38px;line-height:44px;text-align:right;color:#ffffff;z-index:30}
+.hud-clock .day{display:block}
+.hud-clock .tm{position:relative;display:block;height:44px}
+.hud-clock .tm span{position:absolute;right:0;top:0}
+.dlg{position:absolute;left:80px;right:80px;bottom:44px;height:210px;border:8px solid transparent;border-image:url("assets/game/dialog9.png") 2 fill / 8px / 0 stretch;background:#c0cbdc;background-clip:padding-box;image-rendering:pixelated;z-index:25}
+.dlg.tall{height:304px}
+.dlg-txt{position:absolute;left:36px;right:36px;top:28px;font-size:58px;line-height:74px;color:#524f5b}
+.dlg-txt .w{display:inline-block;white-space:nowrap}
+.dlg-txt .c{opacity:0}
+.dlg-txt.on{opacity:1}
+.row{position:relative;height:74px;white-space:nowrap}
+.row .cur{display:inline-block;width:40px}
+.banner{position:absolute;left:0;right:0;top:150px;text-align:center;z-index:22}
+.plate{display:inline-block;padding:10px 32px 16px;background:#181425;border:6px solid #ffffff;font-size:76px;line-height:92px;color:#ffffff}
+.plate .bw{display:inline-block}
+
+
+</style>
+<div id="root" data-composition-id="shop" data-width="1920" data-height="1080">
+
+<div class="cam" id="shop-cam"><div class="zoom" id="shop-zoom"><div class="pan" id="shop-pan">
+  <div class="void" style="background:#63c74d"></div>
+  <img class="map" src="assets/game/town_map.png" alt="Town map rendered from town.tmx" width="1600" height="1120">
+  <div class="actor" style="left:440px;top:66px"><div class="spr" id="shop-smith" style="background-image:url('assets/game/npc_smith_idle.png');"></div></div>
+  <div class="actor" style="left:414px;top:95px"><div class="spr" id="shop-pl" style="background-image:url('assets/game/player_idle.png');"></div></div>
+  <div class="actor" style="left:1370px;top:282px"><div class="spr" id="shop-boss" style="background-image:url('assets/game/boss_idle.png');"></div></div>
+  <div class="actor" style="left:1442px;top:227px"><div class="spr" id="shop-sk1" style="background-image:url('assets/game/skeleton_idle.png');"></div></div>
+  <div class="actor" style="left:1255px;top:227px"><div class="spr" id="shop-sk2" style="background-image:url('assets/game/skeleton_idle.png');"></div></div>
+  <div class="actor" id="shop-sk3w" style="left:1476px;top:168px"><div class="spr" id="shop-sk3" style="background-image:url('assets/game/skeleton_idle.png');"></div></div>
+</div></div></div>
+<div class="tint" id="shop-tint" style="background:rgb(255,187,132)"></div>
+<div class="glow" id="shop-glow"></div>
+<div class="hud-gold"><img src="assets/game/gold.png" alt=""><div class="num"><span id="shop-g0" style="opacity:1">50</span><span id="shop-g1" style="opacity:0">0</span></div></div><div class="hud-clock"><span class="day">Day 1</span><span class="tm"><span id="shop-t0" style="opacity:1">18:20</span><span id="shop-t1" style="opacity:0">18:30</span></span></div>
+<div class="dlg tall" id="shop-dlg" style="opacity:0">
+  <div class="dlg-txt" id="shop-list">
+    <div class="row" id="shop-h0">Gold: 50</div>
+    <div class="row" id="shop-h1" style="opacity:0;position:absolute;left:0;top:0">Gold: 0 - Thanks!</div>
+    <div class="row"><span class="cur">&gt;</span>Skeleton Chip - 50g</div>
+    <div class="row"><span class="cur">&nbsp;</span>Leave</div>
+  </div>
+</div>
+<div class="dlg" id="boss-dlg" style="opacity:0">
+  <div id="boss-l" class="dlg-txt"><span class="w"><span id="boss-l-c0" class="c">B</span><span id="boss-l-c1" class="c">u</span><span id="boss-l-c2" class="c">t</span></span> <span class="w"><span id="boss-l-c4" class="c">i</span><span id="boss-l-c5" class="c">t</span><span id="boss-l-c6" class="c">s</span></span> <span class="w"><span id="boss-l-c8" class="c">p</span><span id="boss-l-c9" class="c">r</span><span id="boss-l-c10" class="c">i</span><span id="boss-l-c11" class="c">c</span><span id="boss-l-c12" class="c">e</span><span id="boss-l-c13" class="c">y</span></span> <span class="w"><span id="boss-l-c15" class="c">l</span><span id="boss-l-c16" class="c">i</span><span id="boss-l-c17" class="c">k</span><span id="boss-l-c18" class="c">e</span></span> <span class="w"><span id="boss-l-c20" class="c">5</span><span id="boss-l-c21" class="c">0</span></span> <span class="w"><span id="boss-l-c23" class="c">g</span><span id="boss-l-c24" class="c">o</span><span id="boss-l-c25" class="c">l</span><span id="boss-l-c26" class="c">d</span><span id="boss-l-c27" class="c">s</span></span></div>
+</div>
+<div class="flash" id="shop-flash"></div>
+
+</div>
+<script>
+
+const tl = gsap.timeline({ paused: true });
+function typeLine(prefix, text, t0, per) {
+  for (let k = 0; k < text.length; k++) {
+    if (text[k] === " ") continue;
+    tl.fromTo("#" + prefix + "-c" + k, { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none" }, t0 + k * per);
+  }
+}
+// Elements that change state more than once take their initial state from CSS/inline style;
+// every later tween uses immediateRender:false so it cannot overwrite that initial state.
+function swap(ids, times) {
+  for (let i = 1; i < ids.length; i++) {
+    tl.fromTo(ids[i - 1], { opacity: 1 }, { opacity: 0, duration: 0.001, ease: "none", immediateRender: false }, times[i]);
+    tl.fromTo(ids[i], { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none", immediateRender: false }, times[i]);
+  }
+}
+function toggle(sel, t, on) {
+  tl.fromTo(sel, { opacity: on ? 0 : 1 }, { opacity: on ? 1 : 0, duration: 0.001, ease: "none", immediateRender: false }, t);
+}
+function popIn(sel, t) {
+  tl.fromTo(sel, { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.22, ease: "power3.out" }, t);
+}
+function popOut(sel, t) {
+  tl.fromTo(sel, { opacity: 1, y: 0 }, { opacity: 0, y: 18, duration: 0.15, ease: "power2.in", immediateRender: false }, t);
+}
+function anim(sel, frames, fd, t0, end) {
+  const cyc = frames * fd;
+  tl.fromTo(sel, { backgroundPosition: "0px 0px" },
+    { backgroundPosition: (-96 * frames) + "px 0px", ease: "steps(" + frames + ")", duration: cyc,
+      repeat: Math.max(0, Math.ceil((end - t0) / cyc) - 1) }, t0);
+}
+function glowBeats(sel, levels, base, amp) {
+  // baseline opacity is 0 in CSS; each step eases to the next bass-driven level
+  levels.forEach(function (p) {
+    tl.to(sel, { opacity: base + amp * p[1], duration: 0.5, ease: "sine.inOut" }, p[0]);
+  });
+}
+function camSet(zoom, pan, cx, cy, s) { gsap.set(zoom, { scale: s }); gsap.set(pan, { x: -cx, y: -cy }); }
+function camMove(zoom, pan, from, to, t, dur, ease) {
+  tl.fromTo(zoom, { scale: from[2] }, { scale: to[2], duration: dur, ease: ease, immediateRender: false }, t);
+  tl.fromTo(pan, { x: -from[0], y: -from[1] }, { x: -to[0], y: -to[1], duration: dur, ease: ease, immediateRender: false }, t);
+}
+
+
+const BOSS = "But its pricey like 50 golds";
+camSet("#shop-zoom", "#shop-pan", 488, 100, 8);
+gsap.set("#shop-sk3w", { transformOrigin: "48px 32px", scaleX: -1 });
+
+// arrive from the whip, slightly large, then settle
+tl.fromTo("#shop-cam", { filter: "blur(14px)", x: 140 }, { filter: "blur(0px)", x: 0, duration: 0.3, ease: "power3.out" }, 0);
+tl.fromTo("#shop-zoom", { scale: 8.8 }, { scale: 8, duration: 0.5, ease: "expo.out" }, 0);
+anim("#shop-smith", 8, 0.14, 0, 4.5);
+anim("#shop-pl", 9, 0.14, 0, 4.5);
+anim("#shop-boss", 6, 0.16, 0, 4.5);
+anim("#shop-sk1", 6, 0.16, 0.05, 4.5);
+anim("#shop-sk2", 6, 0.16, 0.1, 4.5);
+anim("#shop-sk3", 6, 0.16, 0.15, 4.5);
+
+// the shop panel (real text from DialogInteractSystem.enterShop)
+popIn("#shop-dlg", 0.04);
+// beat-locked: purchase confirm 12.52s (local 1.00)
+toggle("#shop-h0", 1.0, false); toggle("#shop-h1", 1.0, true);
+swap(["#shop-g0", "#shop-g1"], [0, 1.0]);
+popOut("#shop-dlg", 2.25);
+
+// beat-locked: whip pan to the skeleton hideout at 13.52s (local 2.00)
+camMove("#shop-zoom", "#shop-pan", [488, 100, 8], [1405, 262, 5.5], 2.0, 0.5, "power3.inOut");
+tl.fromTo("#shop-cam", { filter: "blur(0px)" }, { filter: "blur(16px)", duration: 0.22, ease: "power2.in", immediateRender: false }, 2.0);
+tl.fromTo("#shop-cam", { filter: "blur(16px)" }, { filter: "blur(0px)", duration: 0.25, ease: "power2.out", immediateRender: false }, 2.22);
+
+// the boss's price line, HUD still says 0
+popIn("#boss-dlg", 2.4);
+typeLine("boss-l", BOSS, 2.5, 0.022);
+
+swap(["#shop-t0", "#shop-t1"], [0, 2.6]);
+
+// seam out: flash on the 16.02s strong cue
+glowBeats("#shop-glow", [[0.0, 0.222], [0.5, 0.403], [1.0, 0.397], [1.5, 0.382], [2.0, 0.358], [2.5, 0.327], [3.0, 0.318], [3.5, 0.285], [4.0, 0.256]], 0.04, 0.2);
+
+window.__timelines["shop"] = tl;
+</script>
+</template>

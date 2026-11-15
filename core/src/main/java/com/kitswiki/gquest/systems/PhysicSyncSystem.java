@@ -4,10 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.kitswiki.gquest.components.BodyComponent;
-import com.kitswiki.gquest.components.PlayerComponent;
-import com.kitswiki.gquest.components.StateComponent;
-import com.kitswiki.gquest.components.TransformComponent;
+import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.enums.CharacterState;
 
 public class PhysicSyncSystem extends IteratingSystem {
@@ -16,6 +13,7 @@ public class PhysicSyncSystem extends IteratingSystem {
     private final ComponentMapper<TransformComponent> t = ComponentMapper.getFor(TransformComponent.class);
     private final ComponentMapper<StateComponent> s = ComponentMapper.getFor(StateComponent.class);
     private final ComponentMapper<PlayerComponent> p = ComponentMapper.getFor(PlayerComponent.class);
+    private final ComponentMapper<HiddenComponent> h = ComponentMapper.getFor(HiddenComponent.class);
 
     public PhysicSyncSystem() {
         super(Family.all(BodyComponent.class, TransformComponent.class).get());
@@ -25,6 +23,15 @@ public class PhysicSyncSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         BodyComponent b = this.b.get(entity);
         TransformComponent t = this.t.get(entity);
+
+        if(h.has(entity))
+        {
+            b.body.setActive(false);
+        }
+        else if(!b.body.isActive())
+        {
+            b.body.setActive(true);
+        }
 
         Object o = b.body.getUserData();
         if(o instanceof Entity && p.has(entity))

@@ -96,6 +96,7 @@
     {
       "id": "ready",
       "reqObj": "ske_chip",
+      "once": true,
       "lines": [
         "Oh so you bought that",
         "Whats the business",
@@ -105,7 +106,8 @@
       "choices": [
         {
           "text" : "yea i can do that",
-          "next" : "accept"
+          "next" : "accept",
+          "set": ["skes_cave"]
         },
         {
           "text" : "sorry i cant do that",
@@ -114,12 +116,28 @@
       ]
     },
     {
+      "id": "after",
+      "lines": [
+        "Here are the golds",
+        "But before you take the golds we have to take our part",
+        "And so there is so much gold so price has increased like 200 per person",
+        "So here you are your 750 gold"
+      ],
+      "once": true,
+      "give": ["gold:750"]
+    },
+    {
+      "id": "idle",
+      "lines": ["Buy a chip and come back"]
+    },
+    {
       "id": "accept",
       "linkOnly": true,
       "lines": [
         "Okay what do you want?",
         "Oh okay thats going to be hard that cave contains a lot of goblins but okay"
-      ]
+      ],
+      "action": "ske_cave"
     },
     {
       "id": "refuse",
@@ -127,10 +145,6 @@
       "lines": [
         "let us know if you change mind"
       ]
-    },
-    {
-      "id": "idle",
-      "lines": ["Buy a chip and come back"]
     }
   ],
 

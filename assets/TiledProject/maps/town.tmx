@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="70" tilewidth="16" tileheight="16" infinite="0" nextlayerid="30" nextobjectid="389">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="70" tilewidth="16" tileheight="16" infinite="0" nextlayerid="32" nextobjectid="395">
  <tileset firstgid="1" source="../tilesets/props.tsx"/>
  <tileset firstgid="28" source="../tilesets/sunnysideworld.tsx"/>
  <tileset firstgid="4124" source="../tilesets/duck.tsx"/>
@@ -931,26 +931,31 @@
   <object id="371" gid="2129" x="1340.36" y="280.909" width="16" height="16"/>
   <object id="381" gid="2307" x="1359.64" y="286.545" width="16" height="16"/>
   <object id="382" gid="2307" x="1375.64" y="286.545" width="16" height="16"/>
-  <object id="384" gid="27" x="1413.59" y="306.545" width="13" height="16">
+  <object id="384" gid="27" x="1411.29" y="321.818" width="13" height="16">
    <properties>
     <property name="identity" value="boss"/>
    </properties>
   </object>
-  <object id="386" gid="27" x="1485.77" y="251.205" width="13" height="16">
+  <object id="386" gid="27" x="1483.47" y="266.478" width="13" height="16">
    <properties>
     <property name="identity" value="skelet1"/>
    </properties>
   </object>
-  <object id="387" gid="27" x="1298.3" y="251.545" width="13" height="16">
+  <object id="387" gid="27" x="1296" y="266.818" width="13" height="16">
    <properties>
     <property name="identity" value="skelet2"/>
    </properties>
   </object>
-  <object id="388" gid="2147483675" x="1519.64" y="192.727" width="13" height="16">
+  <object id="388" gid="2147483675" x="1517.34" y="208" width="13" height="16">
    <properties>
     <property name="identity" value="skelet3"/>
     <property name="isFlipped" type="bool" value="true"/>
    </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="30" name="skeleton_target">
+  <object id="389" name="skeleton_target" x="911.25" y="146.625">
+   <point/>
   </object>
  </objectgroup>
  <objectgroup id="24" name="roofs" visible="0">
@@ -1029,7 +1034,7 @@
    <polyline points="0,0 32,0"/>
   </object>
   <object id="368" x="1351.17" y="304">
-   <polyline points="0,0 0.130435,31.9565 -61.9239,31.75 -62.0489,-102.875 145.951,-103 146.014,-151.063 208.076,-151 209.917,31.8182 152.826,32 152.818,27.6364 194.422,27.9335 195.533,-120.174 155.014,-120.274 154.764,-64.019 -49.3043,-64.4427 -49.5268,26.5174 -13.6398,27.3011 -13.1739,-5.91477 63.1262,-5.88834 62.5887,26.3286 136.866,27.7391 136.826,32 49.2011,31.9688 49.5534,0 -1.62846,-0.272727"/>
+   <polyline points="0,0 0.130435,31.9565 -61.9239,31.75 -62.0489,-102.875 145.951,-103 146.014,-151.063 208.076,-151 209.917,31.8182 152.826,32 152.818,27.6364 194.422,27.9335 195.715,-114.992 155.196,-115.092 154.764,-64.019 -49.3043,-64.4427 -49.5268,26.5174 -13.6398,27.3011 -13.1739,-5.91477 63.1262,-5.88834 62.5887,26.3286 136.866,27.7391 136.826,32 49.2011,31.9688 49.5534,0 -1.62846,-0.272727"/>
   </object>
   <object id="380" x="1338.73" y="298.364">
    <polyline points="0,0 -0.181818,-24.7273 75.4545,-25.0909 74.1818,0.545455"/>

@@ -6,8 +6,10 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.components.RoofComponent;
 import com.kitswiki.gquest.factories.EntityFactory;
+import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.systems.DelayedSpawnSystem;
 
 public class MapObjectBuilder {
@@ -25,21 +27,36 @@ public class MapObjectBuilder {
         this.entityFactory = entityFactory;
     }
 
-    public void loadObjects()
+    public void loadDynamicObjects(GameState gameState)
     {
         Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("static_objects");
         for(TiledMapReader.MapTileObject m : mapObjects)
         {
             String type = m.getString("type", "");
             String identity = m.getString("identity","");
+            if(gameState.has("skes_cave") && type.equals("bad_goblin"))
+            {
+                return;
+            }
+            switch (type)
+            {
+                case "bad_goblin" ->engine.addEntity(entityFactory.createBadGoblin(m,p));
+                case "skeleton" -> engine.addEntity(entityFactory.createSkeleton(m,identity));
+            }
+        }
+    }
+
+    public void loadStaticObjects()
+    {
+        Array<TiledMapReader.MapTileObject> mapObjects = mapReader.getTileObjects("static_objects");
+        for(TiledMapReader.MapTileObject m : mapObjects)
+        {
+            String type = m.getString("type", "");
 
             switch (type)
             {
                 case "static" -> engine.addEntity(entityFactory.createStaticObjects(m));
                 case "goblin" -> engine.addEntity(entityFactory.createGoblin(m));
-                case "bad_goblin" -> engine.addEntity(entityFactory.createBadGoblin(m,p));
-                case "skeleton" -> engine.addEntity(entityFactory.createSkeleton(m,identity));
-                default -> engine.addEntity(entityFactory.createStaticObjects(m));
             }
         }
 

@@ -1,0 +1,162 @@
+<template>
+<style>
+
+@font-face{font-family:"Minecraft";src:url("assets/fonts/Minecraft.ttf") format("truetype");font-weight:400;font-style:normal}
+#root{position:absolute;inset:0;overflow:hidden;background:#181425;font-family:"Minecraft",monospace;color:#ffffff}
+#root *{box-sizing:border-box}
+.cam,.zoom,.pan{position:absolute;left:0;top:0;width:0;height:0}
+.cam{left:960px;top:410px}
+.void{position:absolute;left:-4000px;top:-4000px;width:9600px;height:9600px}
+.map{position:absolute;left:0;top:0;display:block;image-rendering:pixelated}
+.spr{position:absolute;left:0;top:0;width:96px;height:64px;background-repeat:no-repeat;background-position:0px 0px;background-size:auto 64px;image-rendering:pixelated}
+.actor{position:absolute;width:96px;height:64px}
+.tint{position:absolute;inset:0;mix-blend-mode:multiply;z-index:5}
+.glow{position:absolute;inset:0;z-index:6;opacity:0;background:radial-gradient(ellipse at 50% 42%,rgba(254,174,52,0) 40%,rgba(254,174,52,.55) 100%)}
+.fade{position:absolute;inset:0;background:#000000;opacity:0;z-index:40}
+.flash{position:absolute;inset:0;background:#ffffff;opacity:0;z-index:41}
+.hud-gold{position:absolute;left:48px;top:36px;height:84px;padding:0 30px 0 20px;display:flex;align-items:center;gap:18px;background:#181425;border:4px solid #c0cbdc;font-size:56px;line-height:64px;color:#fee761;z-index:30}
+.hud-gold img{width:64px;height:64px;image-rendering:pixelated;display:block}
+.hud-gold .num{position:relative;width:104px;height:64px}
+.hud-gold .num span{position:absolute;left:0;top:0}
+.hud-clock{position:absolute;right:48px;top:36px;width:208px;height:100px;padding:6px 18px;background:#181425;border:4px solid #c0cbdc;font-size:38px;line-height:44px;text-align:right;color:#ffffff;z-index:30}
+.hud-clock .day{display:block}
+.hud-clock .tm{position:relative;display:block;height:44px}
+.hud-clock .tm span{position:absolute;right:0;top:0}
+.dlg{position:absolute;left:80px;right:80px;bottom:44px;height:210px;border:8px solid transparent;border-image:url("assets/game/dialog9.png") 2 fill / 8px / 0 stretch;background:#c0cbdc;background-clip:padding-box;image-rendering:pixelated;z-index:25}
+.dlg.tall{height:304px}
+.dlg-txt{position:absolute;left:36px;right:36px;top:28px;font-size:58px;line-height:74px;color:#524f5b}
+.dlg-txt .w{display:inline-block;white-space:nowrap}
+.dlg-txt .c{opacity:0}
+.dlg-txt.on{opacity:1}
+.row{position:relative;height:74px;white-space:nowrap}
+.row .cur{display:inline-block;width:40px}
+.banner{position:absolute;left:0;right:0;top:150px;text-align:center;z-index:22}
+.plate{display:inline-block;padding:10px 32px 16px;background:#181425;border:6px solid #ffffff;font-size:76px;line-height:92px;color:#ffffff}
+.plate .bw{display:inline-block}
+
+
+</style>
+<div id="root" data-composition-id="quest" data-width="1920" data-height="1080">
+
+<div class="cam"><div class="zoom" id="quest-zoom"><div class="pan" id="quest-pan">
+  <div class="void" style="background:#63c74d"></div>
+  <img class="map" src="assets/game/town_map.png" alt="Town map rendered from town.tmx" width="1600" height="1120">
+  <div class="actor" id="quest-gob" style="left:1162px;top:579px"><div class="spr" id="quest-gob-s" style="background-image:url('assets/game/npc_quest_idle.png');"></div></div>
+  <div class="actor" id="quest-pl" style="left:1102px;top:581px">
+    <div class="spr" id="quest-pl-idle" style="background-image:url('assets/game/player_idle.png');"></div>
+    <div class="spr" id="quest-pl-run" style="background-image:url('assets/game/player_run.png');opacity:0;"></div>
+  </div>
+</div></div></div>
+<div class="tint" id="quest-tint" style="background:rgb(255,222,196)"></div>
+<div class="glow" id="quest-glow"></div>
+<div class="banner" id="quest-banner"><span class="plate"><span class="bw" id="quest-bw0">Every</span> <span class="bw" id="quest-bw1">RPG</span> <span class="bw" id="quest-bw2">starts</span> <span class="bw" id="quest-bw3">like</span> <span class="bw" id="quest-bw4">this.</span></span></div>
+<div class="hud-gold"><img src="assets/game/gold.png" alt=""><div class="num"><span id="quest-g0" style="opacity:1">0</span></div></div><div class="hud-clock"><span class="day">Day 1</span><span class="tm"><span id="quest-t0" style="opacity:1">08:00</span><span id="quest-t1" style="opacity:0">08:10</span><span id="quest-t2" style="opacity:0">08:20</span></span></div>
+<div class="dlg" id="quest-dlg" style="opacity:0">
+  <div id="quest-l1" class="dlg-txt"><span class="w"><span id="quest-l1-c0" class="c">H</span><span id="quest-l1-c1" class="c">i</span></span> <span class="w"><span id="quest-l1-c3" class="c">f</span><span id="quest-l1-c4" class="c">r</span><span id="quest-l1-c5" class="c">i</span><span id="quest-l1-c6" class="c">e</span><span id="quest-l1-c7" class="c">n</span><span id="quest-l1-c8" class="c">d</span></span> <span class="w"><span id="quest-l1-c10" class="c">!</span></span></div>
+  <div id="quest-l2" class="dlg-txt"><span class="w"><span id="quest-l2-c0" class="c">I</span></span> <span class="w"><span id="quest-l2-c2" class="c">l</span><span id="quest-l2-c3" class="c">o</span><span id="quest-l2-c4" class="c">s</span><span id="quest-l2-c5" class="c">t</span></span> <span class="w"><span id="quest-l2-c7" class="c">m</span><span id="quest-l2-c8" class="c">y</span></span> <span class="w"><span id="quest-l2-c10" class="c">g</span><span id="quest-l2-c11" class="c">o</span><span id="quest-l2-c12" class="c">l</span><span id="quest-l2-c13" class="c">d</span><span id="quest-l2-c14" class="c">s</span></span> <span class="w"><span id="quest-l2-c16" class="c">.</span><span id="quest-l2-c17" class="c">.</span><span id="quest-l2-c18" class="c">.</span></span> <span class="w"><span id="quest-l2-c20" class="c">s</span><span id="quest-l2-c21" class="c">o</span><span id="quest-l2-c22" class="c">m</span><span id="quest-l2-c23" class="c">e</span></span> <span class="w"><span id="quest-l2-c25" class="c">b</span><span id="quest-l2-c26" class="c">a</span><span id="quest-l2-c27" class="c">d</span></span> <span class="w"><span id="quest-l2-c29" class="c">g</span><span id="quest-l2-c30" class="c">o</span><span id="quest-l2-c31" class="c">b</span><span id="quest-l2-c32" class="c">l</span><span id="quest-l2-c33" class="c">i</span><span id="quest-l2-c34" class="c">n</span><span id="quest-l2-c35" class="c">s</span></span> <span class="w"><span id="quest-l2-c37" class="c">s</span><span id="quest-l2-c38" class="c">t</span><span id="quest-l2-c39" class="c">o</span><span id="quest-l2-c40" class="c">l</span><span id="quest-l2-c41" class="c">e</span></span> <span class="w"><span id="quest-l2-c43" class="c">m</span><span id="quest-l2-c44" class="c">y</span></span> <span class="w"><span id="quest-l2-c46" class="c">s</span><span id="quest-l2-c47" class="c">t</span><span id="quest-l2-c48" class="c">u</span><span id="quest-l2-c49" class="c">f</span><span id="quest-l2-c50" class="c">f</span></span> <span class="w"><span id="quest-l2-c52" class="c">!</span><span id="quest-l2-c53" class="c">!</span></span></div>
+  <div class="dlg-txt" id="quest-ch" style="opacity:0">
+    <div class="row"><span class="cur" id="quest-cur1">&gt;</span>Sure why not !</div>
+    <div class="row"><span class="cur" id="quest-cur2" style="opacity:0">&gt;</span>Not my problem thanks for offer</div>
+  </div>
+  <div id="quest-thx" class="dlg-txt"><span class="w"><span id="quest-thx-c0" class="c">t</span><span id="quest-thx-c1" class="c">h</span><span id="quest-thx-c2" class="c">a</span><span id="quest-thx-c3" class="c">n</span><span id="quest-thx-c4" class="c">k</span><span id="quest-thx-c5" class="c">s</span></span> <span class="w"><span id="quest-thx-c7" class="c">!</span></span></div>
+</div>
+<div class="fade" id="quest-fade" style="opacity:1"></div>
+
+</div>
+<script>
+
+const tl = gsap.timeline({ paused: true });
+function typeLine(prefix, text, t0, per) {
+  for (let k = 0; k < text.length; k++) {
+    if (text[k] === " ") continue;
+    tl.fromTo("#" + prefix + "-c" + k, { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none" }, t0 + k * per);
+  }
+}
+// Elements that change state more than once take their initial state from CSS/inline style;
+// every later tween uses immediateRender:false so it cannot overwrite that initial state.
+function swap(ids, times) {
+  for (let i = 1; i < ids.length; i++) {
+    tl.fromTo(ids[i - 1], { opacity: 1 }, { opacity: 0, duration: 0.001, ease: "none", immediateRender: false }, times[i]);
+    tl.fromTo(ids[i], { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none", immediateRender: false }, times[i]);
+  }
+}
+function toggle(sel, t, on) {
+  tl.fromTo(sel, { opacity: on ? 0 : 1 }, { opacity: on ? 1 : 0, duration: 0.001, ease: "none", immediateRender: false }, t);
+}
+function popIn(sel, t) {
+  tl.fromTo(sel, { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: 0.22, ease: "power3.out" }, t);
+}
+function popOut(sel, t) {
+  tl.fromTo(sel, { opacity: 1, y: 0 }, { opacity: 0, y: 18, duration: 0.15, ease: "power2.in", immediateRender: false }, t);
+}
+function anim(sel, frames, fd, t0, end) {
+  const cyc = frames * fd;
+  tl.fromTo(sel, { backgroundPosition: "0px 0px" },
+    { backgroundPosition: (-96 * frames) + "px 0px", ease: "steps(" + frames + ")", duration: cyc,
+      repeat: Math.max(0, Math.ceil((end - t0) / cyc) - 1) }, t0);
+}
+function glowBeats(sel, levels, base, amp) {
+  // baseline opacity is 0 in CSS; each step eases to the next bass-driven level
+  levels.forEach(function (p) {
+    tl.to(sel, { opacity: base + amp * p[1], duration: 0.5, ease: "sine.inOut" }, p[0]);
+  });
+}
+function camSet(zoom, pan, cx, cy, s) { gsap.set(zoom, { scale: s }); gsap.set(pan, { x: -cx, y: -cy }); }
+function camMove(zoom, pan, from, to, t, dur, ease) {
+  tl.fromTo(zoom, { scale: from[2] }, { scale: to[2], duration: dur, ease: ease, immediateRender: false }, t);
+  tl.fromTo(pan, { x: -from[0], y: -from[1] }, { x: -to[0], y: -to[1], duration: dur, ease: ease, immediateRender: false }, t);
+}
+
+
+const L1 = "Hi friend !", L2 = "I lost my golds ... some bad goblins stole my stuff !!", THX = "thanks !";
+camSet("#quest-zoom", "#quest-pan", 1180, 592, 8);
+gsap.set("#quest-pl", { transformOrigin: "48px 32px" });
+
+// world: open from black, push in and land (arrive slow, leave clean)
+tl.fromTo("#quest-fade", { opacity: 1 }, { opacity: 0, duration: 0.4, ease: "power2.out" }, 0);
+tl.fromTo("#quest-zoom", { scale: 6.8 }, { scale: 8, duration: 0.9, ease: "expo.out" }, 0);
+anim("#quest-gob-s", 8, 0.14, 0, 7.02);
+anim("#quest-pl-idle", 9, 0.14, 0, 6.3);
+
+// hook banner: per-word blur-in, hold, blur-out
+for (let i = 0; i < 5; i++) {
+  tl.fromTo("#quest-bw" + i, { opacity: 0, filter: "blur(8px)" },
+    { opacity: 1, filter: "blur(0px)", duration: 0.14, ease: "power2.out" }, 0.35 + i * 0.09);
+}
+tl.fromTo("#quest-banner", { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power2.in" }, 2.35);
+
+// dialog panel + typed lines (0.03s per char, the game's own DialogBox speed)
+popIn("#quest-dlg", 0.18);
+typeLine("quest-l1", L1, 0.40, 0.03);
+tl.fromTo("#quest-l1", { opacity: 1 }, { opacity: 0, duration: 0.06 }, 1.2);
+typeLine("quest-l2", L2, 1.26, 0.03);
+tl.fromTo("#quest-l2", { opacity: 1 }, { opacity: 0, duration: 0.001 }, 4.0);
+
+// choice list, simulated on the beat grid (the cursor lingers on the refusal)
+// beat-grid: choices 4.02s, cursor down 4.53s, cursor up 5.53s, confirm 6.03s
+toggle("#quest-ch", 4.02, true);
+toggle("#quest-cur1", 4.53, false); toggle("#quest-cur2", 4.53, true);
+toggle("#quest-cur2", 5.53, false); toggle("#quest-cur1", 5.53, true);
+toggle("#quest-ch", 6.04, false);
+typeLine("quest-thx", THX, 6.08, 0.03);
+tl.fromTo("#quest-thx", { opacity: 1 }, { opacity: 0, duration: 0.001 }, 6.86);
+popOut("#quest-dlg", 6.78);
+
+// the player takes the quest and runs off to the west
+toggle("#quest-pl-idle", 6.3, false); toggle("#quest-pl-run", 6.3, true);
+tl.fromTo("#quest-pl", { scaleX: 1 }, { scaleX: -1, duration: 0.001 }, 6.3);
+anim("#quest-pl-run", 8, 0.1, 6.3, 7.02);
+tl.fromTo("#quest-pl", { x: 0 }, { x: -200, duration: 0.72, ease: "none" }, 6.3);
+
+// HUD clock: Day 1, morning
+swap(["#quest-t0", "#quest-t1", "#quest-t2"], [0, 3.3, 6.0]);
+tl.fromTo("#quest-tint", { backgroundColor: "rgb(255,222,196)" }, { backgroundColor: "rgb(255,232,212)", duration: 7, ease: "none" }, 0);
+
+// the game's own map-change fade (black)
+tl.fromTo("#quest-fade", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.in", immediateRender: false }, 6.52);
+
+glowBeats("#quest-glow", [[0.0, 0.496], [0.5, 0.443], [1.0, 0.402], [1.5, 0.378], [2.0, 0.327], [2.5, 0.268], [3.0, 0.241], [3.5, 0.221], [4.0, 0.39], [4.5, 0.399], [5.0, 0.394], [5.5, 0.354], [6.0, 0.309], [6.5, 0.302], [7.0, 0.28]], 0.04, 0.2);
+
+window.__timelines["quest"] = tl;
+</script>
+</template>

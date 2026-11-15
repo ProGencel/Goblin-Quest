@@ -23,6 +23,7 @@ public class DialogManager {
         public String[] give;
         public boolean linkOnly;
         public String reqObj;
+        public String action;
     }
 
     public static class Choice

@@ -20,10 +20,12 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.Main;
+import com.kitswiki.gquest.ai.skeleton.SkeletonState;
+import com.kitswiki.gquest.components.SkeletonAIComponent;
 import com.kitswiki.gquest.hud.Hud;
 import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
-import com.kitswiki.gquest.components.AIComponent;
+import com.kitswiki.gquest.components.EnemyAIComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.debug.AIDebugRenderer;
 import com.kitswiki.gquest.debug.DebugPhsic;
@@ -57,13 +59,13 @@ public class GameScreen implements Screen, ChangeMap {
     private final Viewport viewport;
     private final TiledMapReader mapReader;
     private final World world;
-    private final TileGraph graph;
 
     private final Viewport uiViewport;
     private final Stage dialogStage;
     private final DialogManager dialogManager;
     private final ShopManager shopManager;
     private final GameState gameState;
+    private TileGraph graph;
 
     private final Engine engine;
     private final EntityFactory entityFactory;
@@ -81,6 +83,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final ScreenFade fade;
 
     private ImmutableArray<Entity> aiEntities;
+    private ImmutableArray<Entity> skeEntities;
     private final AIDebugRenderer aiDebugRenderer;
     private final DebugPhsic debugPhsic;
 
@@ -102,7 +105,6 @@ public class GameScreen implements Screen, ChangeMap {
         this.camera = new OrthographicCamera();
         this.viewport = new FitViewport(480f * UNIT_SCALE, 270f * UNIT_SCALE,camera);
         this.world = new World(new Vector2(0,0),true);
-        this.graph = new TileGraph(world, tiledMap);
 
         this.mapReader = new TiledMapReader(tiledMap, UNIT_SCALE);
 
@@ -129,28 +131,33 @@ public class GameScreen implements Screen, ChangeMap {
         this.i = gameSession.getInv();
 
         spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
-        aiEntities = engine.getEntitiesFor(Family.all(AIComponent.class).get());
+        aiEntities = engine.getEntitiesFor(Family.all(EnemyAIComponent.class).get());
+        skeEntities = engine.getEntitiesFor(Family.all(SkeletonAIComponent.class).get());
     }
 
     @Override
     public void show() {
 
+        staticBodyBuilder.createStaticBody();
+        portalFactory.buildPortals();
+        mapObjectBuilder.loadStaticObjects();
+
+        graph = new TileGraph(world, tiledMap);
         entityFactory.setGraph(graph);
+
         p = entityFactory.createPlayer(spawnPos,i,gameSession.getHealthC());
         engine.addEntity(p);
 
         camera.position.set(spawnPos,0);
         world.setContactListener(new GameContactListener());
+
         mapObjectBuilder.setP(p);
-
-        staticBodyBuilder.createStaticBody();
-        portalFactory.buildPortals();
-        mapObjectBuilder.loadObjects();
-
+        mapObjectBuilder.loadDynamicObjects(gameState);
 
         engine.addSystem(dayNightSystem);
         engine.addSystem(new InputSystem());
         engine.addSystem(new AISystem());
+        engine.addSystem(new SkeletonAISystem());
         engine.addSystem(new MovementSystem(mapReader));
         engine.addSystem(new PhysicSystem(world));
         engine.addSystem(new PhysicSyncSystem());
@@ -174,13 +181,16 @@ public class GameScreen implements Screen, ChangeMap {
         {
             return;
         }
+        if ("cave".equals(map) && isCaveBusy()) {
+            hud.getDialogBox().start(new String[]{"Cave is busy now"}, null);
+            return;
+        }
         pendingMap = map;
         pendingSpawn = spawnId;
         fade.fadeOut();
     }
 
     private void changeMapNow(boolean startFadedIn) {
-
         if ("cave".equals(pendingMap))
         {
             gameState.set("goblin.cave_entry");
@@ -206,7 +216,7 @@ public class GameScreen implements Screen, ChangeMap {
             return;
         }
 
-        aiDebugRenderer.update(camera,aiEntities,graph);
+        aiDebugRenderer.update(camera,aiEntities,skeEntities,graph);
         debugPhsic.update();
 
         batch.begin();
@@ -248,5 +258,16 @@ public class GameScreen implements Screen, ChangeMap {
         batch.dispose();
         dialogStage.dispose();
         dayNightSystem.dispose();
+    }
+
+    private boolean isCaveBusy() {
+        for (Entity e : skeEntities) {
+            SkeletonAIComponent ai = e.getComponent(SkeletonAIComponent.class);
+
+            if (ai.skeletonAI.getStateMachine().isInState(SkeletonState.HIDING) || ai.skeletonAI.getStateMachine().isInState(SkeletonState.GOTO_CAVE)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

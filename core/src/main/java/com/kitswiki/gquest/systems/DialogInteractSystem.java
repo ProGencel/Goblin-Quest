@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Array;
-import com.kitswiki.gquest.ai.EnemyState;
+import com.kitswiki.gquest.ai.enemy.EnemyState;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.hud.customActors.DialogBox;
 import com.kitswiki.gquest.hud.DialogManager;
@@ -26,6 +26,7 @@ public class DialogInteractSystem extends IteratingSystem {
     private final GameState gameState;
     private final ShopManager shopManager;
     private String currentDialogId;
+    private DialogManager.DialogEntry currentEntry;
 
     private ShopManager.ShopItem[] shopItems;
     private Array<DialogManager.Choice> shopChoices;
@@ -90,6 +91,14 @@ public class DialogInteractSystem extends IteratingSystem {
         }
     }
 
+    public void executeAction(String action)
+    {
+        switch (action) {
+            case "ske_cave" -> sendCaveSkes();
+            default -> throw new IllegalArgumentException("Unknown dialog action: " + action);
+        }
+    }
+
     private void startDialog(String dialogId)
     {
         currentDialogId = dialogId;
@@ -103,6 +112,8 @@ public class DialogInteractSystem extends IteratingSystem {
 
     private void show(DialogManager.DialogEntry e)
     {
+        currentEntry = e;
+
         dialogBox.start(e.lines, dialogReader.visibleChoices(e, gameState));
     }
 
@@ -177,6 +188,25 @@ public class DialogInteractSystem extends IteratingSystem {
                 return;
             }
         }
+
+        if(dialogBox.isOpen())
+        {
+            return;
+        }
+
+        if (currentEntry != null && currentEntry.action != null) {
+            executeAction(currentEntry.action);
+        }
+
+        currentEntry = null;
         s.get(player).set(EnemyState.IDLE);
+    }
+
+    private void sendCaveSkes()
+    {
+        for(Entity e : getEngine().getEntitiesFor(Family.all(SkeletonAIComponent.class).get()))
+        {
+            e.getComponent(SkeletonAIComponent.class).skeletonAI.moveToCave();
+        }
     }
 }

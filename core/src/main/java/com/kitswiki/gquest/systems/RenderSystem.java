@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.kitswiki.gquest.components.HiddenComponent;
 import com.kitswiki.gquest.components.RoofComponent;
 import com.kitswiki.gquest.components.TextureComponent;
 import com.kitswiki.gquest.components.TransformComponent;
@@ -42,7 +43,7 @@ public class RenderSystem extends SortedIteratingSystem {
     private final Family roofFamily = Family.all(RoofComponent.class).get();
 
     public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, Stage dialogStage, GameScreen screen) {
-        super(Family.all(TransformComponent.class, TextureComponent.class).exclude(RoofComponent.class).get(),new YComparator());
+        super(Family.all(TransformComponent.class, TextureComponent.class).exclude(RoofComponent.class, HiddenComponent.class).get(),new YComparator());
         this.batch = batch;
         this.camera = camera;
         this.mapRenderer = mapRenderer;

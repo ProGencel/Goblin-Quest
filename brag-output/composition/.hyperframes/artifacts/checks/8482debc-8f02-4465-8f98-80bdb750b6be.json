@@ -1,0 +1,631 @@
+{
+  "ok": true,
+  "strict": false,
+  "browserSkipped": false,
+  "lint": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "filesScanned": 5
+  },
+  "runtime": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "layout": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 3,
+    "findings": [
+      {
+        "code": "panel_out_of_canvas",
+        "severity": "info",
+        "time": 10,
+        "selector": "#cave-pan > div:nth-of-type(72)",
+        "message": "Painted panel extends outside the composition canvas.",
+        "rect": {
+          "left": 1075.57,
+          "top": -87.15,
+          "right": 1211.27,
+          "bottom": 3.32,
+          "width": 135.7,
+          "height": 90.47
+        },
+        "containerSelector": "#root",
+        "text": "",
+        "fixHint": "Move the panel inward, or mark intentional off-canvas animation with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1920,
+          "height": 1080
+        },
+        "overflow": {
+          "top": 87.15
+        },
+        "dataAttributes": {},
+        "sourceFile": "compositions/cave.html",
+        "bbox": {
+          "x": 1075.57,
+          "y": -87.15,
+          "width": 135.7,
+          "height": 90.47
+        },
+        "firstSeen": 10,
+        "lastSeen": 10,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          10
+        ]
+      },
+      {
+        "code": "panel_out_of_canvas",
+        "severity": "info",
+        "time": 10,
+        "selector": "#cave-pan > div:nth-of-type(73)",
+        "message": "Painted panel extends outside the composition canvas.",
+        "rect": {
+          "left": 979.97,
+          "top": -82.44,
+          "right": 1113.37,
+          "bottom": 6.49,
+          "width": 133.4,
+          "height": 88.93
+        },
+        "containerSelector": "#root",
+        "text": "",
+        "fixHint": "Move the panel inward, or mark intentional off-canvas animation with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1920,
+          "height": 1080
+        },
+        "overflow": {
+          "top": 82.44
+        },
+        "dataAttributes": {},
+        "sourceFile": "compositions/cave.html",
+        "bbox": {
+          "x": 979.97,
+          "y": -82.44,
+          "width": 133.4,
+          "height": 88.93
+        },
+        "firstSeen": 10,
+        "lastSeen": 10,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          10
+        ]
+      },
+      {
+        "code": "panel_out_of_canvas",
+        "severity": "info",
+        "time": 14.444,
+        "selector": "#shop-sk3",
+        "message": "Painted panel extends outside the composition canvas.",
+        "rect": {
+          "left": 1350.5,
+          "top": -107,
+          "right": 1878.5,
+          "bottom": 245,
+          "width": 528,
+          "height": 352
+        },
+        "containerSelector": "#root",
+        "text": "",
+        "fixHint": "Move the panel inward, or mark intentional off-canvas animation with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "width": 1920,
+          "height": 1080
+        },
+        "overflow": {
+          "top": 107
+        },
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 1350.5,
+          "y": -107,
+          "width": 528,
+          "height": 352
+        },
+        "firstSeen": 14.444,
+        "lastSeen": 14.444,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          14.444
+        ]
+      }
+    ],
+    "duration": 20,
+    "samples": [
+      1.111,
+      3.333,
+      5.556,
+      7.778,
+      10,
+      12.222,
+      14.444,
+      16.667,
+      18.889
+    ],
+    "transitionSamples": [],
+    "transitionSamplesDropped": 0,
+    "tolerance": 2,
+    "totalIssueCount": 3,
+    "truncated": false
+  },
+  "motion": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": false,
+    "samples": 0
+  },
+  "contrast": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 16,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.16:1; WCAG AA requires 3:1.",
+        "text": "B",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(99,146,40)",
+        "ratio": 2.16,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(60,58,67)",
+        "large": true,
+        "selector": "#boss-l-c0",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 124,
+          "y": 869,
+          "width": 39.875,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.16:1; WCAG AA requires 3:1.",
+        "text": "u",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(99,146,40)",
+        "ratio": 2.16,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(60,58,67)",
+        "large": true,
+        "selector": "#boss-l-c1",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 163.875,
+          "y": 869,
+          "width": 32.625,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.16:1; WCAG AA requires 3:1.",
+        "text": "t",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(99,146,40)",
+        "ratio": 2.16,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(60,58,67)",
+        "large": true,
+        "selector": "#boss-l-c2",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 196.5,
+          "y": 869,
+          "width": 21.75,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.16:1; WCAG AA requires 3:1.",
+        "text": "i",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(99,146,40)",
+        "ratio": 2.16,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(60,58,67)",
+        "large": true,
+        "selector": "#boss-l-c4",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 236.375,
+          "y": 869,
+          "width": 10.875,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.16:1; WCAG AA requires 3:1.",
+        "text": "t",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(99,146,40)",
+        "ratio": 2.16,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(60,58,67)",
+        "large": true,
+        "selector": "#boss-l-c5",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 247.25,
+          "y": 869,
+          "width": 21.75,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.2:1; WCAG AA requires 3:1.",
+        "text": "s",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(103,147,41)",
+        "ratio": 2.2,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(62,59,69)",
+        "large": true,
+        "selector": "#boss-l-c6",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 269,
+          "y": 869,
+          "width": 29,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.16:1; WCAG AA requires 3:1.",
+        "text": "p",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(99,146,40)",
+        "ratio": 2.16,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(60,58,67)",
+        "large": true,
+        "selector": "#boss-l-c8",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 316.125,
+          "y": 869,
+          "width": 36.25,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.16:1; WCAG AA requires 3:1.",
+        "text": "r",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(99,146,40)",
+        "ratio": 2.16,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(60,58,67)",
+        "large": true,
+        "selector": "#boss-l-c9",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 352.375,
+          "y": 869,
+          "width": 29,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.17:1; WCAG AA requires 3:1.",
+        "text": "i",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(101,146,41)",
+        "ratio": 2.17,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(60,58,67)",
+        "large": true,
+        "selector": "#boss-l-c10",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 381.375,
+          "y": 869,
+          "width": 10.875,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 2.07:1; WCAG AA requires 3:1.",
+        "text": "c",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(109,140,43)",
+        "ratio": 2.07,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(58,55,64)",
+        "large": true,
+        "selector": "#boss-l-c11",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 392.25,
+          "y": 869,
+          "width": 36.25,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 1.83:1; WCAG AA requires 3:1.",
+        "text": "e",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(168,107,52)",
+        "ratio": 1.83,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(49,47,55)",
+        "large": true,
+        "selector": "#boss-l-c12",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 428.5,
+          "y": 869,
+          "width": 32.625,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 1.89:1; WCAG AA requires 3:1.",
+        "text": "y",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(192,96,53)",
+        "ratio": 1.89,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(51,49,57)",
+        "large": true,
+        "selector": "#boss-l-c13",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 461.125,
+          "y": 869,
+          "width": 32.625,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 1.89:1; WCAG AA requires 3:1.",
+        "text": "l",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(193,95,53)",
+        "ratio": 1.89,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(51,49,57)",
+        "large": true,
+        "selector": "#boss-l-c15",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 511.875,
+          "y": 869,
+          "width": 10.875,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 1.89:1; WCAG AA requires 3:1.",
+        "text": "i",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(193,95,53)",
+        "ratio": 1.89,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(51,49,57)",
+        "large": true,
+        "selector": "#boss-l-c16",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 522.75,
+          "y": 869,
+          "width": 10.875,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 1.88:1; WCAG AA requires 3:1.",
+        "text": "k",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(193,95,52)",
+        "ratio": 1.88,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(51,49,57)",
+        "large": true,
+        "selector": "#boss-l-c17",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 533.625,
+          "y": 869,
+          "width": 32.625,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      },
+      {
+        "code": "contrast_aa_failure",
+        "severity": "warning",
+        "message": "Contrast is 1.86:1; WCAG AA requires 3:1.",
+        "text": "e",
+        "fg": "rgb(82,79,91)",
+        "bg": "rgb(192,94,52)",
+        "ratio": 1.86,
+        "requiredRatio": 3,
+        "suggestedColor": "rgb(50,48,56)",
+        "large": true,
+        "selector": "#boss-l-c18",
+        "dataAttributes": {},
+        "sourceFile": "compositions/shop.html",
+        "bbox": {
+          "x": 566.25,
+          "y": 869,
+          "width": 32.625,
+          "height": 59
+        },
+        "time": 14.444,
+        "times": [
+          14.444
+        ]
+      }
+    ],
+    "enabled": true,
+    "samples": [
+      1.111,
+      5.556,
+      10,
+      14.444,
+      18.889
+    ],
+    "checked": 129,
+    "passed": 113
+  },
+  "craft": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "step": 0.125,
+    "samples": 160
+  },
+  "audio": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "hdr": {
+    "autoPromotion": null,
+    "inspection": "available"
+  },
+  "snapshots": {
+    "enabled": false,
+    "files": [],
+    "times": [],
+    "findingFiles": []
+  }
+}

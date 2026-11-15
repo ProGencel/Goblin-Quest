@@ -18,6 +18,8 @@ public class PortalSystem extends IteratingSystem {
 
     private final ChangeMap screen;
     private final Entity player;
+    private Entity lastPortal;
+    private float timer = 0f;
 
     public PortalSystem(ChangeMap screen, Entity player) {
         super(Family.all(PortalComponent.class).get());
@@ -36,6 +38,19 @@ public class PortalSystem extends IteratingSystem {
         {
             return;
         }
+        timer += deltaTime;
+        if(timer >= 1f)
+        {
+            lastPortal = null;
+            timer = 0f;
+        }
+
+        if(lastPortal == entity)
+        {
+            return;
+        }
+
+        lastPortal = entity;
 
         s.set(CharacterState.STOP);
         screen.changeMap(po.targetMap,po.targetSpawn);

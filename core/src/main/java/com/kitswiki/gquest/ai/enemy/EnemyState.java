@@ -1,4 +1,4 @@
-package com.kitswiki.gquest.ai;
+package com.kitswiki.gquest.ai.enemy;
 
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;
@@ -20,13 +20,13 @@ public enum EnemyState implements State<EnemyAI> {
                 entity.stateMachine.changeState(CHASE);
                 return;
             }
-            if(!entity.hasPatrol())
+            if(!entity.nav.hasPatrol())
             {
                 return;
             }
 
             entity.updatePatrol();
-            if(!entity.isPatrolWaiting())
+            if(!entity.nav.isPatrolWaiting())
             {
                 entity.stateMachine.changeState(PATROL);
             }
@@ -79,7 +79,7 @@ public enum EnemyState implements State<EnemyAI> {
         public void enter(EnemyAI entity) {
             if(entity.stateMachine.getPreviousState() != IDLE)
             {
-                entity.startPatrol();
+                entity.nav.startPatrol();
             }
         }
 
@@ -90,14 +90,14 @@ public enum EnemyState implements State<EnemyAI> {
                 entity.stateMachine.changeState(CHASE);
                 return;
             }
-            if(!entity.hasPatrol())
+            if(!entity.nav.hasPatrol())
             {
                 entity.stateMachine.changeState(IDLE);
                 return;
             }
 
             entity.updatePatrol();
-            if(entity.isPatrolWaiting())
+            if(entity.nav.isPatrolWaiting())
             {
                 entity.stateMachine.changeState(IDLE);
             }

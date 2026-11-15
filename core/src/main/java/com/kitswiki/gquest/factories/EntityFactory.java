@@ -4,18 +4,19 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
-import com.kitswiki.gquest.ai.EnemyAI;
+import com.kitswiki.gquest.ai.enemy.EnemyAI;
 import com.kitswiki.gquest.ai.SteerableBody;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
+import com.kitswiki.gquest.ai.skeleton.SkeletonAI;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.map.TiledMapReader;
 
@@ -107,12 +108,26 @@ public class EntityFactory {
         DialogComponent d = new DialogComponent();
         d.dialogId = mapObject.allProperties.get("identity", String.class);
 
+        SkeletonAIComponent ai = new SkeletonAIComponent();
+        SteerableBody steerable = new SteerableBody(b.body,0.5f);
+        steerable.setMaxLinearAcceleration(12f);
+        steerable.setMaxLinearSpeed(2.5f);
+
+        Vector2 dest = mapReader.getPoint("skeleton_target","skeleton_target").getPosition(); //bu path navigatorda sey oluyor
+        Vector2 startPos = t.position.cpy(); //!!!!!!!!!!!!
+
+        ai.locs.put("cave",dest);
+        ai.locs.put("start",startPos);
+        ai.skeletonAI = new SkeletonAI(steerable,ai.locs,graph,15f);
+
         e.add(t);
         e.add(new StateComponent());
         e.add(b);
         e.add(a);
         e.add(tex);
         e.add(d);
+        e.add(ai);
+        e.add(new StateComponent());
         e.add(new InteractComponent());
 
         return e;
@@ -135,7 +150,7 @@ public class EntityFactory {
         TextureComponent tex = new TextureComponent();
         tex.offsetY = spriteOffsetY(mapObject);
 
-        AIComponent ai = engine.createComponent(AIComponent.class);
+        EnemyAIComponent ai = engine.createComponent(EnemyAIComponent.class);
         SteerableBody steerable = new SteerableBody(b.body, 0.5f);
         steerable.setMaxLinearSpeed(3f);
         steerable.setMaxLinearAcceleration(8f);
@@ -380,7 +395,7 @@ public class EntityFactory {
 
     public void addPatrolTile(EnemyAI ai,int tx, int tyFromTop, int mapH) {
         int ty = mapH - 1 - tyFromTop;
-        ai.patrolPoints.add(new Vector2(
+        ai.nav.patrolPoints.add(new Vector2(
             (tx + 0.5f) * graph.tileSize,
             (ty + 0.5f) * graph.tileSize));
     }

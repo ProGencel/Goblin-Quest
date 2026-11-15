@@ -58,7 +58,6 @@ public class AnimationSystem extends IteratingSystem {
         {
             key = layer + "_" + st.charState.name().toLowerCase();
         }
-
         Animation<TextureRegion> a = cache.get(key);
         if(a == null)
         {
