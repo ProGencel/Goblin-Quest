@@ -104,6 +104,7 @@ public class EntityFactory {
 
         TextureComponent tex = new TextureComponent();
         tex.offsetY = spriteOffsetY(mapObject);
+        tex.flipped = mapObject.getBool("isFlipped",true);
 
         DialogComponent d = new DialogComponent();
         d.dialogId = mapObject.allProperties.get("identity", String.class);
@@ -152,8 +153,8 @@ public class EntityFactory {
 
         EnemyAIComponent ai = engine.createComponent(EnemyAIComponent.class);
         SteerableBody steerable = new SteerableBody(b.body, 0.5f);
-        steerable.setMaxLinearSpeed(3f);
-        steerable.setMaxLinearAcceleration(8f);
+        steerable.setMaxLinearSpeed(4f);
+        steerable.setMaxLinearAcceleration(12f);
 
         ai.enemyAI = new EnemyAI(steerable, player.getComponent(SteerableComponent.class).steerableBody,world,graph);
         for(int i = 0;i<10;i++)
@@ -297,38 +298,6 @@ public class EntityFactory {
             e.add(a);
             e.add(new StateComponent());
         }
-    }
-
-    private Body handleBodyForDynamicRect(TiledMapReader.MapTileObject mapObject)
-    {
-        Array<TiledMapReader.MapShape> shapes = mapObject.shapes;
-
-        float halfW = mapObject.width / 2f;
-        float halfH = mapObject.height / 2f;
-
-        BodyDef bdef = new BodyDef();
-        bdef.type = BodyDef.BodyType.DynamicBody;
-        bdef.position.x = mapObject.x + halfW;
-        bdef.position.y = mapObject.y + halfH;
-        bdef.fixedRotation = true;
-
-        Body b = world.createBody(bdef);
-
-        for(TiledMapReader.MapShape m : shapes)
-        {
-            Rectangle r = m.bounds;
-            float bodyX = mapObject.x + halfW;
-            float bodyY = mapObject.y + halfH;
-
-            PolygonShape shape = new PolygonShape();
-            Vector2 center = new Vector2(
-                r.x + r.width / 2f - bodyX,
-                r.y + r.height / 2f - bodyY);
-            shape.setAsBox(r.width / 2f, r.height / 2f,center,0f);
-            b.createFixture(shape, 1f);
-            shape.dispose();
-        }
-        return b;
     }
 
     private Body handleBodyForStaticRect(TiledMapReader.MapTileObject mapTileObject)

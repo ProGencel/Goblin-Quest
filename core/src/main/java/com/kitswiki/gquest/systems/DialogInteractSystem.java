@@ -19,6 +19,7 @@ public class DialogInteractSystem extends IteratingSystem {
     private final ComponentMapper<PlayerComponent> p = ComponentMapper.getFor(PlayerComponent.class);
     private final ComponentMapper<StateComponent> s = ComponentMapper.getFor(StateComponent.class);
     private final ComponentMapper<InventoryComponent> inv = ComponentMapper.getFor(InventoryComponent.class);
+    private final ComponentMapper<SkeletonAIComponent> ske = ComponentMapper.getFor(SkeletonAIComponent.class);
 
     private final Entity player;
     private final DialogBox dialogBox;
@@ -86,6 +87,10 @@ public class DialogInteractSystem extends IteratingSystem {
 
         if(p.get(player).interact && d.has(pInteractTarget))
         {
+            if (s.has(pInteractTarget) && s.get(pInteractTarget).charState.equals(CharacterState.RUN))
+            {
+                return;
+            }
             startDialog(d.get(entity).dialogId);
             s.get(player).set(CharacterState.STOP);
         }

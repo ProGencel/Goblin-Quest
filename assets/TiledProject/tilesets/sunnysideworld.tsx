@@ -11,6 +11,15 @@
  <tile id="449" probability="2"/>
  <tile id="460" probability="2"/>
  <tile id="470" probability="4"/>
+ <tile id="1276" type="static">
+  <properties>
+   <property name="isAnim" type="bool" value="true"/>
+  </properties>
+  <animation>
+   <frame tileid="1276" duration="200"/>
+   <frame tileid="1277" duration="200"/>
+  </animation>
+ </tile>
  <tile id="2101" type="static">
   <objectgroup draworder="index" id="2">
    <object id="1" x="3.17391" y="10.1304" width="12.6522" height="5.73913"/>

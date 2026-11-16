@@ -84,6 +84,9 @@
    <property name="OFFSET_Y" type="float" value="8"/>
   </properties>
   <image source="bush_big.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="5.94158" y="14.1875" width="19.962" height="9.28125"/>
+  </objectgroup>
  </tile>
  <tile id="10" type="static">
   <properties>
@@ -91,6 +94,9 @@
    <property name="OFFSET_Y" type="float" value="8"/>
   </properties>
   <image source="bush_green_fruit.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="3" x="6.06248" y="14.2289" width="19.962" height="9.28125"/>
+  </objectgroup>
  </tile>
  <tile id="11" type="static">
   <properties>
@@ -98,6 +104,9 @@
    <property name="OFFSET_Y" type="float" value="8"/>
   </properties>
   <image source="bush_red_fruit.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="4">
+   <object id="4" x="6.10596" y="14.1855" width="19.962" height="9.28125"/>
+  </objectgroup>
  </tile>
  <tile id="12" type="static">
   <properties>
@@ -114,6 +123,9 @@
    <property name="OFFSET_Y" type="float" value="11"/>
   </properties>
   <image source="tree1.png" width="32" height="48"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="12.1304" y="31.0435" width="7.78261" height="6.26087"/>
+  </objectgroup>
  </tile>
  <tile id="14" type="static">
   <properties>
@@ -121,6 +133,9 @@
    <property name="OFFSET_Y" type="float" value="2"/>
   </properties>
   <image source="tree2.png" width="16" height="48"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="5.3125" y="40.25" width="5.53125" height="5.875"/>
+  </objectgroup>
  </tile>
  <tile id="15" type="static">
   <properties>
@@ -128,6 +143,9 @@
    <property name="OFFSET_Y" type="float" value="17"/>
   </properties>
   <image source="tree3.png" width="32" height="48"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="6.95245" y="22.6563" width="17.9565" height="8.15625"/>
+  </objectgroup>
  </tile>
  <tile id="16" type="static">
   <properties>
@@ -162,12 +180,6 @@
  <tile id="20" type="static">
   <image source="bigHouseRoof.png" width="288" height="192"/>
  </tile>
- <tile id="22" type="static">
-  <properties>
-   <property name="FRAME_H" type="int" value="22"/>
-  </properties>
-  <image source="BigHouse/wall1.png" width="144" height="22"/>
- </tile>
  <tile id="23" type="static">
   <properties>
    <property name="FRAME_H" type="int" value="22"/>
@@ -190,5 +202,11 @@
     <ellipse/>
    </object>
   </objectgroup>
+ </tile>
+ <tile id="27" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="22"/>
+  </properties>
+  <image source="BigHouse/wall1.png" width="144" height="22"/>
  </tile>
 </tileset>

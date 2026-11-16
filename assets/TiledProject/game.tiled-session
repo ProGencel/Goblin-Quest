@@ -35,31 +35,32 @@
         },
         "maps/cave.tmx": {
             "expandedObjectLayers": [
+                9,
                 4,
                 8,
-                7,
-                9
+                7
             ],
-            "scale": 1.5,
+            "scale": 2,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 800.3333333333333,
+                "x": 800.25,
                 "y": 800
             }
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
-                4,
-                15,
                 30,
+                15,
+                9,
                 14,
-                9
+                4,
+                23
             ],
-            "scale": 23,
-            "selectedLayer": 13,
+            "scale": 2,
+            "selectedLayer": 12,
             "viewCenter": {
-                "x": 906.5,
-                "y": 161.91304347826087
+                "x": 810.25,
+                "y": 560
             }
         },
         "tilesets/SunnySide Environment.tsx": {
@@ -70,7 +71,7 @@
         "tilesets/duck.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 8,
-            "scaleInEditor": 8
+            "scaleInEditor": 4
         },
         "tilesets/props.tsx": {
             "dynamicWrapping": true,
@@ -84,7 +85,7 @@
         }
     },
     "frame.defaultDuration": 200,
-    "last.imagePath": "C:/Desktop/libGDX/GoblinQuests/assets/TiledProject/tilesets",
+    "last.imagePath": "C:/Desktop/libGDX/GoblinQuests/assets/TiledProject/tilesets/BigHouse",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
@@ -96,7 +97,7 @@
         "maps/cave.tmx"
     ],
     "project": "game.tiled-project",
-    "property.type": "string",
+    "property.type": "bool",
     "recentFiles": [
         "tilesets/sunnysideworld.tsx",
         "maps/cave.tmx",

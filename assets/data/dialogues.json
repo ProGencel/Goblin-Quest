@@ -1,23 +1,43 @@
 {
   "goblin": [
     {
-      "id": "reward",
-      "once": true,
-      "requires": ["goblin.gold_returned"],
-      "lines": ["You found my golds!? You are the best !"]
+      "id": "goblin_accept",
+      "linkOnly": true,
+      "lines": [
+        "Thanks!",
+        "There is a cave entry on the north of the town you can find the bad goblins there"
+      ]
     },
     {
-      "id": "thanks",
-      "requires": ["goblin.gold_returned"],
-      "lines": ["Thanks again, friend."]
+      "id": "goblin_refuse",
+      "linkOnly": true,
+      "lines": ["Come back if you change your mind"]
+    },
+    {
+      "id": "after_cave",
+      "once": true,
+      "requires": ["goblin.cave_entry"],
+      "lines": [
+        "Uhm..",
+        "I forgot to mention there are a lot of them and has weapons"," sorry",
+        "I really want to help you about that but as you can guess i dont have any gold or weapon",
+        "But there are skeletons who is do business like that maybe you can try to talk them",
+        "I am not sure but i guess they live on right side of the town"
+      ]
+    },
+    {
+      "id": "idle",
+      "lines": ["Bye my friend"],
+      "requires": ["goblin.quest_accepted"]
     },
     {
       "id": "intro",
-      "once": true,
       "lines": [
         "Hi friend !",
-        "I lost my golds while i look before shrooms on the east side of the town but some bad goblins stole my stuff !!",
-        "If you can get my golds back maybe i can share a part of my golds !"
+        "I lost my golds while i look before mushrooms on the north side of the town but some bad goblins stole my golds !! Like 1500 gold",
+        "I know you want to leave this town",
+        "You are the only human here",
+        "If you bring my golds back i can help with that",
       ],
       "choices": [
         {
@@ -30,30 +50,6 @@
           "next": "goblin_refuse"
         }
       ]
-    },
-    {
-      "id": "goblin_accept",
-      "lines": ["thanks !"]
-    },
-    {
-      "id": "goblin_refuse",
-      "lines": ["ok !"]
-    },
-    {
-      "id": "after_cave",
-      "once": true,
-      "requires": ["goblin.cave_entry"],
-      "lines": [
-        "Uhm..",
-        "I forgot the tell they are a lot of and has weapons sorry",
-        "I am really want to help you about that but as you can guess i dont have any gold or weapon",
-        "But weaponsmith is friend of mine ! \nIf you give my name to him i am sure he is make a discount",
-        "Have a good luck!"
-      ]
-    },
-    {
-      "id": "idle",
-      "lines": ["Bye my friend"]
     }
   ],
 
@@ -61,30 +57,52 @@
     {
       "id": "intro",
       "once": true,
+      "requires": ["weaponsmith"],
       "lines": [
         "Hi",
         "Yes my duck is lost and i could not find it :(",
-        "Its my only friend in this town if you can find my duck i will give you 100 golds",
+        "Its my only friend in this town if you can find my duck i will give you 50 golds",
         "Please help me"
       ]
+    },
+    {
+      "id": "idle",
+      "lines": ["`~`"]
     },
     {
       "id": "thanks",
       "once": true,
       "requires": ["duckGob.duck_collected"],
       "lines": [
-        "You found my duck !",
+        "You found my duck !!!",
         "Thanks !"
       ],
       "give": ["gold:50"]
     },
     {
       "id": "idle",
-      "lines": ["thanks again!"]
+      "lines": ["Thanks again!","I never forget you!"]
     }
   ],
 
   "boss": [
+    {
+      "id": "after",
+      "requires": ["skes_cave"],
+      "lines": [
+        "Here are the golds",
+        "But before you take the golds we have to take our part",
+        "And so there is so much gold so price has increased like 200 per person",
+        "So here you are your 750 gold"
+      ],
+      "once": true,
+      "give": ["gold:750"]
+    },
+    {
+      "id": "idlecave",
+      "requires": ["skes_cave"],
+      "lines": ["It was good to work with you"]
+    },
     {
       "id": "intro",
       "lines": [
@@ -92,6 +110,22 @@
         "You gotta be careful here"
       ],
       "once": true
+    },
+    {
+      "id": "afteronce",
+      "requires": ["talked_once"],
+      "lines": ["So you change your mind okay","So can you do 50 golds ?"],
+      "choices": [
+        {
+          "text" : "yea of course",
+          "next" : "accept",
+          "set": ["skes_cave"]
+        },
+        {
+          "text" : "sorry i cant do that",
+          "next" : "refuse"
+        }
+      ]
     },
     {
       "id": "ready",
@@ -111,24 +145,19 @@
         },
         {
           "text" : "sorry i cant do that",
-          "next" : "refuse"
+          "next" : "refuse",
+          "set": ["talked_once"]
         }
       ]
     },
     {
-      "id": "after",
-      "lines": [
-        "Here are the golds",
-        "But before you take the golds we have to take our part",
-        "And so there is so much gold so price has increased like 200 per person",
-        "So here you are your 750 gold"
-      ],
+      "id": "idle_once",
       "once": true,
-      "give": ["gold:750"]
+      "lines": ["Buy a chip and come back","You can buy from the guy other side of the river"]
     },
     {
       "id": "idle",
-      "lines": ["Buy a chip and come back"]
+      "lines": ["What are you waiting for"]
     },
     {
       "id": "accept",
@@ -166,7 +195,7 @@
     {
       "id": "once",
       "once": true,
-      "lines": ["Whats up","If you have a business for us","talk with the boss"]
+      "lines": ["I cant talk with you"]
     },
     {
       "id": "intro",
@@ -183,12 +212,17 @@
       ],
       "choices": [
         { "text": "Let me see your goods", "shop": "weaponsmith" },
+        {"text": "I dont have any gold how can i get?","next": "money","set": ["weaponsmith"]},
         { "text": "Maybe later", "next": "weaponsmith_bye" }
       ]
     },
     {
       "id": "weaponsmith_bye",
       "lines": ["Come back anytime!"]
+    },
+    {
+      "id": "money",
+      "lines": ["The guy across the river was saying 50 gold for who found his duck","Maybe you can try to talk with him"]
     }
   ],
 

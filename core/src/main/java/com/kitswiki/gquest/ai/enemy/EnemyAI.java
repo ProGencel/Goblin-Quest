@@ -27,7 +27,7 @@ public class EnemyAI {
     private float repathTimer;
     private float dt;
 
-    public float detectRange = 4f;
+    public float detectRange = 6f;
     public float loseRange = 30f;
     public float attackRange = 0.8f;
     public float repathInterval = 0.4f;
