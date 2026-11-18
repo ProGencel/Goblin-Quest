@@ -35,6 +35,7 @@ import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.factories.PortalFactory;
 import com.kitswiki.gquest.interfaces.ChangeMap;
 import com.kitswiki.gquest.listeners.GameContactListener;
+import com.kitswiki.gquest.managers.AudioManager;
 import com.kitswiki.gquest.map.MapObjectBuilder;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
@@ -73,6 +74,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final PortalFactory portalFactory;
     private final StaticBodyBuilder staticBodyBuilder;
     private final Hud hud;
+    private final AudioManager audioManager;
 
     private final Vector2 spawnPos;
 
@@ -120,7 +122,8 @@ public class GameScreen implements Screen, ChangeMap {
         this.portalFactory = new PortalFactory(mapReader,engine,world);
         this.entityFactory = new EntityFactory(world,mapReader,engine);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
-        this.hud = new Hud(dialogStage,assetManager,dayNightSystem);
+        this.audioManager = new AudioManager(assetManager);
+        this.hud = new Hud(dialogStage,assetManager,dayNightSystem,audioManager);
         this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory);
         hud.setDialog();
 
@@ -158,13 +161,13 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new InputSystem());
         engine.addSystem(new AISystem());
         engine.addSystem(new SkeletonAISystem());
-        engine.addSystem(new MovementSystem(mapReader));
+        engine.addSystem(new MovementSystem(mapReader,audioManager));
         engine.addSystem(new PhysicSystem(world));
         engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new DamageSystem(p));
         engine.addSystem(new DeathSystem(this,"town","begin",gameSession));
         engine.addSystem(delayedSpawnSystem);
-        engine.addSystem(new DialogInteractSystem(p,hud.getDialogBox(),dialogManager, gameState,shopManager));
+        engine.addSystem(new DialogInteractSystem(p,hud.getDialogBox(),dialogManager, gameState,shopManager,audioManager));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
         engine.addSystem(new CollectableInteractSystem(gameState));
@@ -173,6 +176,10 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new RoofSystem());
         engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage,this));
         engine.addSystem(new InGameUiSystem(assetManager,p));
+
+
+
+        audioManager.playMusic(AudioManager.TYPE.TOWN_THEME);
     }
 
     public void changeMap(String map, String spawnId)

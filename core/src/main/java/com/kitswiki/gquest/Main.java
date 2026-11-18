@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -71,6 +73,10 @@ public class Main extends Game {
         assetManager.load("TiledProject/maps/cave.tmx", TiledMap.class);
         assetManager.load("atlas/cooked/gquest.atlas", TextureAtlas.class);
         assetManager.load("UI/dialog/skin/skin.json", Skin.class);
+        assetManager.load("audio/walk.wav", Sound.class);
+        assetManager.load("audio/TownTheme.mp3", Music.class);
+        assetManager.load("audio/cave.ogg", Music.class);
+        assetManager.load("audio/dialog.wav", Sound.class);
         assetManager.finishLoading();
     }
 

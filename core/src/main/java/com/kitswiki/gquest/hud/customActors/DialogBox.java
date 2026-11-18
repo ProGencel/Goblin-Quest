@@ -6,13 +6,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.hud.DialogManager;
+import com.kitswiki.gquest.managers.AudioManager;
 
 public class DialogBox extends Table {
+
+    private final AudioManager audioManager;
 
     private final Label label;
     private String[] lines;
     private int lineIndex;
     private float charTimer;
+    private float soundTimer;
     private int visibleChars;
     private boolean open;
 
@@ -27,10 +31,11 @@ public class DialogBox extends Table {
     private boolean shopMode;
     private String header;
 
-    public DialogBox(Skin skin) {
+    public DialogBox(Skin skin, AudioManager audioManager) {
         super(skin);
 
         this.setBackground(skin.getDrawable("dialog"));
+        this.audioManager = audioManager;
 
         label = new Label("", skin);
         label.setAlignment(Align.topLeft);
@@ -192,10 +197,15 @@ public class DialogBox extends Table {
 
         if (visibleChars < currentLine.length()) {
             charTimer += delta;
+            soundTimer += delta;
             if (charTimer >= 0.03f) {
                 visibleChars++;
                 charTimer = 0;
                 label.setText(currentLine.substring(0, visibleChars));
+            }
+            if (soundTimer >= 0.05f) {
+                audioManager.playSound(AudioManager.TYPE.DIALOG, AudioManager.OPT.ONCE,0.3f);
+                soundTimer = 0f;
             }
         }
     }

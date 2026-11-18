@@ -4,10 +4,12 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.enums.CharacterState;
+import com.kitswiki.gquest.managers.AudioManager;
 import com.kitswiki.gquest.map.TiledMapReader;
 
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
@@ -21,10 +23,14 @@ public class MovementSystem extends IteratingSystem {
     private final ComponentMapper<DeadComponent> d = ComponentMapper.getFor(DeadComponent.class);
 
     private final TiledMapReader mapReader;
+    private final AudioManager audioManager;
 
-    public MovementSystem(TiledMapReader mapReader) {
+    private float etime = 0f;
+
+    public MovementSystem(TiledMapReader mapReader, AudioManager audioManager) {
         super(Family.all(BodyComponent.class, MovementComponent.class, TextureComponent.class).get());
         this.mapReader = mapReader;
+        this.audioManager = audioManager;
     }
 
     @Override
@@ -34,6 +40,16 @@ public class MovementSystem extends IteratingSystem {
         TextureComponent t = this.t.get(entity);
         StateComponent s = this.s.get(entity);
         DeadComponent d = this.d.get(entity);
+
+        if(s.charState.equals(CharacterState.RUN))
+        {
+            etime += deltaTime;
+            if(etime >= 0.5f)
+            {
+                audioManager.playWRandPitch(AudioManager.TYPE.WALK);
+                etime = 0f;
+            }
+        }
 
         if(d.dead)
         {

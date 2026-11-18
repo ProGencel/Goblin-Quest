@@ -12,6 +12,7 @@ import com.kitswiki.gquest.hud.DialogManager;
 import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.enums.CharacterState;
+import com.kitswiki.gquest.managers.AudioManager;
 
 public class DialogInteractSystem extends IteratingSystem {
 
@@ -26,13 +27,14 @@ public class DialogInteractSystem extends IteratingSystem {
     private final DialogManager dialogReader;
     private final GameState gameState;
     private final ShopManager shopManager;
+
     private String currentDialogId;
     private DialogManager.DialogEntry currentEntry;
 
     private ShopManager.ShopItem[] shopItems;
     private Array<DialogManager.Choice> shopChoices;
 
-    public DialogInteractSystem(Entity player, DialogBox dialogBox, DialogManager dialogReader, GameState gameState, ShopManager shopManager) {
+    public DialogInteractSystem(Entity player, DialogBox dialogBox, DialogManager dialogReader, GameState gameState, ShopManager shopManager, AudioManager audioManager) {
         super(Family.all(TransformComponent.class, DialogComponent.class).get());
         this.player = player;
         this.dialogBox = dialogBox;
