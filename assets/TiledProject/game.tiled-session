@@ -40,11 +40,11 @@
                 9,
                 8
             ],
-            "scale": 2,
+            "scale": 8,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 800.25,
-                "y": 800
+                "x": 36.1875,
+                "y": 1541.75
             }
         },
         "maps/town.tmx": {
@@ -56,11 +56,11 @@
                 15,
                 30
             ],
-            "scale": 11,
-            "selectedLayer": 17,
+            "scale": 5.5,
+            "selectedLayer": 12,
             "viewCenter": {
-                "x": 801.8636363636364,
-                "y": 560
+                "x": 1472.090909090909,
+                "y": 282.90909090909093
             }
         },
         "tilesets/SunnySide Environment.tsx": {

@@ -22,6 +22,8 @@ import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.Main;
 import com.kitswiki.gquest.ai.skeleton.SkeletonState;
 import com.kitswiki.gquest.components.SkeletonAIComponent;
+import com.kitswiki.gquest.effects.BlackScreen;
+import com.kitswiki.gquest.enums.BACK_MUSIC;
 import com.kitswiki.gquest.hud.Hud;
 import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
@@ -83,6 +85,7 @@ public class GameScreen implements Screen, ChangeMap {
     private String currMap;
 
     private final ScreenFade fade;
+    private final BlackScreen blackScreen;
 
     private ImmutableArray<Entity> aiEntities;
     private ImmutableArray<Entity> skeEntities;
@@ -94,7 +97,7 @@ public class GameScreen implements Screen, ChangeMap {
 
 
     public GameScreen(GameSession gameSession, String mapPath, String spawnId,
-                      boolean startFadedIn) {
+                      boolean startFadedIn, BACK_MUSIC backMusic) {
         this.main = gameSession.getMain();
         this.gameSession = gameSession;
 
@@ -128,6 +131,7 @@ public class GameScreen implements Screen, ChangeMap {
         hud.setDialog();
 
         this.fade = new ScreenFade(startFadedIn);
+        this.blackScreen = new BlackScreen();
 
         this.aiDebugRenderer = new AIDebugRenderer(1f);
         this.debugPhsic = new DebugPhsic(camera,engine,world);
@@ -136,6 +140,12 @@ public class GameScreen implements Screen, ChangeMap {
         spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
         aiEntities = engine.getEntitiesFor(Family.all(EnemyAIComponent.class).get());
         skeEntities = engine.getEntitiesFor(Family.all(SkeletonAIComponent.class).get());
+
+        switch (backMusic)
+        {
+            case TOWN -> audioManager.playMusic(AudioManager.TYPE.TOWN_THEME);
+            case CAVE -> audioManager.playMusic(AudioManager.TYPE.CAVE);
+        }
     }
 
     @Override
@@ -174,12 +184,9 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RoofSystem());
-        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage,this));
+        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage,this,viewport));
         engine.addSystem(new InGameUiSystem(assetManager,p));
 
-
-
-        audioManager.playMusic(AudioManager.TYPE.TOWN_THEME);
     }
 
     public void changeMap(String map, String spawnId)
@@ -198,14 +205,17 @@ public class GameScreen implements Screen, ChangeMap {
     }
 
     private void changeMapNow(boolean startFadedIn) {
+        BACK_MUSIC back = BACK_MUSIC.TOWN;
         if ("cave".equals(pendingMap))
         {
             gameState.set("goblin.cave_entry");
+            back = BACK_MUSIC.CAVE;
         }
         gameSession.setDay(dayNightSystem.getDay());
         gameSession.setHour(dayNightSystem.getHour());
         String mapPath = "TiledProject/maps/" + pendingMap + ".tmx";
-        main.setScreen(new GameScreen(gameSession,mapPath,pendingSpawn,startFadedIn));
+        audioManager.stopMusic();
+        main.setScreen(new GameScreen(gameSession,mapPath,pendingSpawn,startFadedIn,back));
     }
 
     @Override
@@ -226,6 +236,10 @@ public class GameScreen implements Screen, ChangeMap {
         aiDebugRenderer.update(camera,aiEntities,skeEntities,graph);
         debugPhsic.update();
 
+        if("cave".equals(currMap))
+        {
+            blackScreen.draw();
+        }
         batch.begin();
         new BitmapFont().draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); //MEMORY LEAK SAKIN ACIK UNUTMA !!!!
         batch.end();
@@ -265,6 +279,7 @@ public class GameScreen implements Screen, ChangeMap {
         batch.dispose();
         dialogStage.dispose();
         dayNightSystem.dispose();
+        fade.dispose();
     }
 
     private boolean isCaveBusy() {

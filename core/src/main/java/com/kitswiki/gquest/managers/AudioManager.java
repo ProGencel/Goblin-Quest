@@ -61,7 +61,14 @@ public class AudioManager {
         }
         currentMusic = assetManager.get(currentPath,Music.class);
         currentMusic.setLooping(true);
-        currentMusic.setVolume(0.7f);
+        if(type.equals(TYPE.TOWN_THEME))
+        {
+            currentMusic.setVolume(0.7f);
+        }
+        else if(type.equals(TYPE.CAVE))
+        {
+            currentMusic.setVolume(1);
+        }
         currentMusic.play();
     }
 

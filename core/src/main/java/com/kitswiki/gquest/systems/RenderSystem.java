@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kitswiki.gquest.components.HiddenComponent;
 import com.kitswiki.gquest.components.RoofComponent;
 import com.kitswiki.gquest.components.TextureComponent;
@@ -33,6 +34,7 @@ public class RenderSystem extends SortedIteratingSystem {
 
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
+    private final Viewport viewport;
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final Stage dialogStage;
     private final GameScreen currScreen;
@@ -42,13 +44,14 @@ public class RenderSystem extends SortedIteratingSystem {
 
     private final Family roofFamily = Family.all(RoofComponent.class).get();
 
-    public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, Stage dialogStage, GameScreen screen) {
+    public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, Stage dialogStage, GameScreen screen, Viewport viewport) {
         super(Family.all(TransformComponent.class, TextureComponent.class).exclude(RoofComponent.class, HiddenComponent.class).get(),new YComparator());
         this.batch = batch;
         this.camera = camera;
         this.mapRenderer = mapRenderer;
         this.dialogStage = dialogStage;
         this.currScreen = screen;
+        this.viewport = viewport;
 
         aboveLayer = map.getLayers().get("above");
         aboveIndex = map.getLayers().getIndex("above");
@@ -62,6 +65,7 @@ public class RenderSystem extends SortedIteratingSystem {
     public void update(float deltaTime) {
         forceSort();
 
+        viewport.apply();
         mapRenderer.setView(camera);
         mapRenderer.render();
 

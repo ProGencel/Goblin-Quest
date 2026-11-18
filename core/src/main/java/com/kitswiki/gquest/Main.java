@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.kitswiki.gquest.components.HealthComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.datas.SavedData;
+import com.kitswiki.gquest.enums.BACK_MUSIC;
 import com.kitswiki.gquest.hud.DialogManager;
 import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.hud.ShopManager;
@@ -46,7 +47,7 @@ public class Main extends Game {
         GameSession gameSession = new GameSession(this,assetManager,gameState,dialogManager,shopManager,i, new HealthComponent());
 
         setScreen(new GameScreen(gameSession,"TiledProject/maps/town.tmx",
-            "begin", false));
+            "begin", false, BACK_MUSIC.TOWN));
     }
 
     private void loadData()
