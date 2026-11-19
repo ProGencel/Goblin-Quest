@@ -1,5 +1,5 @@
 {
-    "activeFile": "maps/cave.tmx",
+    "activeFile": "maps/town.tmx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -50,6 +50,8 @@
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
+                24,
+                25,
                 15,
                 23,
                 14,
@@ -58,11 +60,11 @@
                 4,
                 9
             ],
-            "scale": 5.5,
-            "selectedLayer": 13,
+            "scale": 8,
+            "selectedLayer": 12,
             "viewCenter": {
-                "x": 1431.1818181818182,
-                "y": 266.72727272727275
+                "x": 404.875,
+                "y": 350.5
             }
         },
         "tilesets/SunnySide Environment.tsx": {
@@ -101,11 +103,11 @@
     "project": "game.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "maps/town.tmx",
         "tilesets/sunnysideworld.tsx",
-        "tilesets/props.tsx",
-        "tilesets/duck.tsx",
         "maps/cave.tmx",
+        "tilesets/duck.tsx",
+        "tilesets/props.tsx",
+        "maps/town.tmx",
         "C:/Desktop/libGDX/02-MyAssets/world.tmx",
         "tilesets/SunnySide Environment.tsx"
     ],

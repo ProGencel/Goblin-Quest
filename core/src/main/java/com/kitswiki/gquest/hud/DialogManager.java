@@ -10,7 +10,6 @@ public class DialogManager {
 
     private final InventoryComponent i;
     private ObjectMap<String, DialogEntry[]> dialogs;
-    private I18NBundle bundle;
 
     public static class DialogEntry
     {
@@ -40,14 +39,21 @@ public class DialogManager {
         this.i = i;
     }
 
-    public void readJson()
+    public void readJson(I18NBundle bundle)
     {
-        bundle = I18NBundle.createBundle(Gdx.files.internal("data/localization/loc"),new Locale("en"));
-
         Json json = new Json();
+        if(dialogs != null)
+        {
+            dialogs = null;
+        }
         dialogs = json.fromJson(ObjectMap.class, DialogEntry[].class, Gdx.files.internal("data/dialogues.json"));
 
-        resolveTexts();
+        try {
+            resolveTexts(bundle);
+        }catch (Exception e)
+        {
+            throw new NullPointerException("CHECK GAME SESSION 'lang' variable!!!");
+        }
     }
 
     public DialogEntry pick(String npcId, GameState state)
@@ -182,7 +188,7 @@ public class DialogManager {
         return false;
     }
 
-    private void resolveTexts() {
+    private void resolveTexts(I18NBundle bundle) {
         for (DialogEntry[] entries : dialogs.values()) {
             for (DialogEntry e : entries) {
                 if (e.lines != null) {

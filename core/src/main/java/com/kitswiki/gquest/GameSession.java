@@ -1,12 +1,19 @@
 package com.kitswiki.gquest;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.kitswiki.gquest.components.HealthComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.hud.DialogManager;
 import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.managers.AudioManager;
+
+import java.io.File;
+import java.util.Locale;
 
 public class GameSession {
 
@@ -18,6 +25,9 @@ public class GameSession {
     private final ShopManager shopManager;
     private final InventoryComponent i;
     private final HealthComponent h;
+
+    private final ObjectMap<String, I18NBundle> bundles = new ObjectMap<>();
+    private I18NBundle bundle;
 
     private int day = 1;
     private float hour = 8f;
@@ -32,6 +42,41 @@ public class GameSession {
         this.shopManager = shopManager;
         this.i = i;
         this.h = h;
+
+        this.setBundles();
+        this.bundle = bundles.get("en");
+
+        dialogManager.readJson(bundle);
+    }
+
+    public void setLanguage(LANGS langs)
+    {
+        String lang;
+        switch (langs)
+        {
+            case TR -> lang = "tr";
+            case AZ -> lang = "az";
+            case EN -> lang = "en";
+            default -> lang = "en";
+        }
+
+        bundle = bundles.get(lang);
+        dialogManager.readJson(bundle);
+    }
+
+    private void setBundles()
+    {
+        String[] langs = {"en","tr","az"};
+        FileHandle baseFile = Gdx.files.internal("data/localization/loc");
+
+        for(String s : langs)
+        {
+            bundles.put(s,I18NBundle.createBundle(baseFile,new Locale(s)));
+        }
+    }
+
+    public I18NBundle getBundle() {
+        return bundle;
     }
 
     public void setHealth(float health)
@@ -86,5 +131,12 @@ public class GameSession {
 
     public AudioManager getAudioManager() {
         return audioManager;
+    }
+
+    public enum LANGS
+    {
+        TR,
+        AZ,
+        EN
     }
 }

@@ -20,6 +20,7 @@ import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.managers.AudioManager;
 import com.kitswiki.gquest.screens.GameScreen;
+import com.kitswiki.gquest.screens.MainMenuScreen;
 import com.progencel.kitswikiengine.crypto.DataManager;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -42,14 +43,15 @@ public class Main extends Game {
         AudioManager audioManager = new AudioManager(assetManager);
 
         loadAssets(assetManager);
-        dialogManager.readJson();
         this.gameState = new GameState();
         loadData();
 
         GameSession gameSession = new GameSession(this,assetManager,audioManager,gameState,dialogManager,shopManager,i, new HealthComponent());
 
-        setScreen(new GameScreen(gameSession,"TiledProject/maps/town.tmx",
-            "begin", false, BACK_MUSIC.TOWN));
+//        setScreen(new GameScreen(gameSession,"TiledProject/maps/town.tmx",
+//            "begin", false, BACK_MUSIC.TOWN));
+
+        setScreen(new MainMenuScreen(gameSession,this));
     }
 
     private void loadData()
@@ -76,6 +78,7 @@ public class Main extends Game {
         assetManager.load("TiledProject/maps/cave.tmx", TiledMap.class);
         assetManager.load("atlas/cooked/gquest.atlas", TextureAtlas.class);
         assetManager.load("UI/dialog/skin/skin.json", Skin.class);
+        assetManager.load("UI/ui/skin/skin.json", Skin.class);
         assetManager.load("audio/walk.wav", Sound.class);
         assetManager.load("audio/TownTheme.mp3", Music.class);
         assetManager.load("audio/cave.ogg", Music.class);
