@@ -1,16 +1,16 @@
 package com.kitswiki.gquest.hud;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.*;
 import com.kitswiki.gquest.components.InventoryComponent;
+
+import java.util.Locale;
 
 public class DialogManager {
 
     private final InventoryComponent i;
     private ObjectMap<String, DialogEntry[]> dialogs;
+    private I18NBundle bundle;
 
     public static class DialogEntry
     {
@@ -42,9 +42,12 @@ public class DialogManager {
 
     public void readJson()
     {
-        Json json = new Json();
+        bundle = I18NBundle.createBundle(Gdx.files.internal("data/localization/loc"),new Locale("en"));
 
+        Json json = new Json();
         dialogs = json.fromJson(ObjectMap.class, DialogEntry[].class, Gdx.files.internal("data/dialogues.json"));
+
+        resolveTexts();
     }
 
     public DialogEntry pick(String npcId, GameState state)
@@ -177,6 +180,23 @@ public class DialogManager {
         }
 
         return false;
+    }
+
+    private void resolveTexts() {
+        for (DialogEntry[] entries : dialogs.values()) {
+            for (DialogEntry e : entries) {
+                if (e.lines != null) {
+                    for (int n = 0; n < e.lines.length; n++) {
+                        e.lines[n] = bundle.get(e.lines[n]);
+                    }
+                }
+                if (e.choices != null) {
+                    for (Choice c : e.choices) {
+                        c.text = bundle.get(c.text);
+                    }
+                }
+            }
+        }
     }
 
 }
