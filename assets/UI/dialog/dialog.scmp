@@ -25,7 +25,7 @@ atlasData: {
 	]
 	fontDrawables: [
 		{
-			file: C:/Desktop/libGDX/GoblinQuests/assets/UI/dialog/raw/Minecraft.png
+			file: C:/Desktop/libGDX/GoblinQuests/assets/UI/dialog/font/Minecraft (2).png
 			bgColor: {
 				r: 1
 				g: 1
@@ -34,7 +34,7 @@ atlasData: {
 			}
 			tint: null
 			tintName: null
-			name: Minecraft
+			name: Minecraft (2)
 			tiled: false
 			minWidth: -1
 			minHeight: -1
@@ -72,11 +72,11 @@ jsonData: {
 	fonts: [
 		{
 			class: com.ray3k.skincomposer.data.FontData
-			name: Minecraft
+			name: Minecraft_2
 			flip: false
 			markupEnabled: false
 			scaling: -1
-			file: C:/Desktop/libGDX/GoblinQuests/assets/UI/dialog/raw/Minecraft.fnt
+			file: C:/Desktop/libGDX/GoblinQuests/assets/UI/dialog/font/Minecraft (2).fnt
 		}
 	]
 	freeTypeFonts: []
@@ -1615,7 +1615,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
 						name: font
 						optional: false
-						value: Minecraft
+						value: Minecraft_2
 					}
 					fontColor: {
 						type: com.badlogic.gdx.graphics.Color

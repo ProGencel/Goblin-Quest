@@ -4,16 +4,16 @@ size: 512, 512
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-Minecraft
+Minecraft (2)
   rotate: false
-  xy: 1, 472
-  size: 506, 33
-  orig: 506, 33
+  xy: 1, 462
+  size: 506, 43
+  orig: 506, 43
   offset: 0, 0
   index: -1
 dialog
   rotate: false
-  xy: 1, 461
+  xy: 1, 451
   size: 9, 9
   split: 2, 2, 2, 2
   pad: 3, 3, 3, 3
