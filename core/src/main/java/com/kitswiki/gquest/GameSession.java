@@ -6,11 +6,13 @@ import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.hud.DialogManager;
 import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.hud.ShopManager;
+import com.kitswiki.gquest.managers.AudioManager;
 
 public class GameSession {
 
     private final Main main;
     private final AssetManager assetManager;
+    private final AudioManager audioManager;
     private final GameState gameState;
     private final DialogManager dialogManager;
     private final ShopManager shopManager;
@@ -20,10 +22,11 @@ public class GameSession {
     private int day = 1;
     private float hour = 8f;
 
-    public GameSession(Main main, AssetManager assetManager, GameState gameState, DialogManager dialogManager,ShopManager shopManager, InventoryComponent i,
+    public GameSession(Main main, AssetManager assetManager, AudioManager audioManager, GameState gameState, DialogManager dialogManager,ShopManager shopManager, InventoryComponent i,
                        HealthComponent h) {
         this.main = main;
         this.assetManager = assetManager;
+        this.audioManager = audioManager;
         this.gameState = gameState;
         this.dialogManager = dialogManager;
         this.shopManager = shopManager;
@@ -79,5 +82,9 @@ public class GameSession {
 
     public Main getMain() {
         return main;
+    }
+
+    public AudioManager getAudioManager() {
+        return audioManager;
     }
 }

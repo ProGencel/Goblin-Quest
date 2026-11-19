@@ -34,6 +34,15 @@ public class TileGraph implements IndexedGraph<TileNode> {
     private final Vector2 pa = new Vector2();
     private final Vector2 pb = new Vector2();
 
+    private static final float SHIFT_X = 0f;
+    private static final float SHIFT_Y = 0f;
+
+    public float centerX(int x) { return (x + 0.5f - SHIFT_X) * tileSize; }
+    public float centerY(int y) { return (y + 0.5f - SHIFT_Y) * tileSize; }
+
+    private int indexX(float wx) { return (int) Math.floor(wx / tileSize + SHIFT_X); }
+    private int indexY(float wy) { return (int) Math.floor(wy / tileSize + SHIFT_Y); }
+
     public TileGraph(World world, TiledMap tiledMap) {
         this.world = world;
 
@@ -60,7 +69,6 @@ public class TileGraph implements IndexedGraph<TileNode> {
                 boolean diagonal = d[0] != 0 && d[1] != 0;
 
                 if (diagonal) {
-                    // çapraz geçiş: iki yandaki düz geçişlerin hepsi açık olmalı
                     TileNode a = at(n.x + d[0], n.y);
                     TileNode b = at(n.x, n.y + d[1]);
                     if (!canMove(n, a) || !canMove(n, b) || !canMove(a, m) || !canMove(b, m)) continue;
@@ -79,8 +87,8 @@ public class TileGraph implements IndexedGraph<TileNode> {
 
     private boolean isInsideSolid(int x, int y) {
         hit = false;
-        final float cx = (x + 0.5f) * tileSize;
-        final float cy = (y + 0.5f) * tileSize;
+        final float cx = centerX(x);
+        final float cy = centerY(y);
 
         world.QueryAABB(fixture -> {
             if (!fixture.isSensor()
@@ -96,8 +104,8 @@ public class TileGraph implements IndexedGraph<TileNode> {
 
     private boolean canMove(TileNode a, TileNode b) {
         if (a == null || b == null || !a.walkable || !b.walkable) return false;
-        pa.set((a.x + 0.5f) * tileSize, (a.y + 0.5f) * tileSize);
-        pb.set((b.x + 0.5f) * tileSize, (b.y + 0.5f) * tileSize);
+        pa.set(centerX(a.x), centerY(a.y));
+        pb.set(centerX(b.x), centerY(b.y));
         return LineOfSight.check(world, pa, pb);
     }
 
@@ -118,8 +126,8 @@ public class TileGraph implements IndexedGraph<TileNode> {
             return n;
         }
 
-        int cx = (int) Math.floor(p.x / tileSize);
-        int cy = (int) Math.floor(p.y / tileSize);
+        int cx = indexX(p.x);
+        int cy = indexY(p.y);
         for(int r = 1; r <= 3; r++)
         {
             TileNode best = null;
@@ -155,12 +163,12 @@ public class TileGraph implements IndexedGraph<TileNode> {
 
     public TileNode worldToNode(Vector2 p)
     {
-        return at((int) Math.floor(p.x / tileSize), (int) Math.floor(p.y / tileSize));
+        return at(indexX(p.x), indexY(p.y));
     }
 
     public Vector2 nodeCenter(TileNode n, Vector2 out)
     {
-        return out.set((n.x + 0.5f) * tileSize, (n.y + 0.5f) * tileSize);
+        return out.set(centerX(n.x), centerY(n.y));
     }
 
     public boolean findPath(Vector2 from, Vector2 to, DefaultGraphPath<TileNode> out)

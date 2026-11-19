@@ -22,7 +22,6 @@ public class AudioManager {
     }
 
     private final AssetManager assetManager;
-    private String currentPath;
     private Music currentMusic;
 
     public AudioManager(AssetManager assetManager) {
@@ -31,8 +30,7 @@ public class AudioManager {
 
     public void playSound(TYPE type, OPT opt,float volume)
     {
-        selectPath(type);
-        Sound sound = assetManager.get(currentPath, Sound.class);
+        Sound sound = assetManager.get(getPath(type), Sound.class);
         switch (opt)
         {
             case LOOP -> sound.loop(volume);
@@ -40,26 +38,31 @@ public class AudioManager {
         }
     }
 
-    public void stopSound()
+    public void stopSound(TYPE type)
     {
-        assetManager.get(currentPath,Sound.class).stop();
+        assetManager.get(getPath(type),Sound.class).stop();
     }
 
     public void playWRandPitch(TYPE type)
     {
-        selectPath(type);
         float pitch = MathUtils.random(0.9f,1.1f);
-        assetManager.get(currentPath, Sound.class).play(1,pitch,0f);
+        assetManager.get(getPath(type), Sound.class).play(1,pitch,0f);
     }
 
     public void playMusic(TYPE type)
     {
-        selectPath(type);
-        if(currentMusic == assetManager.get(currentPath,Music.class))
+        Music next = assetManager.get(getPath(type),Music.class);
+        if(currentMusic == next || next.isPlaying())
         {
             return;
         }
-        currentMusic = assetManager.get(currentPath,Music.class);
+
+        if(currentMusic != null)
+        {
+            currentMusic.stop();
+        }
+
+        currentMusic = next;
         currentMusic.setLooping(true);
         if(type.equals(TYPE.TOWN_THEME))
         {
@@ -69,7 +72,7 @@ public class AudioManager {
         {
             currentMusic.setVolume(1);
         }
-        currentMusic.play();
+        //currentMusic.play();
     }
 
     public void stopMusic()
@@ -78,20 +81,26 @@ public class AudioManager {
         {
             currentMusic.stop();
             currentMusic = null;
-            currentPath = null;
         }
     }
 
-    private void selectPath(TYPE type)
+    private String getPath(TYPE type)
     {
         switch (type)
         {
-            case WALK -> currentPath = "audio/walk.wav";
-            case TOWN_THEME -> currentPath = "audio/TownTheme.mp3";
-            case DIALOG -> currentPath = "audio/dialog.wav";
-            case CAVE -> currentPath = "audio/cave.ogg";
+            case WALK -> {
+                return "audio/walk.wav";
+            }
+            case TOWN_THEME -> {
+                return  "audio/TownTheme.mp3";
+            }
+            case DIALOG -> {
+                return "audio/dialog.wav";
+            }
+            case CAVE -> {
+                return  "audio/cave.ogg";
+            }
             default -> throw new IllegalArgumentException("cant find audio");
         }
     }
-
 }

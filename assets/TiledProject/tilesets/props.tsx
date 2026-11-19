@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="288" tileheight="192" tilecount="22" columns="0">
+<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="288" tileheight="192" tilecount="43" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0" type="static">
   <properties>
@@ -208,5 +208,113 @@
    <property name="FRAME_H" type="int" value="22"/>
   </properties>
   <image source="BigHouse/wall1.png" width="144" height="22"/>
+ </tile>
+ <tile id="29" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="33"/>
+  </properties>
+  <image source="lantern.png" width="11" height="33"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="3.91111" y="30.8667" width="3.33333" height="2.17778"/>
+  </objectgroup>
+ </tile>
+ <tile id="32" type="static">
+  <properties>
+   <property name="isAnim" type="bool" value="true"/>
+  </properties>
+  <image source="cavelantern/lanterncave_0.png" width="16" height="54"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" type="static" x="5.1875" y="51" width="4.5625" height="2.96875">
+    <properties>
+     <property name="isAnim" type="bool" value="true"/>
+    </properties>
+   </object>
+  </objectgroup>
+  <animation>
+   <frame tileid="32" duration="110"/>
+   <frame tileid="33" duration="110"/>
+   <frame tileid="34" duration="110"/>
+   <frame tileid="35" duration="110"/>
+   <frame tileid="36" duration="110"/>
+   <frame tileid="37" duration="110"/>
+   <frame tileid="38" duration="110"/>
+   <frame tileid="39" duration="110"/>
+   <frame tileid="40" duration="110"/>
+   <frame tileid="41" duration="110"/>
+  </animation>
+ </tile>
+ <tile id="33">
+  <image source="cavelantern/lanterncave_1.png" width="16" height="54"/>
+ </tile>
+ <tile id="34">
+  <image source="cavelantern/lanterncave_2.png" width="16" height="54"/>
+ </tile>
+ <tile id="35">
+  <image source="cavelantern/lanterncave_3.png" width="16" height="54"/>
+ </tile>
+ <tile id="36">
+  <image source="cavelantern/lanterncave_4.png" width="16" height="54"/>
+ </tile>
+ <tile id="37">
+  <image source="cavelantern/lanterncave_5.png" width="16" height="54"/>
+ </tile>
+ <tile id="38">
+  <image source="cavelantern/lanterncave_6.png" width="16" height="54"/>
+ </tile>
+ <tile id="39">
+  <image source="cavelantern/lanterncave_7.png" width="16" height="54"/>
+ </tile>
+ <tile id="40">
+  <image source="cavelantern/lanterncave_8.png" width="16" height="54"/>
+ </tile>
+ <tile id="41">
+  <image source="cavelantern/lanterncave_9.png" width="16" height="54"/>
+ </tile>
+ <tile id="43" type="static">
+  <properties>
+   <property name="isAnim" type="bool" value="true"/>
+  </properties>
+  <image source="cavelantern/Campfire_0.png" width="25" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="5.5" y="22.0938" width="15.875" height="8.28125"/>
+  </objectgroup>
+  <animation>
+   <frame tileid="43" duration="110"/>
+   <frame tileid="44" duration="110"/>
+   <frame tileid="46" duration="110"/>
+   <frame tileid="47" duration="110"/>
+   <frame tileid="48" duration="110"/>
+   <frame tileid="49" duration="110"/>
+   <frame tileid="50" duration="110"/>
+   <frame tileid="51" duration="110"/>
+   <frame tileid="52" duration="110"/>
+  </animation>
+ </tile>
+ <tile id="44">
+  <image source="cavelantern/Campfire_1.png" width="25" height="32"/>
+ </tile>
+ <tile id="45">
+  <image source="cavelantern/Campfire_2.png" width="25" height="32"/>
+ </tile>
+ <tile id="46">
+  <image source="cavelantern/Campfire_3.png" width="25" height="32"/>
+ </tile>
+ <tile id="47">
+  <image source="cavelantern/Campfire_4.png" width="25" height="32"/>
+ </tile>
+ <tile id="48">
+  <image source="cavelantern/Campfire_5.png" width="25" height="32"/>
+ </tile>
+ <tile id="49">
+  <image source="cavelantern/Campfire_6.png" width="25" height="32"/>
+ </tile>
+ <tile id="50">
+  <image source="cavelantern/Campfire_7.png" width="25" height="32"/>
+ </tile>
+ <tile id="51">
+  <image source="cavelantern/Campfire_8.png" width="25" height="32"/>
+ </tile>
+ <tile id="52">
+  <image source="cavelantern/Campfire_9.png" width="25" height="32"/>
  </tile>
 </tileset>

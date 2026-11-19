@@ -1,5 +1,6 @@
 package com.kitswiki.gquest.screens;
 
+import box2dLight.RayHandler;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -24,6 +25,7 @@ import com.kitswiki.gquest.ai.skeleton.SkeletonState;
 import com.kitswiki.gquest.components.SkeletonAIComponent;
 import com.kitswiki.gquest.effects.BlackScreen;
 import com.kitswiki.gquest.enums.BACK_MUSIC;
+import com.kitswiki.gquest.factories.LightFactory;
 import com.kitswiki.gquest.hud.Hud;
 import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
@@ -62,6 +64,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final Viewport viewport;
     private final TiledMapReader mapReader;
     private final World world;
+    private final RayHandler rayHandler;
 
     private final Viewport uiViewport;
     private final Stage dialogStage;
@@ -72,8 +75,9 @@ public class GameScreen implements Screen, ChangeMap {
 
     private final Engine engine;
     private final EntityFactory entityFactory;
-    private final MapObjectBuilder mapObjectBuilder;
     private final PortalFactory portalFactory;
+    private final LightFactory lightFactory;
+    private final MapObjectBuilder mapObjectBuilder;
     private final StaticBodyBuilder staticBodyBuilder;
     private final Hud hud;
     private final AudioManager audioManager;
@@ -110,6 +114,9 @@ public class GameScreen implements Screen, ChangeMap {
         this.camera = new OrthographicCamera();
         this.viewport = new FitViewport(480f * UNIT_SCALE, 270f * UNIT_SCALE,camera);
         this.world = new World(new Vector2(0,0),true);
+        this.rayHandler = new RayHandler(world);
+        this.rayHandler.setDiffuseLight(true);
+        this.rayHandler.setShadows(true);
 
         this.mapReader = new TiledMapReader(tiledMap, UNIT_SCALE);
 
@@ -120,12 +127,13 @@ public class GameScreen implements Screen, ChangeMap {
         this.gameState = gameSession.getGameState();
 
         this.delayedSpawnSystem = new DelayedSpawnSystem(gameSession.getGameState());
-        this.dayNightSystem = new DayNightSystem(gameSession.getDay(),gameSession.getHour());
+        this.dayNightSystem = new DayNightSystem(gameSession.getDay(),gameSession.getHour(),rayHandler);
 
         this.portalFactory = new PortalFactory(mapReader,engine,world);
         this.entityFactory = new EntityFactory(world,mapReader,engine);
+        this.lightFactory = new LightFactory(mapReader,rayHandler,engine);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
-        this.audioManager = new AudioManager(assetManager);
+        this.audioManager = gameSession.getAudioManager();
         this.hud = new Hud(dialogStage,assetManager,dayNightSystem,audioManager);
         this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory);
         hud.setDialog();
@@ -159,6 +167,7 @@ public class GameScreen implements Screen, ChangeMap {
         entityFactory.setGraph(graph);
 
         p = entityFactory.createPlayer(spawnPos,i,gameSession.getHealthC());
+        lightFactory.createLights();
         engine.addEntity(p);
 
         camera.position.set(spawnPos,0);
@@ -184,7 +193,8 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RoofSystem());
-        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage,this,viewport));
+        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage,this,viewport,rayHandler));
+        engine.addSystem(new LightSystem());
         engine.addSystem(new InGameUiSystem(assetManager,p));
 
     }
@@ -275,10 +285,10 @@ public class GameScreen implements Screen, ChangeMap {
     public void dispose() {
         mapRenderer.dispose();
         aiDebugRenderer.dispose();
+        rayHandler.dispose();
         world.dispose();
         batch.dispose();
         dialogStage.dispose();
-        dayNightSystem.dispose();
         fade.dispose();
     }
 

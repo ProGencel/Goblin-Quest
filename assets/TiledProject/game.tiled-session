@@ -1,5 +1,5 @@
 {
-    "activeFile": "maps/town.tmx",
+    "activeFile": "maps/cave.tmx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -35,32 +35,34 @@
         },
         "maps/cave.tmx": {
             "expandedObjectLayers": [
-                4,
+                16,
                 7,
+                4,
                 9,
                 8
             ],
-            "scale": 8,
+            "scale": 4,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 36.1875,
-                "y": 1541.75
+                "x": 1.625,
+                "y": 1446
             }
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
-                4,
-                9,
+                15,
                 23,
                 14,
-                15,
-                30
+                32,
+                30,
+                4,
+                9
             ],
             "scale": 5.5,
-            "selectedLayer": 12,
+            "selectedLayer": 13,
             "viewCenter": {
-                "x": 1472.090909090909,
-                "y": 282.90909090909093
+                "x": 1431.1818181818182,
+                "y": 266.72727272727275
             }
         },
         "tilesets/SunnySide Environment.tsx": {
@@ -84,8 +86,8 @@
             "scaleInEditor": 4
         }
     },
-    "frame.defaultDuration": 200,
-    "last.imagePath": "C:/Desktop/libGDX/GoblinQuests/assets/TiledProject/tilesets/BigHouse",
+    "frame.defaultDuration": 110,
+    "last.imagePath": "C:/Desktop/libGDX/GoblinQuests/assets/TiledProject/tilesets/cavelantern",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
@@ -99,11 +101,11 @@
     "project": "game.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "tilesets/sunnysideworld.tsx",
-        "maps/cave.tmx",
-        "tilesets/duck.tsx",
-        "tilesets/props.tsx",
         "maps/town.tmx",
+        "tilesets/sunnysideworld.tsx",
+        "tilesets/props.tsx",
+        "tilesets/duck.tsx",
+        "maps/cave.tmx",
         "C:/Desktop/libGDX/02-MyAssets/world.tmx",
         "tilesets/SunnySide Environment.tsx"
     ],

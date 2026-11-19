@@ -272,12 +272,9 @@ public class AIDebugRenderer {
 
             if (n.walkable) continue;
 
-            sr.rect(
-                n.x * g.tileSize * ppm,
-                n.y * g.tileSize * ppm,
-                g.tileSize * ppm,
-                g.tileSize * ppm
-            );
+            sr.rect((g.centerX(n.x) - g.tileSize / 2f) * ppm,
+                (g.centerY(n.y) - g.tileSize / 2f) * ppm,
+                g.tileSize * ppm, g.tileSize * ppm);
         }
 
         sr.end();
@@ -327,12 +324,8 @@ public class AIDebugRenderer {
                 if (m.x != n.x && m.y != n.y) continue;
                 if (m.x < n.x || m.y < n.y) continue;
 
-                sr.line(
-                    (n.x + 0.5f) * g.tileSize * ppm,
-                    (n.y + 0.5f) * g.tileSize * ppm,
-                    (m.x + 0.5f) * g.tileSize * ppm,
-                    (m.y + 0.5f) * g.tileSize * ppm
-                );
+                sr.line(g.centerX(n.x) * ppm, g.centerY(n.y) * ppm,
+                    g.centerX(m.x) * ppm, g.centerY(m.y) * ppm);
             }
         }
 

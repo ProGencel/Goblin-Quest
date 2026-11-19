@@ -8,7 +8,6 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
@@ -20,6 +19,7 @@ import com.kitswiki.gquest.ai.skeleton.SkeletonAI;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.map.TiledMapReader;
 
+import static com.kitswiki.gquest.utils.Constants.PLAYER_FIX_BIT;
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
 public class EntityFactory {
@@ -47,7 +47,9 @@ public class EntityFactory {
         t.position.set(pos);
 
         BodyComponent b = new BodyComponent();
-        b.body = handleBodyForDynamicCircle(pos,1,true);
+        FixtureDef fdef = new FixtureDef();
+        fdef.filter.categoryBits = PLAYER_FIX_BIT;
+        b.body = handleBodyForDynamicCircle(pos,1,true,fdef);
         b.body.setUserData(e);
 
         AnimationComponent a = new AnimationComponent();
@@ -361,6 +363,40 @@ public class EntityFactory {
 
         return b;
     }
+
+    private Body handleBodyForDynamicCircle(Vector2 pos, float radius, boolean isSensor, FixtureDef def)
+    {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(pos);
+        bodyDef.fixedRotation = true;
+
+        Body b = world.createBody(bodyDef);
+
+        CircleShape shape = new CircleShape();
+        shape.setRadius(0.1f);
+        shape.setPosition(new Vector2(0,-0.3f));
+
+        def.shape = shape;
+        b.createFixture(def);
+        shape.dispose();
+
+        if(isSensor)
+        {
+            CircleShape sensorShape = new CircleShape();
+            sensorShape.setRadius(radius);
+            FixtureDef fdef = new FixtureDef();
+            fdef.isSensor = true;
+            fdef.shape = sensorShape;
+            fdef.filter.categoryBits = PLAYER_FIX_BIT;
+            b.createFixture(fdef);
+            sensorShape.dispose();
+        }
+
+
+        return b;
+    }
+
 
     public void addPatrolTile(EnemyAI ai,int tx, int tyFromTop, int mapH) {
         int ty = mapH - 1 - tyFromTop;

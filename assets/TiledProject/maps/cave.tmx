@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="16" nextobjectid="317">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="388">
  <tileset firstgid="1" source="../tilesets/sunnysideworld.tsx"/>
  <tileset firstgid="4097" source="../tilesets/props.tsx"/>
  <layer id="1" name="ground" width="100" height="100">
@@ -443,6 +443,136 @@
   <object id="313" gid="4103" x="1216" y="1504" width="32" height="48"/>
   <object id="315" gid="4103" x="320" y="1520" width="32" height="48"/>
   <object id="316" gid="4103" x="368" y="768" width="32" height="48"/>
+  <object id="319" gid="4129" x="48" y="1472" width="16" height="54"/>
+  <object id="321" gid="4129" x="415.5" y="1514" width="16" height="54"/>
+  <object id="322" gid="4129" x="567.5" y="1433" width="16" height="54"/>
+  <object id="324" gid="4129" x="788.5" y="1511.5" width="16" height="54"/>
+  <object id="325" gid="4129" x="1127.5" y="1460" width="16" height="54"/>
+  <object id="326" gid="4129" x="1379.5" y="1532.5" width="16" height="54"/>
+  <object id="327" gid="4129" x="1451.5" y="1393" width="16" height="54"/>
+  <object id="328" gid="4129" x="771" y="1293" width="16" height="54"/>
+  <object id="329" gid="4129" x="951.5" y="1188.5" width="16" height="54"/>
+  <object id="330" gid="4129" x="614.5" y="1113" width="16" height="54"/>
+  <object id="331" gid="4129" x="740" y="965.5" width="16" height="54"/>
+  <object id="332" gid="4129" x="476.5" y="909" width="16" height="54"/>
+  <object id="333" gid="4129" x="583" y="732.5" width="16" height="54"/>
+  <object id="334" gid="4129" x="469" y="535" width="16" height="54"/>
+  <object id="335" gid="4129" x="701.5" y="565.5" width="16" height="54"/>
+  <object id="336" gid="4129" x="739" y="366" width="16" height="54"/>
+  <object id="337" gid="4129" x="1063" y="385" width="16" height="54"/>
+  <object id="338" gid="4129" x="923" y="587.5" width="16" height="54"/>
+  <object id="339" gid="4129" x="1163.5" y="572" width="16" height="54"/>
+  <object id="340" gid="4129" x="1052.5" y="752" width="16" height="54"/>
+  <object id="341" gid="4129" x="1257" y="793.5" width="16" height="54"/>
+  <object id="342" gid="4129" x="1134" y="895.5" width="16" height="54"/>
+  <object id="343" gid="4129" x="1163" y="1079.5" width="16" height="54"/>
+  <object id="344" gid="4129" x="918.5" y="1029" width="16" height="54"/>
+  <object id="345" gid="4129" x="1445" y="403.5" width="16" height="54"/>
+  <object id="346" gid="4129" x="1320" y="204" width="16" height="54"/>
+  <object id="347" gid="4129" x="1168.5" y="409" width="16" height="54"/>
+  <object id="348" gid="4129" x="393.5" y="417" width="16" height="54"/>
+  <object id="349" gid="4129" x="266" y="375" width="16" height="54"/>
+  <object id="350" gid="4129" x="124" y="270.5" width="16" height="54"/>
+  <object id="351" gid="4129" x="214" y="155" width="16" height="54"/>
+  <object id="352" gid="4129" x="302" y="228.5" width="16" height="54"/>
+ </objectgroup>
+ <objectgroup id="16" name="lights">
+  <object id="354" x="222" y="127">
+   <point/>
+  </object>
+  <object id="355" x="130.5" y="243">
+   <point/>
+  </object>
+  <object id="356" x="309.5" y="200.5">
+   <point/>
+  </object>
+  <object id="357" x="273.75" y="346.75">
+   <point/>
+  </object>
+  <object id="358" x="401.25" y="389">
+   <point/>
+  </object>
+  <object id="359" x="747" y="338.25">
+   <point/>
+  </object>
+  <object id="360" x="1069.75" y="358.25">
+   <point/>
+  </object>
+  <object id="361" x="1175" y="381.75">
+   <point/>
+  </object>
+  <object id="362" x="1326.25" y="174.5">
+   <point/>
+  </object>
+  <object id="363" x="1453.25" y="376.75">
+   <point/>
+  </object>
+  <object id="364" x="1170.5" y="544.5">
+   <point/>
+  </object>
+  <object id="365" x="1059.75" y="724.5">
+   <point/>
+  </object>
+  <object id="366" x="1263.5" y="766.25">
+   <point/>
+  </object>
+  <object id="367" x="1141.5" y="867">
+   <point/>
+  </object>
+  <object id="368" x="931" y="558">
+   <point/>
+  </object>
+  <object id="369" x="709.75" y="538.25">
+   <point/>
+  </object>
+  <object id="370" x="476.75" y="507.75">
+   <point/>
+  </object>
+  <object id="371" x="591" y="706.25">
+   <point/>
+  </object>
+  <object id="373" x="746.5" y="937.75">
+   <point/>
+  </object>
+  <object id="374" x="925.25" y="1001.75">
+   <point/>
+  </object>
+  <object id="375" x="1169.75" y="1051.25">
+   <point/>
+  </object>
+  <object id="376" x="958.75" y="1161">
+   <point/>
+  </object>
+  <object id="377" x="777.75" y="1265">
+   <point/>
+  </object>
+  <object id="378" x="623" y="1085.75">
+   <point/>
+  </object>
+  <object id="379" x="483.25" y="881.75">
+   <point/>
+  </object>
+  <object id="380" x="796.25" y="1484.75">
+   <point/>
+  </object>
+  <object id="381" x="575" y="1405">
+   <point/>
+  </object>
+  <object id="382" x="1133.75" y="1433">
+   <point/>
+  </object>
+  <object id="383" x="1386.75" y="1505.5">
+   <point/>
+  </object>
+  <object id="384" x="1458" y="1365">
+   <point/>
+  </object>
+  <object id="385" x="423.5" y="1487.25">
+   <point/>
+  </object>
+  <object id="386" x="55.25" y="1444.5">
+   <point/>
+  </object>
  </objectgroup>
  <objectgroup id="15" name="static_but_characteristic_objects"/>
  <objectgroup id="7" name="portals">

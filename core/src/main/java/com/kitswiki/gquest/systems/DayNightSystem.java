@@ -1,5 +1,6 @@
 package com.kitswiki.gquest.systems;
 
+import box2dLight.RayHandler;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,36 +14,35 @@ public class DayNightSystem extends EntitySystem {
 
     private static final float DAY_LENGTH_SECONDS = 60f * 8f; // 1 oyun gunu
 
+
     private static final float[][] KEYS = {
-        { 0f,   0.18f, 0.24f, 0.48f}, // gece
-        { 5f,   0.22f, 0.28f, 0.52f},
-        { 6f,   0.55f, 0.45f, 0.60f}, // şafak öncesi
-        { 7f,   1.00f, 0.75f, 0.58f}, // şafak
-        { 8.5f, 1.00f, 0.95f, 0.88f}, // sabah
-        {10f,   1.00f, 1.00f, 1.00f}, // gün ışığı
-        {16f,   1.00f, 1.00f, 1.00f},
-        {17.5f, 1.00f, 0.84f, 0.67f}, // öğleden sonra
-        {19f,   1.00f, 0.65f, 0.40f}, // gün batımı
-        {20.5f, 0.55f, 0.45f, 0.65f}, // alacakaranlık
-        {22f,   0.25f, 0.28f, 0.50f},
-        {24f,   0.18f, 0.24f, 0.48f},
+        // Saat, R, G, B, Alpha
+        { 0f,   0.18f, 0.24f, 0.48f, 1f}, // Gece
+        { 5f,   0.22f, 0.28f, 0.52f, 1f},
+        { 6f,   0.55f, 0.45f, 0.60f, 1f}, // Şafak öncesi
+        { 7f,   1.00f, 0.75f, 0.58f, 1f}, // Şafak
+        { 8.5f, 1.00f, 0.95f, 0.88f, 1f}, // Sabah
+        {10f,   1.00f, 1.00f, 1.00f, 1f}, // Gün ışığı
+        {16f,   1.00f, 1.00f, 1.00f, 1f},
+        {17.5f, 1.00f, 0.84f, 0.67f, 1f}, // Öğleden sonra
+        {19f,   1.00f, 0.65f, 0.40f, 1f}, // Gün batımı
+        {20.5f, 0.55f, 0.45f, 0.65f, 1f}, // Alacakaranlık
+        {22f,   0.25f, 0.28f, 0.50f, 1f},
+        {24f,   0.18f, 0.24f, 0.48f, 1f}
     };
+
 
     private float hour;
     private int day;
     private final Color ambient = new Color(Color.WHITE);
-    private final Texture whitePixel;
+    private final RayHandler rayHandler;
 
-    public DayNightSystem(int day, float hour) {
+    public DayNightSystem(int day, float hour, RayHandler rayHandler) {
 
         this.day = day;
         this.hour = hour;
+        this.rayHandler = rayHandler;
 
-        Pixmap pm = new Pixmap(1,1, Pixmap.Format.RGBA8888);
-        pm.setColor(Color.WHITE);
-        pm.fill();
-        whitePixel = new Texture(pm);
-        pm.dispose();
         updateAmbient();
     }
 
@@ -56,6 +56,18 @@ public class DayNightSystem extends EntitySystem {
             day++;
         }
         updateAmbient();
+    }
+
+    public void updateAmbinetLight(boolean isOutside)
+    {
+        if(isOutside)
+        {
+            rayHandler.setAmbientLight(ambient);
+        }
+        else
+        {
+            rayHandler.setAmbientLight(0.55f, 0.45f, 0.65f, 1f);
+        }
     }
 
     private void updateAmbient()
@@ -73,23 +85,6 @@ public class DayNightSystem extends EntitySystem {
                 return;
             }
         }
-    }
-
-    public void drawOverlay(SpriteBatch batch, Viewport screenViewport)
-    {
-        batch.setProjectionMatrix(screenViewport.getCamera().combined);
-        batch.begin();
-        batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ZERO);
-        batch.setColor(ambient);
-        batch.draw(whitePixel, 0, 0, screenViewport.getWorldWidth(), screenViewport.getWorldHeight());
-        batch.setColor(Color.WHITE);
-        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        batch.end();
-    }
-
-    public void dispose()
-    {
-        whitePixel.dispose();
     }
 
     public float getHour() {

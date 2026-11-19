@@ -18,6 +18,7 @@ import com.kitswiki.gquest.enums.BACK_MUSIC;
 import com.kitswiki.gquest.hud.DialogManager;
 import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.hud.ShopManager;
+import com.kitswiki.gquest.managers.AudioManager;
 import com.kitswiki.gquest.screens.GameScreen;
 import com.progencel.kitswikiengine.crypto.DataManager;
 
@@ -38,13 +39,14 @@ public class Main extends Game {
         this.assetManager = new AssetManager();
         this.dialogManager = new DialogManager(i);
         this.shopManager = new ShopManager();
+        AudioManager audioManager = new AudioManager(assetManager);
 
         loadAssets(assetManager);
         dialogManager.readJson();
         this.gameState = new GameState();
         loadData();
 
-        GameSession gameSession = new GameSession(this,assetManager,gameState,dialogManager,shopManager,i, new HealthComponent());
+        GameSession gameSession = new GameSession(this,assetManager,audioManager,gameState,dialogManager,shopManager,i, new HealthComponent());
 
         setScreen(new GameScreen(gameSession,"TiledProject/maps/town.tmx",
             "begin", false, BACK_MUSIC.TOWN));

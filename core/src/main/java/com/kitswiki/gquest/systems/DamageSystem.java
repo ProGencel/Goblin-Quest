@@ -48,7 +48,6 @@ public class DamageSystem extends IteratingSystem {
         {
             ph.currentHealth -= c.damagePower;
             ph.isInvincible = true;
-            System.out.println(ph.currentHealth);
         }
     }
 }

@@ -66,10 +66,6 @@
       ]
     },
     {
-      "id": "idle",
-      "lines": ["`~`"]
-    },
-    {
       "id": "thanks",
       "once": true,
       "requires": ["duckGob.duck_collected"],
@@ -81,7 +77,12 @@
     },
     {
       "id": "idle",
+      "requires": ["duckGob.duck_collected"],
       "lines": ["Thanks again!","I never forget you!"]
+    },
+    {
+      "id": "idle",
+      "lines": ["`~`"]
     }
   ],
 
@@ -208,10 +209,10 @@
       "id": "intro",
       "lines": [
         "Welcome to my little shop !",
-        "Have a look to weapons and tell me if you buying!"
+        "Have a look to items and tell me if you buying!"
       ],
       "choices": [
-        { "text": "Let me see your goods", "shop": "weaponsmith" },
+        { "text": "Let me see your items", "shop": "weaponsmith" },
         {"text": "I dont have any gold how can i get?","next": "money","set": ["weaponsmith"]},
         { "text": "Maybe later", "next": "weaponsmith_bye" }
       ]

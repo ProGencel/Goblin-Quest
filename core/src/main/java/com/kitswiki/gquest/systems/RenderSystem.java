@@ -1,5 +1,6 @@
 package com.kitswiki.gquest.systems;
 
+import box2dLight.RayHandler;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
@@ -38,13 +39,15 @@ public class RenderSystem extends SortedIteratingSystem {
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final Stage dialogStage;
     private final GameScreen currScreen;
+    private final RayHandler rayHandler;
 
     private final int aboveIndex;
     private final MapLayer aboveLayer;
 
     private final Family roofFamily = Family.all(RoofComponent.class).get();
 
-    public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, Stage dialogStage, GameScreen screen, Viewport viewport) {
+    public RenderSystem(SpriteBatch batch, TiledMap map, OrthographicCamera camera, OrthogonalTiledMapRenderer mapRenderer, Stage dialogStage,
+                        GameScreen screen, Viewport viewport, RayHandler rayHandler) {
         super(Family.all(TransformComponent.class, TextureComponent.class).exclude(RoofComponent.class, HiddenComponent.class).get(),new YComparator());
         this.batch = batch;
         this.camera = camera;
@@ -52,6 +55,7 @@ public class RenderSystem extends SortedIteratingSystem {
         this.dialogStage = dialogStage;
         this.currScreen = screen;
         this.viewport = viewport;
+        this.rayHandler = rayHandler;
 
         aboveLayer = map.getLayers().get("above");
         aboveIndex = map.getLayers().getIndex("above");
@@ -82,10 +86,11 @@ public class RenderSystem extends SortedIteratingSystem {
             aboveLayer.setVisible(false);
         }
 
-        if(currScreen.isOutside())
-        {
-            getEngine().getSystem(DayNightSystem.class).drawOverlay(batch, dialogStage.getViewport());
-        }
+        getEngine().getSystem(DayNightSystem.class).updateAmbinetLight(currScreen.isOutside());
+
+
+        rayHandler.setCombinedMatrix(camera);
+        rayHandler.updateAndRender();
 
         dialogStage.act();
         dialogStage.draw();
