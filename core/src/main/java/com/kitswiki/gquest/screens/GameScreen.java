@@ -134,6 +134,7 @@ public class GameScreen implements Screen, ChangeMap {
         this.lightFactory = new LightFactory(mapReader,rayHandler,engine);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
         this.audioManager = gameSession.getAudioManager();
+        audioManager.setVOLUME();
         this.hud = new Hud(dialogStage,assetManager,dayNightSystem,audioManager);
         this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory);
         hud.setDialog();

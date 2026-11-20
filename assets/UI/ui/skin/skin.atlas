@@ -4,25 +4,25 @@ size: 512, 512
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-Minecraft
-  rotate: false
-  xy: 1, 472
-  size: 506, 33
-  orig: 506, 33
-  offset: 0, 0
-  index: -1
 dialog
   rotate: false
-  xy: 1, 461
+  xy: 1, 454
   size: 9, 9
   split: 2, 2, 2, 2
   pad: 3, 3, 3, 3
   orig: 9, 9
   offset: 0, 0
   index: -1
+Minecraft (2)
+  rotate: false
+  xy: 1, 465
+  size: 506, 43
+  orig: 506, 43
+  offset: 0, 0
+  index: -1
 uiAnotherBrown
   rotate: false
-  xy: 12, 461
+  xy: 12, 454
   size: 9, 9
   split: 2, 2, 2, 2
   orig: 9, 9
@@ -30,9 +30,16 @@ uiAnotherBrown
   index: -1
 uibrown
   rotate: false
-  xy: 1, 450
+  xy: 1, 443
   size: 9, 9
   split: 2, 2, 2, 2
   orig: 9, 9
+  offset: 0, 0
+  index: -1
+white-pixel
+  rotate: false
+  xy: 509, 507
+  size: 1, 1
+  orig: 1, 1
   offset: 0, 0
   index: -1

@@ -4,8 +4,11 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
+import com.kitswiki.gquest.hud.mainMenu.SettingdDialog;
 
 public class AudioManager {
+
+    private float VOLUME;
 
     public enum TYPE
     {
@@ -28,6 +31,11 @@ public class AudioManager {
         this.assetManager = assetManager;
     }
 
+    public void setVOLUME()
+    {
+        VOLUME = SettingdDialog.prefs.getInteger("vol") / 100f;
+    }
+
     public void playSound(TYPE type, OPT opt,float volume)
     {
         Sound sound = assetManager.get(getPath(type), Sound.class);
@@ -46,7 +54,7 @@ public class AudioManager {
     public void playWRandPitch(TYPE type)
     {
         float pitch = MathUtils.random(0.9f,1.1f);
-        assetManager.get(getPath(type), Sound.class).play(1,pitch,0f);
+        assetManager.get(getPath(type), Sound.class).play(VOLUME,pitch,0f);
     }
 
     public void playMusic(TYPE type)
@@ -66,13 +74,13 @@ public class AudioManager {
         currentMusic.setLooping(true);
         if(type.equals(TYPE.TOWN_THEME))
         {
-            currentMusic.setVolume(0.7f);
+            currentMusic.setVolume(0.7f * VOLUME);
         }
         else if(type.equals(TYPE.CAVE))
         {
-            currentMusic.setVolume(1);
+            currentMusic.setVolume(1 * VOLUME);
         }
-        //currentMusic.play();
+        currentMusic.play();
     }
 
     public void stopMusic()

@@ -3,12 +3,11 @@ package com.kitswiki.gquest.hud.mainMenu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.Main;
@@ -25,9 +24,17 @@ public class MainMenuBuilder {
     private final Skin skin;
     private final Supplier<I18NBundle> bundleSupplier;
 
+    private final GameSession gameSession;
+    private final Main main;
+    private final MainMenuBuilder builder;
+
     public MainMenuBuilder(GameSession gameSession, Main main) {
         this.skin = gameSession.getAssetManager().get("UI/ui/skin/skin.json",Skin.class);
-        this.stage = new Stage(new ScreenViewport());
+        this.stage = new Stage(new FitViewport(1280, 720));
+        this.gameSession = gameSession;
+        this.main = main;
+        this.builder = this;
+
         this.bundleSupplier = new Supplier<I18NBundle>() {
             @Override
             public I18NBundle get() {
@@ -38,6 +45,12 @@ public class MainMenuBuilder {
         setTables(main,gameSession);
 
         Gdx.input.setInputProcessor(stage);
+    }
+
+    public void buildUI()
+    {
+        stage.clear();
+        setTables(main,gameSession);
     }
 
     private void setTables(Main main, GameSession gameSession)
@@ -60,19 +73,26 @@ public class MainMenuBuilder {
         textButton1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                gameSession.setLanguage(GameSession.LANGS.AZ);
+                new SettingdDialog(bundleSupplier.get().get("settings"),skin,bundleSupplier.get(),builder).show(stage);
             }
         });
 
         TextButton textButton2 = new TextButton(bundleSupplier.get().get("exit"),skin);
+        textButton2.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit();
+            }
+        });
 
+        sizela(textTable.add(textButton)).width(200).pad(10).row();
+        sizela(textTable.add(textButton1)).width(200).pad(10).row();
+        sizela(textTable.add(textButton2)).width(200).pad(10).row();
 
-
-
-        sizela(textTable.add(textButton));
-        sizela(textTable.add(textButton1));
-        sizela(textTable.add(textButton2));
-
+        Label title = new Label("GOBLIN QUEST",skin,"TITLE");
+        title.setFontScale(5f);
+        title.setAlignment(Align.center);
+        root.add(title).padBottom(150).row();
         root.add(textTable);
         stage.addActor(root);
     }
@@ -83,13 +103,22 @@ public class MainMenuBuilder {
         stage.draw();
     }
 
-    public Stage getStage() {
-        return stage;
-    }
-
     private <T extends Actor> Cell<T> sizela(Cell<Actor> cell)
     {
         return (Cell<T>) cell.size(cell.getPrefWidth() * SIZE,
             cell.getPrefHeight() * SIZE);
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public GameSession getGameSession() {
+        return gameSession;
+    }
+
+    public void dispose()
+    {
+        stage.dispose();
     }
 }

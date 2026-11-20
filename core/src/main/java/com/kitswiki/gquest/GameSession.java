@@ -10,6 +10,7 @@ import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.hud.DialogManager;
 import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.hud.ShopManager;
+import com.kitswiki.gquest.hud.mainMenu.SettingdDialog;
 import com.kitswiki.gquest.managers.AudioManager;
 
 import java.io.File;
@@ -44,7 +45,7 @@ public class GameSession {
         this.h = h;
 
         this.setBundles();
-        this.bundle = bundles.get("en");
+        this.bundle = bundles.get(SettingdDialog.prefs.getString("lang"));
 
         dialogManager.readJson(bundle);
     }
@@ -56,7 +57,6 @@ public class GameSession {
         {
             case TR -> lang = "tr";
             case AZ -> lang = "az";
-            case EN -> lang = "en";
             default -> lang = "en";
         }
 
@@ -132,6 +132,8 @@ public class GameSession {
     public AudioManager getAudioManager() {
         return audioManager;
     }
+
+
 
     public enum LANGS
     {

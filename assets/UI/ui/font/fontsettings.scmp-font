@@ -1,0 +1,14 @@
+{
+"characters": "ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\nabcdefghijklmnopqrstuvwxyzÇĞİÖŞÜƏçğıöşüəÂÎÛâîû0123456789.,!?;:'\"()-_+/=%[]{}@#$&*<>|\\~^`",
+"size": 16,
+"mono": true,
+"hinting": "AutoFull",
+"color": "white",
+"colorValue": -1,
+"gamma": 1.8,
+"renderCount": 1,
+"borderGamma": 1.8,
+"kerning": true,
+"minFilter": "Nearest",
+"magFilter": "Nearest"
+}
