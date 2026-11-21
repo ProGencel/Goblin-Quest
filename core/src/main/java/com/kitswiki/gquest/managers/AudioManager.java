@@ -18,6 +18,8 @@ public class AudioManager {
         TOWN_THEME,
         DIALOG,
         CAVE,
+        DUCK,
+        DEATH
     }
 
     public enum OPT
@@ -43,8 +45,8 @@ public class AudioManager {
         Sound sound = assetManager.get(getPath(type), Sound.class);
         switch (opt)
         {
-            case LOOP -> sound.loop(volume);
-            case ONCE -> sound.play(volume);
+            case LOOP -> sound.loop(volume * VOLUME);
+            case ONCE -> sound.play(volume * VOLUME);
         }
     }
 
@@ -112,6 +114,12 @@ public class AudioManager {
             }
             case CAVE -> {
                 return  "audio/cave.ogg";
+            }
+            case DUCK -> {
+                return "audio/duck.wav";
+            }
+            case DEATH -> {
+                return "audio/death.mp3";
             }
             default -> throw new IllegalArgumentException("cant find audio");
         }

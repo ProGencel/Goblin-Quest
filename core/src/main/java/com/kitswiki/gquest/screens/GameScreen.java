@@ -136,10 +136,10 @@ public class GameScreen implements Screen, ChangeMap {
         this.dayNightSystem = new DayNightSystem(gameSession.getDay(),gameSession.getHour(),rayHandler);
 
         this.portalFactory = new PortalFactory(mapReader,engine,world);
-        this.entityFactory = new EntityFactory(world,mapReader,engine);
         this.lightFactory = new LightFactory(mapReader,rayHandler,engine);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
         this.audioManager = gameSession.getAudioManager();
+        this.entityFactory = new EntityFactory(world,mapReader,engine,audioManager);
         this.hud = new Hud(dialogStage,assetManager,dayNightSystem,audioManager);
         this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory);
         hud.setDialog();
@@ -205,7 +205,7 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new PhysicSystem(world));
         engine.addSystem(new PhysicSyncSystem());
         engine.addSystem(new DamageSystem(p));
-        engine.addSystem(new DeathSystem(this,"town","begin",gameSession));
+        engine.addSystem(new DeathSystem(this,"town","begin",gameSession,audioManager));
         engine.addSystem(delayedSpawnSystem);
         engine.addSystem(new DialogInteractSystem(p,hud.getDialogBox(),dialogManager, gameState,shopManager,audioManager));
         engine.addSystem(new InteractSystem(p));

@@ -23,6 +23,7 @@ public class DialogManager {
         public boolean linkOnly;
         public String reqObj;
         public String action;
+        public String[] set;
     }
 
     public static class Choice
@@ -79,6 +80,12 @@ public class DialogManager {
             if(e.once)
             {
                 state.set(onceFlag);
+            }
+
+            if(e.set != null) {
+                for(String flag : e.set) {
+                    state.set(flag);
+                }
             }
 
             applyGive(e);

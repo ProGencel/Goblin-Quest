@@ -35,36 +35,36 @@
         },
         "maps/cave.tmx": {
             "expandedObjectLayers": [
-                16,
                 7,
                 4,
                 9,
-                8
+                8,
+                16
             ],
             "scale": 4,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 1.625,
-                "y": 1446
+                "x": 800.125,
+                "y": 800
             }
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
-                24,
-                25,
-                15,
-                23,
-                14,
                 32,
-                30,
                 4,
-                9
+                30,
+                9,
+                25,
+                14,
+                24,
+                23,
+                15
             ],
             "scale": 8,
             "selectedLayer": 12,
             "viewCenter": {
-                "x": 404.875,
-                "y": 350.5
+                "x": 802.5625,
+                "y": 560
             }
         },
         "tilesets/SunnySide Environment.tsx": {

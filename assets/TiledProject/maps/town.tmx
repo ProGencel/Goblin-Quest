@@ -1780,7 +1780,7 @@
     <property name="isFlipped" type="bool" value="true"/>
     <property name="spawnNearDialog" value="duckGob"/>
     <property name="spawnRadius" type="float" value="19"/>
-    <property name="spawn_flags" value="duckGob.duck_collected"/>
+    <property name="spawn_flags" value="duckGob.duck_collected,duckGob.talked"/>
    </properties>
   </object>
   <object id="2881" gid="2136" x="68.75" y="442.5" width="16" height="16"/>

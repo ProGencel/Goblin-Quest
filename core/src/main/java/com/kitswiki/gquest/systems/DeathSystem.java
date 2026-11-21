@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.Audio;
 import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.components.DeadComponent;
 import com.kitswiki.gquest.components.HealthComponent;
@@ -11,6 +12,7 @@ import com.kitswiki.gquest.components.PlayerComponent;
 import com.kitswiki.gquest.components.StateComponent;
 import com.kitswiki.gquest.enums.CharacterState;
 import com.kitswiki.gquest.interfaces.ChangeMap;
+import com.kitswiki.gquest.managers.AudioManager;
 
 public class DeathSystem extends IteratingSystem {
 
@@ -25,14 +27,16 @@ public class DeathSystem extends IteratingSystem {
 
     private final ChangeMap screen;
     private final GameSession gameSession;
+    private final AudioManager audioManager;
 
-    public DeathSystem(ChangeMap screen, String respawnMap, String respawnSpawn, GameSession gameSession) {
+    public DeathSystem(ChangeMap screen, String respawnMap, String respawnSpawn, GameSession gameSession, AudioManager audioManager) {
         super(Family.all(HealthComponent.class).get());
 
         this.screen = screen;
         this.respawnMap = respawnMap;
         this.respawnSpawn = respawnSpawn;
         this.gameSession = gameSession;
+        this.audioManager = audioManager;
     }
 
     @Override
@@ -48,6 +52,7 @@ public class DeathSystem extends IteratingSystem {
             {
                 d.dead = true;
                 s.set(CharacterState.DEATH);
+                audioManager.playSound(AudioManager.TYPE.DEATH, AudioManager.OPT.ONCE,1);
             }
             return;
         }

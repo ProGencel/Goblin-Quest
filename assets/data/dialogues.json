@@ -68,7 +68,8 @@
       "once": true,
       "requires": ["duckGob.duck_collected"],
       "lines": ["duckGob.thanks.1", "duckGob.thanks.2"],
-      "give": ["gold:50"]
+      "give": ["gold:50"],
+      "set": ["duckGob.talked"]
     },
     {
       "id": "idle",

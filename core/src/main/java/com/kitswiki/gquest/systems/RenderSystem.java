@@ -17,10 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.kitswiki.gquest.components.HiddenComponent;
-import com.kitswiki.gquest.components.RoofComponent;
-import com.kitswiki.gquest.components.TextureComponent;
-import com.kitswiki.gquest.components.TransformComponent;
+import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.screens.GameScreen;
 
 import java.util.Comparator;
@@ -107,6 +104,11 @@ public class RenderSystem extends SortedIteratingSystem {
             float h = region.getRegionHeight() * UNIT_SCALE;
             float x = pos.x - w/2;
             float y = pos.y - h/2;
+            if(entity.getComponent(PlayerComponent.class) == null && entity.getComponent(SkeletonAIComponent.class) == null && entity.getComponent(EnemyAIComponent.class) == null)
+            {
+                x = Math.round(x * (1/UNIT_SCALE)) / (1/UNIT_SCALE);
+                y = Math.round(y * (1/UNIT_SCALE)) / (1/UNIT_SCALE);
+            }
 
             if(!tc.flipped)
             {

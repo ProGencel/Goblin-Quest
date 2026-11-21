@@ -2,6 +2,7 @@ package com.kitswiki.gquest.factories;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
@@ -17,6 +18,7 @@ import com.kitswiki.gquest.ai.SteerableBody;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.ai.skeleton.SkeletonAI;
 import com.kitswiki.gquest.components.*;
+import com.kitswiki.gquest.managers.AudioManager;
 import com.kitswiki.gquest.map.TiledMapReader;
 
 import static com.kitswiki.gquest.utils.Constants.PLAYER_FIX_BIT;
@@ -30,11 +32,13 @@ public class EntityFactory {
     private TileGraph graph;
 
     private final FloatArray patrolCords = new FloatArray();
+    private final AudioManager audioManager;
 
-    public EntityFactory(World world, TiledMapReader mapReader, Engine engine) {
+    public EntityFactory(World world, TiledMapReader mapReader, Engine engine, AudioManager audioManager) {
         this.world = world;
         this.mapReader = mapReader;
         this.engine = engine;
+        this.audioManager = audioManager;
 
         setPatrolCords();
     }
@@ -257,6 +261,18 @@ public class EntityFactory {
         c.id = mapObject.getString("cid","");
 
         addAnimIfAnim(mapObject, e);
+
+        engine.addEntityListener(new EntityListener() {
+            @Override
+            public void entityAdded(Entity en) {}
+
+            @Override
+            public void entityRemoved(Entity en) {
+                if (en == e) {
+                    audioManager.playSound(AudioManager.TYPE.DUCK, AudioManager.OPT.ONCE,1);
+                }
+            }
+        });
 
         e.add(t);
         e.add(tex);

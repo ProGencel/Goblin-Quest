@@ -83,6 +83,8 @@ public class Main extends Game {
         assetManager.load("audio/TownTheme.mp3", Music.class);
         assetManager.load("audio/cave.ogg", Music.class);
         assetManager.load("audio/dialog.wav", Sound.class);
+        assetManager.load("audio/duck.wav", Sound.class);
+        assetManager.load("audio/death.mp3", Sound.class);
         assetManager.finishLoading();
     }
 

@@ -13,6 +13,7 @@ import com.kitswiki.gquest.components.DialogComponent;
 import com.kitswiki.gquest.components.PlayerComponent;
 import com.kitswiki.gquest.hud.GameState;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class DelayedSpawnSystem extends IntervalSystem {
