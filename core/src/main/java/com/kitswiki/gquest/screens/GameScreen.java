@@ -3,9 +3,12 @@ package com.kitswiki.gquest.screens;
 import box2dLight.RayHandler;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,14 +29,12 @@ import com.kitswiki.gquest.components.SkeletonAIComponent;
 import com.kitswiki.gquest.effects.BlackScreen;
 import com.kitswiki.gquest.enums.BACK_MUSIC;
 import com.kitswiki.gquest.factories.LightFactory;
-import com.kitswiki.gquest.hud.Hud;
-import com.kitswiki.gquest.hud.ShopManager;
+import com.kitswiki.gquest.hud.*;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
 import com.kitswiki.gquest.components.EnemyAIComponent;
 import com.kitswiki.gquest.components.InventoryComponent;
 import com.kitswiki.gquest.debug.AIDebugRenderer;
 import com.kitswiki.gquest.debug.DebugPhsic;
-import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.effects.ScreenFade;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.factories.PortalFactory;
@@ -44,7 +45,6 @@ import com.kitswiki.gquest.map.MapObjectBuilder;
 import com.kitswiki.gquest.map.StaticBodyBuilder;
 import com.kitswiki.gquest.map.TiledMapReader;
 import com.kitswiki.gquest.systems.*;
-import com.kitswiki.gquest.hud.DialogManager;
 
 import static com.kitswiki.gquest.utils.Constants.UNIT_SCALE;
 
@@ -81,12 +81,14 @@ public class GameScreen implements Screen, ChangeMap {
     private final StaticBodyBuilder staticBodyBuilder;
     private final Hud hud;
     private final AudioManager audioManager;
+    private final PauseMenu pauseMenu;
 
     private final Vector2 spawnPos;
 
     private String pendingMap;
     private String pendingSpawn;
     private String currMap;
+    private AudioManager.TYPE musicType;
 
     private final ScreenFade fade;
     private final BlackScreen blackScreen;
@@ -98,6 +100,9 @@ public class GameScreen implements Screen, ChangeMap {
 
     private Entity p;
     private final InventoryComponent i;
+    private boolean isPaused = false;
+
+    private final InputMultiplexer inputMultiplexer;
 
 
     public GameScreen(GameSession gameSession, String mapPath, String spawnId,
@@ -105,6 +110,7 @@ public class GameScreen implements Screen, ChangeMap {
         this.main = gameSession.getMain();
         this.gameSession = gameSession;
 
+        this.inputMultiplexer = new InputMultiplexer();
         this.assetManager = gameSession.getAssetManager();
         this.tiledMap = assetManager.get(mapPath);
         this.currMap = mapPath.contains("town") ? "town" : "cave";
@@ -134,7 +140,6 @@ public class GameScreen implements Screen, ChangeMap {
         this.lightFactory = new LightFactory(mapReader,rayHandler,engine);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
         this.audioManager = gameSession.getAudioManager();
-        audioManager.setVOLUME();
         this.hud = new Hud(dialogStage,assetManager,dayNightSystem,audioManager);
         this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory);
         hud.setDialog();
@@ -145,6 +150,14 @@ public class GameScreen implements Screen, ChangeMap {
         this.aiDebugRenderer = new AIDebugRenderer(1f);
         this.debugPhsic = new DebugPhsic(camera,engine,world);
         this.i = gameSession.getInv();
+        this.pauseMenu = new PauseMenu(assetManager.get("UI/ui/skin/skin.json"),batch,gameSession.getBundle(),
+            () -> {
+                isPaused = !isPaused;
+                setPaused();
+            },() ->{
+            audioManager.stopMusic();
+            main.setScreen(new MainMenuScreen(gameSession,main));
+        });
 
         spawnPos = mapReader.getPointByProperty("spawns","spawnId",spawnId).getPosition();
         aiEntities = engine.getEntitiesFor(Family.all(EnemyAIComponent.class).get());
@@ -152,8 +165,15 @@ public class GameScreen implements Screen, ChangeMap {
 
         switch (backMusic)
         {
-            case TOWN -> audioManager.playMusic(AudioManager.TYPE.TOWN_THEME);
-            case CAVE -> audioManager.playMusic(AudioManager.TYPE.CAVE);
+            case TOWN -> {
+                musicType = AudioManager.TYPE.TOWN_THEME;
+                audioManager.playMusic(AudioManager.TYPE.TOWN_THEME);
+            }
+            case CAVE ->
+                {
+                    musicType = AudioManager.TYPE.CAVE;
+                    audioManager.playMusic(AudioManager.TYPE.CAVE);
+                }
         }
     }
 
@@ -234,6 +254,14 @@ public class GameScreen implements Screen, ChangeMap {
         delta = Math.min(delta, 1/30f);
 
         ScreenUtils.clear(0, 0, 0, 1);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        {
+            isPaused = !isPaused;
+            setPaused();
+            pauseMenu.setActive(isPaused);
+        }
+
         engine.update(delta);
         fade.update(delta);
         fade.draw();
@@ -254,12 +282,17 @@ public class GameScreen implements Screen, ChangeMap {
         batch.begin();
         new BitmapFont().draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); //MEMORY LEAK SAKIN ACIK UNUTMA !!!!
         batch.end();
+
+        audioManager.checkVolume();
+        pauseMenu.render();
+
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
         uiViewport.update(width, height, true);
+        pauseMenu.resize(width, height);
     }
 
     @Override
@@ -302,5 +335,16 @@ public class GameScreen implements Screen, ChangeMap {
             }
         }
         return false;
+    }
+
+    private void setPaused()
+    {
+        for(EntitySystem system : engine.getSystems())
+        {
+            if(!(system instanceof RenderSystem) && !(system instanceof InGameUiSystem))
+            {
+                system.setProcessing(!isPaused);
+            }
+        }
     }
 }

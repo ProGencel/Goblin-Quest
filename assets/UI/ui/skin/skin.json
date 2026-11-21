@@ -26,6 +26,12 @@
 		"b": 0.3019608,
 		"a": 1
 	},
+	"notopqeu": {
+		"r": 0,
+		"g": 0,
+		"b": 0,
+		"a": 0.6
+	},
 	"white": {
 		"r": 1,
 		"g": 1,
@@ -37,6 +43,10 @@
 	"white": {
 		"name": "white-pixel",
 		"color": "white"
+	},
+	"notopqeus": {
+		"name": "white-pixel",
+		"color": "notopqeu"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
@@ -96,7 +106,8 @@
 	"default": {
 		"background": "uiAnotherBrown",
 		"titleFont": "Minecraft_2",
-		"titleFontColor": "FontColor"
+		"titleFontColor": "FontColor",
+		"stageBackground": "notopqeus"
 	}
 }
 }

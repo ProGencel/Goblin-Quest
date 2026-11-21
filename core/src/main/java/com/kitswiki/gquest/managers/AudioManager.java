@@ -1,5 +1,6 @@
 package com.kitswiki.gquest.managers;
 
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -9,6 +10,7 @@ import com.kitswiki.gquest.hud.mainMenu.SettingdDialog;
 public class AudioManager {
 
     private float VOLUME;
+    private float musicMultiplier = 1f;
 
     public enum TYPE
     {
@@ -31,9 +33,9 @@ public class AudioManager {
         this.assetManager = assetManager;
     }
 
-    public void setVOLUME()
+    public float readVOLUME()
     {
-        VOLUME = SettingdDialog.prefs.getInteger("vol") / 100f;
+        return SettingdDialog.prefs.getInteger("vol",50) / 100f;
     }
 
     public void playSound(TYPE type, OPT opt,float volume)
@@ -43,6 +45,16 @@ public class AudioManager {
         {
             case LOOP -> sound.loop(volume);
             case ONCE -> sound.play(volume);
+        }
+    }
+
+    public void checkVolume()
+    {
+        float currvol = readVOLUME();
+        if(VOLUME != currvol)
+        {
+            VOLUME = currvol;
+            currentMusic.setVolume(musicMultiplier * VOLUME);
         }
     }
 
@@ -59,27 +71,20 @@ public class AudioManager {
 
     public void playMusic(TYPE type)
     {
-        Music next = assetManager.get(getPath(type),Music.class);
-        if(currentMusic == next || next.isPlaying())
-        {
+        Music next = assetManager.get(getPath(type), Music.class);
+        if (currentMusic == next || next.isPlaying()) {
             return;
         }
 
-        if(currentMusic != null)
-        {
+        if (currentMusic != null) {
             currentMusic.stop();
         }
 
         currentMusic = next;
         currentMusic.setLooping(true);
-        if(type.equals(TYPE.TOWN_THEME))
-        {
-            currentMusic.setVolume(0.7f * VOLUME);
-        }
-        else if(type.equals(TYPE.CAVE))
-        {
-            currentMusic.setVolume(1 * VOLUME);
-        }
+
+        musicMultiplier = (type == TYPE.TOWN_THEME) ? 0.7f : 1f;
+        currentMusic.setVolume(musicMultiplier * VOLUME);
         currentMusic.play();
     }
 
