@@ -19,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -196,7 +197,7 @@ public class GameScreen implements Screen, ChangeMap {
 
         mapObjectBuilder.setP(p);
         mapObjectBuilder.loadDynamicObjects(gameState);
-
+        Skin skin = assetManager.get("UI/ui/skin/skin.json");
         engine.addSystem(dayNightSystem);
         engine.addSystem(new InputSystem());
         engine.addSystem(new AISystem());
@@ -207,7 +208,9 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new DamageSystem(p));
         engine.addSystem(new DeathSystem(this,"town","begin",gameSession,audioManager));
         engine.addSystem(delayedSpawnSystem);
-        engine.addSystem(new DialogInteractSystem(p,hud.getDialogBox(),dialogManager, gameState,shopManager,audioManager));
+        engine.addSystem(new DialogInteractSystem(p,hud.getDialogBox(),dialogManager, gameState,shopManager,() -> {
+            main.setScreen(new EndingScreen(skin.getFont("Minecraft_2"),() -> main.setScreen(new CreditScreen(skin.getFont("Minecraft_2"),() -> main.setScreen(new MainMenuScreen(gameSession,main)),gameSession.getBundle())),gameSession.getBundle()));}
+        ));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
         engine.addSystem(new CollectableInteractSystem(gameState));
@@ -321,7 +324,7 @@ public class GameScreen implements Screen, ChangeMap {
         aiDebugRenderer.dispose();
         rayHandler.dispose();
         world.dispose();
-        batch.dispose();
+        //batch.dispose();
         dialogStage.dispose();
         fade.dispose();
     }

@@ -1,0 +1,7 @@
+turn everything localization
+Fix the skeletons facing direction after mission
+
+
+
+After release
+debug modelari kapat, fps gostermesini kapat

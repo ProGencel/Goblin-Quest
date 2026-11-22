@@ -11,6 +11,69 @@
       "lines": ["goblin.goblin_refuse.1"]
     },
     {
+      "id": "final_accept",
+      "linkOnly": true,
+      "lines": ["goblin.accept.1","goblin.accept.2","goblin.accept.3"],
+      "action": "final"
+    },
+    {
+      "id": "final_final_accept",
+      "linkOnly": true,
+      "lines": ["...."],
+      "action": "final"
+    },
+    {
+      "id": "final_refuse",
+      "linkOnly": true,
+      "lines": ["goblin.refuse.1"]
+    },
+    {
+      "id": "final_final_refuse",
+      "linkOnly": true,
+      "lines": ["goblin.refuse.1"]
+    },
+    {
+      "id": "after_final_refuse",
+      "requires":["750"],
+      "lines": ["goblin.refuse.idle.1"],
+      "choices": [
+        {
+          "text": "goblin.refuse.choice.1",
+          "next": "final_final_accept"
+        },
+        {
+          "text": "goblin.refuse.choice.2",
+          "next": "final_final_refuse"
+        }
+      ]
+    },
+    {
+      "id": "final_idle",
+      "requires": ["750"],
+      "once": true,
+      "lines": [
+        "goblin.final.1",
+        "goblin.final.2",
+        "goblin.final.3",
+        "goblin.final.4",
+        "goblin.final.5",
+        "goblin.final.6",
+        "goblin.final.7",
+        "goblin.final.8"
+      ],
+      "choices": [
+        {
+          "text": "goblin.final.choice.1",
+          "next": "final_accept"
+        },
+        {
+          "text": "goblin.final.choice.2",
+          "next": "final_refuse",
+          "set": ["refused"]
+        }
+      ]
+    },
+    {
       "id": "after_cave",
       "once": true,
       "requires": ["goblin.cave_entry"],
@@ -93,7 +156,8 @@
         "boss.after.4"
       ],
       "once": true,
-      "give": ["gold:750"]
+      "give": ["gold:750"],
+      "set": ["750"]
     },
     {
       "id": "idlecave",

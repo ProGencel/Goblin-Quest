@@ -48,6 +48,7 @@ public class GameSession {
         this.bundle = bundles.get(SettingdDialog.prefs.getString("lang"));
 
         dialogManager.readJson(bundle);
+        shopManager.readJson(bundle);
     }
 
     public void setLanguage(LANGS langs)
@@ -62,6 +63,7 @@ public class GameSession {
 
         bundle = bundles.get(lang);
         dialogManager.readJson(bundle);
+        shopManager.readJson(bundle);
     }
 
     private void setBundles()

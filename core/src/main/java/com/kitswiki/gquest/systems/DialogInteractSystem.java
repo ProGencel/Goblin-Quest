@@ -27,6 +27,7 @@ public class DialogInteractSystem extends IteratingSystem {
     private final DialogManager dialogReader;
     private final GameState gameState;
     private final ShopManager shopManager;
+    private final Runnable changeToFinal;
 
     private String currentDialogId;
     private DialogManager.DialogEntry currentEntry;
@@ -34,13 +35,15 @@ public class DialogInteractSystem extends IteratingSystem {
     private ShopManager.ShopItem[] shopItems;
     private Array<DialogManager.Choice> shopChoices;
 
-    public DialogInteractSystem(Entity player, DialogBox dialogBox, DialogManager dialogReader, GameState gameState, ShopManager shopManager, AudioManager audioManager) {
+
+    public DialogInteractSystem(Entity player, DialogBox dialogBox, DialogManager dialogReader, GameState gameState, ShopManager shopManager,Runnable runnable) {
         super(Family.all(TransformComponent.class, DialogComponent.class).get());
         this.player = player;
         this.dialogBox = dialogBox;
         this.dialogReader = dialogReader;
         this.gameState = gameState;
         this.shopManager = shopManager;
+        this.changeToFinal = runnable;
     }
 
     @Override
@@ -102,6 +105,7 @@ public class DialogInteractSystem extends IteratingSystem {
     {
         switch (action) {
             case "ske_cave" -> sendCaveSkes();
+            case "final" -> changeToFinal.run();
             default -> throw new IllegalArgumentException("Unknown dialog action: " + action);
         }
     }

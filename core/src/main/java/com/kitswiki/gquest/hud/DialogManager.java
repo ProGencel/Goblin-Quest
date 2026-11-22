@@ -53,7 +53,7 @@ public class DialogManager {
             resolveTexts(bundle);
         }catch (Exception e)
         {
-            throw new NullPointerException("CHECK GAME SESSION 'lang' variable!!!");
+            throw new NullPointerException("check .props");
         }
     }
 

@@ -2,6 +2,7 @@ package com.kitswiki.gquest.hud;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.kitswiki.gquest.components.InventoryComponent;
@@ -11,10 +12,6 @@ public class ShopManager {
 
     private ObjectMap<String, ShopItem[]> shops;
 
-    public ShopManager() {
-        readJson();
-    }
-
     public static class ShopItem
     {
         public String id;
@@ -22,10 +19,21 @@ public class ShopManager {
         public String price;
     }
 
-    public void readJson()
+    public void readJson(I18NBundle bundle)
     {
         Json json = new Json();
+        if(shops!=null)
+        {
+            shops = null;
+        }
         shops = json.fromJson(ObjectMap.class, ShopItem[].class, Gdx.files.internal("data/shops.json"));
+
+        try {
+            resolveTexts(bundle);
+        }catch (Exception e)
+        {
+            throw new NullPointerException("check .props");
+        }
     }
 
     public ShopItem[] getItems(String shopId)
@@ -48,6 +56,16 @@ public class ShopManager {
         inv.gold -= itemPrice;
         inv.inventory.add(item.id);
         return true;
+    }
+
+    private void resolveTexts(I18NBundle bundle) {
+        for (ShopItem[] items : shops.values()) {
+            for (ShopItem item : items) {
+                if (item.name != null) {
+                    item.name = bundle.get(item.name);
+                }
+            }
+        }
     }
 
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -19,6 +20,8 @@ import com.kitswiki.gquest.hud.DialogManager;
 import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.managers.AudioManager;
+import com.kitswiki.gquest.screens.CreditScreen;
+import com.kitswiki.gquest.screens.EndingScreen;
 import com.kitswiki.gquest.screens.GameScreen;
 import com.kitswiki.gquest.screens.MainMenuScreen;
 import com.progencel.kitswikiengine.crypto.DataManager;
@@ -47,9 +50,9 @@ public class Main extends Game {
         loadData();
 
         GameSession gameSession = new GameSession(this,assetManager,audioManager,gameState,dialogManager,shopManager,i, new HealthComponent());
-
-//        setScreen(new GameScreen(gameSession,"TiledProject/maps/town.tmx",
-//            "begin", false, BACK_MUSIC.TOWN));
+        Skin skin = assetManager.get("UI/ui/skin/skin.json");
+       // setScreen(new EndingScreen(new SpriteBatch(),skin.getFont("Minecraft_2"),() -> System.out.printf("asda")));
+        //setScreen(new CreditScreen(new SpriteBatch(),skin.getFont("Minecraft_2"),() -> System.out.printf("asd"),gameSession.getBundle()));
 
         setScreen(new MainMenuScreen(gameSession,this));
     }

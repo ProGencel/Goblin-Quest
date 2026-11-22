@@ -60,11 +60,11 @@
                 23,
                 15
             ],
-            "scale": 8,
-            "selectedLayer": 12,
+            "scale": 3,
+            "selectedLayer": 17,
             "viewCenter": {
-                "x": 802.5625,
-                "y": 560
+                "x": 459,
+                "y": 156.66666666666666
             }
         },
         "tilesets/SunnySide Environment.tsx": {
