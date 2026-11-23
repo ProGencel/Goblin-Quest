@@ -8,6 +8,7 @@ public enum SkeletonState implements State<SkeletonAI> {
     IDLE {
         @Override
         public void enter(SkeletonAI entity) {
+            entity.setPushable(false);
             entity.getSteerableBody().stop();
         }
 
@@ -18,6 +19,11 @@ public enum SkeletonState implements State<SkeletonAI> {
     },
 
     GOTO_CAVE {
+        @Override
+        public void enter(SkeletonAI entity) {
+            entity.setPushable(true);
+        }
+
         @Override
         public void update(SkeletonAI entity) {
             if(entity.nav.moveTo(entity.cave, entity.delta)) {

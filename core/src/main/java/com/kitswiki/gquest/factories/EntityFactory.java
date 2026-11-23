@@ -96,6 +96,7 @@ public class EntityFactory {
         BodyComponent b = engine.createComponent(BodyComponent.class);
         b.body = handleBodyForDynamicCircle(t.position,1,false);
         b.body.setUserData(e);
+        b.body.setType(BodyDef.BodyType.StaticBody);
 
         AnimationComponent a = new AnimationComponent();
         if("boss".equals(type))
@@ -125,6 +126,7 @@ public class EntityFactory {
 
         ai.locs.put("cave",dest);
         ai.locs.put("start",startPos);
+        ai.homeFlipped = tex.flipped;
         ai.skeletonAI = new SkeletonAI(steerable,ai.locs,graph,15f);
 
         e.add(t);
@@ -153,14 +155,15 @@ public class EntityFactory {
 
         AnimationComponent a = new AnimationComponent();
         a.layers.add("badGoblin");
+        setRandomHair(mapObject,a);
 
         TextureComponent tex = new TextureComponent();
         tex.offsetY = spriteOffsetY(mapObject);
 
         EnemyAIComponent ai = engine.createComponent(EnemyAIComponent.class);
         SteerableBody steerable = new SteerableBody(b.body, 0.5f);
-        steerable.setMaxLinearSpeed(4f);
-        steerable.setMaxLinearAcceleration(12f);
+        steerable.setMaxLinearSpeed(2.5f);
+        steerable.setMaxLinearAcceleration(10f);
 
         ai.enemyAI = new EnemyAI(steerable, player.getComponent(SteerableComponent.class).steerableBody,world,graph);
         for(int i = 0;i<10;i++)

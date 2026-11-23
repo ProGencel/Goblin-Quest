@@ -2,7 +2,6 @@ package com.kitswiki.gquest.ai.enemy;
 
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
-import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -17,7 +16,6 @@ public class EnemyAI {
     public final SteerableBody steerable;
     public final SteerableBody target;
     public final Seek<Vector2> seek;
-    private final Arrive<Vector2> arrive;
     public final StateMachine<EnemyAI, EnemyState> stateMachine;
     public final PathNavigator nav;
 
@@ -43,10 +41,6 @@ public class EnemyAI {
         this.target = target;
         this.world = world;
         this.seek = new Seek<>(steerable, target);
-        this.arrive = new Arrive<>(steerable, target)
-            .setArrivalTolerance(0.15f)
-            .setDecelerationRadius(1.5f)
-            .setTimeToTarget(0.1f);
 
         // nav, changeState'ten ÖNCE oluşmalı: PATROL.enter() nav'a erişecek
         this.nav = new PathNavigator(steerable, graph);
@@ -64,12 +58,12 @@ public class EnemyAI {
         nav.updatePatrol(dt);
     }
 
-    public void updateChase() {
+    public boolean updateChase() {
         if (hasLineOfSight()) {
-            steerable.setBehavior(arrive);
+            steerable.setBehavior(seek);
             nav.clearPath();
             repathTimer = 0f;
-            return;
+            return true;
         }
 
         repathTimer -= dt;
@@ -77,11 +71,12 @@ public class EnemyAI {
             repathTimer = repathInterval;
             if (!nav.requestPath(target.getPosition())) {
                 steerable.stop();
-                return;
+                return false;
             }
         }
 
         nav.followPath(target.getPosition());
+        return true;
     }
 
     public boolean canSeeTarget() {

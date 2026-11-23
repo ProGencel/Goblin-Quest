@@ -36,6 +36,8 @@ public enum EnemyState implements State<EnemyAI> {
     CHASE {
         @Override
         public void enter(EnemyAI entity) {
+            entity.steerable.setMaxLinearSpeed(6.2f);
+            entity.steerable.setMaxLinearAcceleration(18f);
             entity.startChase();
         }
 
@@ -52,8 +54,17 @@ public enum EnemyState implements State<EnemyAI> {
             }
             else
             {
-                entity.updateChase();
+                if(!entity.updateChase())
+                {
+                    entity.stateMachine.changeState(PATROL);
+                }
             }
+        }
+
+        @Override
+        public void exit(EnemyAI entity) {
+            entity.steerable.setMaxLinearSpeed(2.5f);
+            entity.steerable.setMaxLinearAcceleration(10f);
         }
     },
 

@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.Vector2;
 import com.kitswiki.gquest.ai.skeleton.SkeletonAI;
+import com.kitswiki.gquest.ai.skeleton.SkeletonState;
 import com.kitswiki.gquest.components.HiddenComponent;
 import com.kitswiki.gquest.components.SkeletonAIComponent;
 import com.kitswiki.gquest.components.StateComponent;
@@ -23,7 +24,8 @@ public class SkeletonAISystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        SkeletonAI brain = ai.get(entity).skeletonAI;
+        SkeletonAIComponent comp = ai.get(entity);
+        SkeletonAI brain = comp.skeletonAI;
 
         brain.update(deltaTime);
         s.get(entity).set(brain.getStateMachine().getCurrentState());
@@ -35,6 +37,8 @@ public class SkeletonAISystem extends IteratingSystem {
             texture.flipped = false;
         } else if (velocity.x < -0.1f) {
             texture.flipped = true;
+        } else if (brain.getStateMachine().getCurrentState() == SkeletonState.IDLE) {
+            texture.flipped = comp.homeFlipped;
         }
 
         boolean hidden = brain.isHidden();

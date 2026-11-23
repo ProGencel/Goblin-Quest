@@ -35,36 +35,36 @@
         },
         "maps/cave.tmx": {
             "expandedObjectLayers": [
-                7,
+                16,
                 4,
-                9,
+                7,
                 8,
-                16
+                9
             ],
-            "scale": 4,
+            "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 800.125,
-                "y": 800
+                "x": 1017.5,
+                "y": 589
             }
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
                 32,
                 4,
-                30,
-                9,
-                25,
-                14,
                 24,
+                25,
+                15,
+                9,
                 23,
-                15
+                14,
+                30
             ],
             "scale": 3,
-            "selectedLayer": 17,
+            "selectedLayer": 20,
             "viewCenter": {
-                "x": 459,
-                "y": 156.66666666666666
+                "x": 996.1666666666665,
+                "y": 308.3333333333333
             }
         },
         "tilesets/SunnySide Environment.tsx": {
@@ -89,7 +89,7 @@
         }
     },
     "frame.defaultDuration": 110,
-    "last.imagePath": "C:/Desktop/libGDX/GoblinQuests/assets/TiledProject/tilesets/cavelantern",
+    "last.imagePath": "C:/Desktop/libGDX/GoblinQuests/assets/TiledProject/tilesets/caverocks",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
@@ -101,7 +101,7 @@
         "maps/cave.tmx"
     ],
     "project": "game.tiled-project",
-    "property.type": "bool",
+    "property.type": "float",
     "recentFiles": [
         "tilesets/sunnysideworld.tsx",
         "maps/cave.tmx",

@@ -3,12 +3,7 @@ package com.kitswiki.gquest.systems;
 import box2dLight.RayHandler;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class DayNightSystem extends EntitySystem {
 

@@ -3,6 +3,8 @@ package com.kitswiki.gquest.ai.skeleton;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.kitswiki.gquest.ai.SteerableBody;
 import com.kitswiki.gquest.ai.pathfinding.PathNavigator;
@@ -27,6 +29,19 @@ public class SkeletonAI {
         this.hideTime = hideTime;
         this.nav = new PathNavigator(steerableBody,graph);
         this.stateMachine = new DefaultStateMachine<>(this, SkeletonState.IDLE);
+    }
+
+    public void setPushable(boolean pushable)
+    {
+        Body body = steerableBody.getBody();
+        if(pushable)
+        {
+            body.setType(BodyDef.BodyType.DynamicBody);
+        }
+        else
+        {
+            body.setType(BodyDef.BodyType.StaticBody);
+        }
     }
 
     public void moveToCave()

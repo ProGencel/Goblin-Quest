@@ -87,6 +87,12 @@ public class RenderSystem extends SortedIteratingSystem {
 
 
         rayHandler.setCombinedMatrix(camera);
+        rayHandler.useCustomViewport(
+            viewport.getScreenX(),
+            viewport.getScreenY(),
+            viewport.getScreenWidth(),
+            viewport.getScreenHeight()
+        );
         rayHandler.updateAndRender();
 
         dialogStage.act();

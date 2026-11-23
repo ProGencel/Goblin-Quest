@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="288" tileheight="192" tilecount="43" columns="0">
+<tileset version="1.10" tiledversion="1.12.2" name="props" tilewidth="288" tileheight="192" tilecount="57" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0" type="static">
   <properties>
@@ -66,16 +66,6 @@
   <image source="empty_statue.png" width="32" height="48"/>
   <objectgroup draworder="index" id="6">
    <object id="5" x="1.95652" y="26.2609" width="28.087" height="15.6087"/>
-  </objectgroup>
- </tile>
- <tile id="7" type="static">
-  <properties>
-   <property name="FRAME_H" type="int" value="32"/>
-   <property name="OFFSET_Y" type="float" value="7"/>
-  </properties>
-  <image source="coal.png" width="32" height="32"/>
-  <objectgroup draworder="index" id="2">
-   <object id="1" x="10.1304" y="18.5217" width="11.7826" height="6.21739"/>
   </objectgroup>
  </tile>
  <tile id="9" type="static">
@@ -220,6 +210,7 @@
  </tile>
  <tile id="32" type="static">
   <properties>
+   <property name="FRAME_H" type="int" value="54"/>
    <property name="isAnim" type="bool" value="true"/>
   </properties>
   <image source="cavelantern/lanterncave_0.png" width="16" height="54"/>
@@ -316,5 +307,160 @@
  </tile>
  <tile id="52">
   <image source="cavelantern/Campfire_9.png" width="25" height="32"/>
+ </tile>
+ <tile id="53" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_0.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="7">
+   <object id="6" x="6.04348" y="14" width="19.913" height="11.8696"/>
+   <object id="7" x="1.23366" y="19.0997" width="29.5105" height="4.15625"/>
+  </objectgroup>
+ </tile>
+ <tile id="54" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_1.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="8.0625" y="17" width="15.8438" height="8.96875"/>
+  </objectgroup>
+ </tile>
+ <tile id="55" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_2.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="11.0938" y="20.9375" width="9.875" height="6.03125"/>
+  </objectgroup>
+ </tile>
+ <tile id="56" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_3.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="6.13046" y="14.0652" width="19.913" height="11.8696"/>
+   <object id="2" x="1.65866" y="19.0997" width="28.9376" height="4.15625"/>
+  </objectgroup>
+ </tile>
+ <tile id="57" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_4.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="4">
+   <object id="3" x="8.1406" y="17.0156" width="15.8438" height="8.96875"/>
+  </objectgroup>
+ </tile>
+ <tile id="58" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_5.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="6">
+   <object id="5" x="11.0937" y="20.9844" width="9.875" height="6.03125"/>
+  </objectgroup>
+ </tile>
+ <tile id="59" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_6.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="6.30437" y="13.8478" width="19.913" height="12.1739"/>
+   <object id="2" x="0.7031" y="18.8281" width="30.1251" height="4.15625"/>
+  </objectgroup>
+ </tile>
+ <tile id="60" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_7.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="3">
+   <object id="2" x="8.17185" y="17.2031" width="15.8438" height="8.96875"/>
+  </objectgroup>
+ </tile>
+ <tile id="61" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_8.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="3">
+   <object id="2" x="11.0625" y="20.8594" width="9.875" height="6.03125"/>
+  </objectgroup>
+ </tile>
+ <tile id="62" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_9.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="6.08698" y="13.8478" width="19.913" height="12.1304"/>
+   <object id="4" x="1.40625" y="19.0938" width="29.5" height="4.15625"/>
+  </objectgroup>
+ </tile>
+ <tile id="63" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_10.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="3">
+   <object id="2" x="8.0156" y="17.0156" width="15.8438" height="8.96875"/>
+  </objectgroup>
+ </tile>
+ <tile id="64" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_11.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="11.0312" y="20.9844" width="9.875" height="6.03125"/>
+  </objectgroup>
+ </tile>
+ <tile id="65" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_12.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="5.95654" y="13.9348" width="19.913" height="12.087"/>
+   <object id="2" x="1.10935" y="19.0156" width="30.6251" height="4.15625"/>
+  </objectgroup>
+ </tile>
+ <tile id="66" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_13.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="7.8906" y="16.9219" width="15.8438" height="8.96875"/>
+  </objectgroup>
+ </tile>
+ <tile id="67" type="static">
+  <properties>
+   <property name="FRAME_H" type="int" value="32"/>
+   <property name="OFFSET_Y" type="float" value="5"/>
+  </properties>
+  <image source="caverocks/rock_14.png" width="32" height="32"/>
+  <objectgroup draworder="index" id="3">
+   <object id="2" x="11.1875" y="21.0469" width="9.875" height="6.03125"/>
+  </objectgroup>
  </tile>
 </tileset>

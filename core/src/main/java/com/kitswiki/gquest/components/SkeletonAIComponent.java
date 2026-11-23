@@ -10,5 +10,6 @@ public class SkeletonAIComponent implements Component {
 
     public SkeletonAI skeletonAI;
     public ObjectMap<String, Vector2> locs = new ObjectMap<>();
+    public boolean homeFlipped;
 
 }

@@ -81,4 +81,8 @@ public class SteerableBody implements Steerable<Vector2> {
     }
     @Override
     public Location<Vector2> newLocation() { return new SteerableBody(body, boundingRadius); }
+
+    public Body getBody() {
+        return body;
+    }
 }

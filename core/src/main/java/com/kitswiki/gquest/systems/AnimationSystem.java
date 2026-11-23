@@ -62,6 +62,10 @@ public class AnimationSystem extends IteratingSystem {
         if(a == null)
         {
             TextureRegion strip = atlas.findRegion(key);
+
+            if (strip == null) {
+                throw new IllegalStateException("Atlas region bulunamadi: " + key);
+            }
             TextureRegion[] frames = strip.split(96,64)[0];
             a = new Animation<>(anim.frameDuration, frames);
             if(st.charState.equals(CharacterState.DEATH))
