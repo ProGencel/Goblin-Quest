@@ -103,7 +103,7 @@ public class GameScreen implements Screen, ChangeMap {
     private final InventoryComponent i;
     private boolean isPaused = false;
 
-    private final InputMultiplexer inputMultiplexer;
+    private Runnable pendingScreenChange;
 
 
     public GameScreen(GameSession gameSession, String mapPath, String spawnId,
@@ -111,7 +111,6 @@ public class GameScreen implements Screen, ChangeMap {
         this.main = gameSession.getMain();
         this.gameSession = gameSession;
 
-        this.inputMultiplexer = new InputMultiplexer();
         this.assetManager = gameSession.getAssetManager();
         this.tiledMap = assetManager.get(mapPath);
         this.currMap = mapPath.contains("town") ? "town" : "cave";
@@ -208,9 +207,8 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new DamageSystem(p));
         engine.addSystem(new DeathSystem(this,"town","begin",gameSession,audioManager));
         engine.addSystem(delayedSpawnSystem);
-        engine.addSystem(new DialogInteractSystem(p,hud.getDialogBox(),dialogManager, gameState,shopManager,() -> {
-            main.setScreen(new EndingScreen(skin.getFont("Minecraft_2"),() -> main.setScreen(new CreditScreen(skin.getFont("Minecraft_2"),() -> main.setScreen(new MainMenuScreen(gameSession,main)),gameSession.getBundle())),gameSession.getBundle()));}
-        ));
+        engine.addSystem(new DialogInteractSystem(p, hud.getDialogBox(), dialogManager, gameState, shopManager,
+            () -> pendingScreenChange = this::showEnding));
         engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
         engine.addSystem(new CollectableInteractSystem(gameState));
@@ -266,6 +264,11 @@ public class GameScreen implements Screen, ChangeMap {
         }
 
         engine.update(delta);
+        if(pendingScreenChange != null)
+        {
+            pendingScreenChange.run();
+            return;
+        }
         fade.update(delta);
         fade.draw();
 
@@ -338,6 +341,16 @@ public class GameScreen implements Screen, ChangeMap {
             }
         }
         return false;
+    }
+
+    private void showEnding() {
+        Skin skin = assetManager.get("UI/ui/skin/skin.json");
+        BitmapFont font = skin.getFont("Minecraft_2");
+        main.setScreen(new EndingScreen(font,
+            () -> main.setScreen(new CreditScreen(font,
+                () -> main.setScreen(new MainMenuScreen(gameSession, main)),
+                gameSession.getBundle(),gameSession)),
+            gameSession.getBundle(),gameSession));
     }
 
     private void setPaused()

@@ -9,82 +9,85 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kitswiki.gquest.GameSession;
+import com.kitswiki.gquest.managers.AudioManager;
 
 public class EndingScreen extends ScreenAdapter {
 
-    private static final float FADE_IN = 2f;
-    private static final float LINE_GAP = 3.5f;
-    private static final float HOLD = 3f;
-    private static final float FADE_OUT = 2f;
+    private static final float FADE_IN = 1f;
+    private static final float FADE_OUT = 1f;
+    private static final float LINE_TIME = 4f;
 
     private final SpriteBatch batch;
     private final BitmapFont font;
     private final Runnable onFinished;
     private final Viewport viewport;
-    private final I18NBundle bundle;
+    private final GameSession gameSession;
 
     private final String[] lines = new String[5];
 
     private float time = 0f;
     private boolean finished = false;
 
-    public EndingScreen(BitmapFont font, Runnable onFinished, I18NBundle bundle) {
+    public EndingScreen(BitmapFont font, Runnable onFinished, I18NBundle bundle, GameSession gameSession) {
         this.batch = new SpriteBatch();
         this.font = font;
         this.onFinished = onFinished;
-        this.viewport = new FitViewport(640,360);
-        this.bundle = bundle;
+        this.viewport = new FitViewport(640, 360);
+        this.gameSession = gameSession;
 
-        lines[0] = bundle.get("final.1");
-        lines[1] = bundle.get("final.2");
-        lines[2] = bundle.get("final.3");
-        lines[3] = bundle.get("final.4");
-        lines[4] = bundle.get("final.5");
+        for (int i = 0; i < lines.length; i++) {
+            lines[i] = bundle.get("final." + (i + 1));
+        }
+    }
+
+    @Override
+    public void show() {
+        gameSession.getAudioManager().playMusic(AudioManager.TYPE.MYSTERIOUS);
     }
 
     @Override
     public void render(float delta) {
+        if (finished) return;
         time += delta;
 
-        float showEnd = (lines.length - 1) * LINE_GAP + FADE_IN + HOLD;
-        float master = 1f;
-        if(time > showEnd)
-        {
-            master = 1f - (time - showEnd) / FADE_OUT;
-            if(master <= 0f && !finished)
-            {
-                finished = true;
-                onFinished.run();
-                return;
-            }
+        if (time >= lines.length * LINE_TIME) {
+            finished = true;
+            onFinished.run();
+            return;
         }
-        master = MathUtils.clamp(master,0f,1f);
+        int index = (int) (time / LINE_TIME);
+        float t = time - index * LINE_TIME;
 
-        ScreenUtils.clear(0, 0,0,1);
+        float alpha = MathUtils.clamp(
+            Math.min(t / FADE_IN, (LINE_TIME - t) / FADE_OUT), 0f, 1f);
+
+        ScreenUtils.clear(0, 0, 0, 1);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
-        float spacing = font.getLineHeight() * 2f;
         float width = viewport.getWorldWidth() * 0.8f;
         float x = (viewport.getWorldWidth() - width) / 2f;
-        float y = viewport.getWorldHeight() / 2f + lines.length * spacing / 2f;
+        float y = viewport.getWorldHeight() / 2f;
 
         Color old = font.getColor().cpy();
+        font.setColor(1f, 1f, 1f, alpha);
+
         batch.begin();
-        for(int i = 0;i<lines.length;i++)
-        {
-            float a = MathUtils.clamp((time - 1 * LINE_GAP) / FADE_IN, 0f, 1f) * master;
-            font.setColor(1f,1f,1f,a);
-            font.draw(batch, lines[i],x,y - i*spacing,width, Align.center,false);
-        }
+        font.draw(batch, lines[index], x, y, width, Align.center, true);
         batch.end();
+
         font.setColor(old);
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height,true);
+        viewport.update(width, height, true);
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
     }
 }

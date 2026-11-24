@@ -14,6 +14,12 @@
 		"b": 0,
 		"a": 1
 	},
+	"br": {
+		"r": 0.5294118,
+		"g": 0.25490198,
+		"b": 0.25882354,
+		"a": 1
+	},
 	"FontColor": {
 		"r": 0.32156864,
 		"g": 0.30980393,
@@ -56,7 +62,7 @@
 	},
 	"TITLE": {
 		"font": "Minecraft_2",
-		"fontColor": "gren"
+		"fontColor": "br"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle": {
@@ -93,8 +99,9 @@
 	"default": {
 		"font": "Minecraft_2",
 		"fontColor": "black",
-		"up": "dialog",
-		"down": "uiAnotherBrown"
+		"up": "uiAnotherBrown",
+		"down": "dialog",
+		"over": "uibrown"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {

@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.Main;
 import com.kitswiki.gquest.enums.BACK_MUSIC;
+import com.kitswiki.gquest.hud.customActors.ShadowLabel;
 import com.kitswiki.gquest.screens.GameScreen;
 
 import java.util.function.Supplier;
@@ -57,7 +58,7 @@ public class MainMenuBuilder {
     {
         Table root = new Table(skin);
         root.setFillParent(true);
-        root.setBackground(skin.getDrawable("uibrown"));
+        //root.setBackground(skin.getDrawable("uibrown"));
 
         Table textTable = new Table(skin);
 
@@ -89,7 +90,8 @@ public class MainMenuBuilder {
         sizela(textTable.add(textButton1)).width(200).pad(10).row();
         sizela(textTable.add(textButton2)).width(200).pad(10).row();
 
-        Label title = new Label("GOBLIN QUEST",skin,"TITLE");
+        ShadowLabel title = new ShadowLabel("GOBLIN QUEST",skin,"TITLE");
+        title.setShadow(3f, -5f, 0.7f);
         title.setFontScale(5f);
         title.setAlignment(Align.center);
         root.add(title).padBottom(150).row();

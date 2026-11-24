@@ -35,36 +35,36 @@
         },
         "maps/cave.tmx": {
             "expandedObjectLayers": [
-                16,
-                4,
-                7,
                 8,
-                9
+                9,
+                16,
+                7,
+                4
             ],
             "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 1017.5,
-                "y": 589
+                "x": 800.5,
+                "y": 800
             }
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
-                32,
-                4,
                 24,
-                25,
                 15,
                 9,
-                23,
+                25,
                 14,
-                30
+                30,
+                23,
+                4,
+                32
             ],
-            "scale": 3,
-            "selectedLayer": 20,
+            "scale": 4,
+            "selectedLayer": 14,
             "viewCenter": {
-                "x": 996.1666666666665,
-                "y": 308.3333333333333
+                "x": 869.125,
+                "y": 480
             }
         },
         "tilesets/SunnySide Environment.tsx": {
@@ -93,6 +93,7 @@
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
+    "map.width": 36,
     "openFiles": [
         "tilesets/sunnysideworld.tsx",
         "maps/town.tmx",

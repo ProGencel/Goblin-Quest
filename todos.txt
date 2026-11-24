@@ -1,7 +1,9 @@
 turn everything localization,
 add music to main menu and end screens
-better main menu
 check the red warn thing
+add icon
+give pad buttons on the in game settings menu
+better main menu - DONE
 Fix the skeletons facing direction after mission - DONE
 design the cave better and set the ais speed - DONE
 Fix the skeleton move bug - DONE

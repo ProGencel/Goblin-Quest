@@ -1,6 +1,5 @@
 package com.kitswiki.gquest.managers;
 
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -10,6 +9,7 @@ import com.kitswiki.gquest.hud.mainMenu.SettingdDialog;
 public class AudioManager {
 
     private float VOLUME;
+    private float VOLUMEM;
     private float musicMultiplier = 1f;
 
     public enum TYPE
@@ -19,7 +19,10 @@ public class AudioManager {
         DIALOG,
         CAVE,
         DUCK,
-        DEATH
+        DEATH,
+        MENU,
+        MYSTERIOUS,
+        CREDIT
     }
 
     public enum OPT
@@ -33,11 +36,25 @@ public class AudioManager {
 
     public AudioManager(AssetManager assetManager) {
         this.assetManager = assetManager;
+        VOLUME = readVOLUME(0);
+        VOLUMEM = readVOLUME(1);
     }
 
-    public float readVOLUME()
+    /**
+    * 1 = music
+    * 0 = sound
+    */
+    public float readVOLUME(int i)
     {
-        return SettingdDialog.prefs.getInteger("vol",50) / 100f;
+        switch (i)
+        {
+            case 1 -> {
+                return SettingdDialog.prefs.getInteger("mus",50) / 100f;
+            }
+            default -> {
+                return SettingdDialog.prefs.getInteger("vol",50) / 100f;
+            }
+        }
     }
 
     public void playSound(TYPE type, OPT opt,float volume)
@@ -52,11 +69,16 @@ public class AudioManager {
 
     public void checkVolume()
     {
-        float currvol = readVOLUME();
+        float currvolM = readVOLUME(1);
+        if(VOLUMEM != currvolM)
+        {
+            VOLUMEM = currvolM;
+            currentMusic.setVolume(musicMultiplier * VOLUMEM);
+        }
+        float currvol = readVOLUME(0);
         if(VOLUME != currvol)
         {
             VOLUME = currvol;
-            currentMusic.setVolume(musicMultiplier * VOLUME);
         }
     }
 
@@ -86,7 +108,7 @@ public class AudioManager {
         currentMusic.setLooping(true);
 
         musicMultiplier = (type == TYPE.TOWN_THEME) ? 0.7f : 1f;
-        currentMusic.setVolume(musicMultiplier * VOLUME);
+        currentMusic.setVolume(musicMultiplier * VOLUMEM);
         currentMusic.play();
     }
 
@@ -120,6 +142,15 @@ public class AudioManager {
             }
             case DEATH -> {
                 return "audio/death.mp3";
+            }
+            case MENU -> {
+                return "audio/menu.mp3";
+            }
+            case CREDIT -> {
+                return "audio/credit.mp3";
+            }
+            case MYSTERIOUS -> {
+                return "audio/mysterious.mp3";
             }
             default -> throw new IllegalArgumentException("cant find audio");
         }

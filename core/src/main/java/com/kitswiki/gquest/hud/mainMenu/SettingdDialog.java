@@ -16,6 +16,7 @@ public class SettingdDialog extends Dialog {
 
     public static Preferences prefs = Gdx.app.getPreferences("KitsWiki Settings-GQuest");
     private int volume = 50;
+    private int volumeM = 50;
 
     public SettingdDialog(String title, Skin skin, I18NBundle bundle, MainMenuBuilder builder) {
         super(title,createStyle(skin));
@@ -35,6 +36,7 @@ public class SettingdDialog extends Dialog {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 prefs.putInteger("vol",volume);
+                prefs.putInteger("mus",volumeM);
                 prefs.flush();
             }
         });
@@ -42,6 +44,9 @@ public class SettingdDialog extends Dialog {
         button(closeButton);
         button(applyButton);
         key(Input.Keys.ESCAPE, null);
+
+        volume = returnLastVol();
+        volumeM = returnLastVolM();
         setDialog(skin,builder);
     }
 
@@ -50,6 +55,7 @@ public class SettingdDialog extends Dialog {
         SelectBox<String> selectBox = createSelectBox(skin, builder);
 
         Slider slider = createSlider(skin);
+        Slider sliderM = createSlider(skin);
 
         Table content = getContentTable();
 
@@ -59,6 +65,8 @@ public class SettingdDialog extends Dialog {
 
         Table soundTable = new Table();
         Label valueLabel = new Label(String.valueOf(returnLastVol()),skin);
+        Label valueLabelM = new Label(String.valueOf(returnLastVolM()),skin);
+
         slider.setValue(returnLastVol());
         slider.addListener(new ChangeListener() {
             @Override
@@ -71,6 +79,19 @@ public class SettingdDialog extends Dialog {
         soundTable.add(new Label(builder.getGameSession().getBundle().get("sound"),skin)).left().padRight(20);
         soundTable.add(slider).width(200);
         soundTable.add(valueLabel).width(50).padLeft(5);
+
+        sliderM.setValue(returnLastVolM());
+        sliderM.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                int value = (int)sliderM.getValue();
+                valueLabelM.setText(value);
+                volumeM = value;
+            }
+        });
+        soundTable.add(new Label(builder.getGameSession().getBundle().get("music"),skin)).left().padRight(20);
+        soundTable.add(sliderM).width(200);
+        soundTable.add(valueLabelM).width(50).padLeft(5);
 
         content.add(lanTable).pad(15).row();
         content.add(soundTable).pad(15);
@@ -116,6 +137,11 @@ public class SettingdDialog extends Dialog {
     private int returnLastVol()
     {
         return prefs.getInteger("vol");
+    }
+
+    private int returnLastVolM()
+    {
+        return prefs.getInteger("mus");
     }
 
     private static String returnLastLang()

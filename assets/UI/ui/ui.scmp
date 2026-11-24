@@ -141,6 +141,16 @@ jsonData: {
 		{
 			class: com.ray3k.skincomposer.data.ColorData
 			color: {
+				r: 0.5294118
+				g: 0.25490198
+				b: 0.25882354
+				a: 1
+			}
+			name: br
+		}
+		{
+			class: com.ray3k.skincomposer.data.ColorData
+			color: {
 				r: 0.32156864
 				g: 0.30980393
 				b: 0.35686275
@@ -1758,7 +1768,7 @@ jsonData: {
 						type: com.badlogic.gdx.graphics.Color
 						name: fontColor
 						optional: true
-						value: gren
+						value: br
 					}
 					background: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable

@@ -79,6 +79,7 @@ public class Main extends Game {
         assetManager.setLoader(TiledMap.class, new TmxMapLoader(new InternalFileHandleResolver()));
         assetManager.load("TiledProject/maps/town.tmx", TiledMap.class);
         assetManager.load("TiledProject/maps/cave.tmx", TiledMap.class);
+        assetManager.load("TiledProject/maps/menu.tmx", TiledMap.class);
         assetManager.load("atlas/cooked/gquest.atlas", TextureAtlas.class);
         assetManager.load("UI/dialog/skin/skin.json", Skin.class);
         assetManager.load("UI/ui/skin/skin.json", Skin.class);
@@ -88,6 +89,9 @@ public class Main extends Game {
         assetManager.load("audio/dialog.wav", Sound.class);
         assetManager.load("audio/duck.wav", Sound.class);
         assetManager.load("audio/death.mp3", Sound.class);
+        assetManager.load("audio/menu.mp3", Music.class);
+        assetManager.load("audio/credit.mp3", Music.class);
+        assetManager.load("audio/mysterious.mp3", Music.class);
         assetManager.finishLoading();
     }
 

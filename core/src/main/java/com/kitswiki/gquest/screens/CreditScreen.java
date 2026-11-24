@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kitswiki.gquest.GameSession;
+import com.kitswiki.gquest.managers.AudioManager;
 
 public class CreditScreen extends ScreenAdapter {
 
@@ -26,6 +28,7 @@ public class CreditScreen extends ScreenAdapter {
     private final BitmapFont font;
     private final Runnable onFinished;
     private final Viewport viewport = new FitViewport(640,360);
+    private final GameSession gameSession;
 
     // "#" ile başlayan = başlık, "" = boşluk. Son satır ekranda ortada kalır.
     private String[] lines;
@@ -54,10 +57,11 @@ public class CreditScreen extends ScreenAdapter {
     private float endTimer = 0f;
     private boolean finished = false;
 
-    public CreditScreen( BitmapFont font, Runnable onFinished, I18NBundle bundle) {
+    public CreditScreen( BitmapFont font, Runnable onFinished, I18NBundle bundle, GameSession gameSession) {
         this.batch = new SpriteBatch();
         this.font = font;
         this.onFinished = onFinished;
+        this.gameSession = gameSession;
 
         loadLines(bundle);
     }
@@ -129,6 +133,11 @@ public class CreditScreen extends ScreenAdapter {
 
             lines[i] = header ? "#" + text : text;
         }
+    }
+
+    @Override
+    public void show() {
+        gameSession.getAudioManager().playMusic(AudioManager.TYPE.CREDIT);
     }
 
     @Override

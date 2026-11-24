@@ -23,6 +23,28 @@ goblin.intro.5=
 goblin.intro.choice.1=
 goblin.intro.choice.2=
 
+goblin.final.1=
+goblin.final.2=
+goblin.final.3=
+goblin.final.4=
+goblin.final.5=
+goblin.final.6=
+goblin.final.7=
+goblin.final.8=
+
+goblin.final.choice.1=
+goblin.final.choice.2=
+
+goblin.accept.1=
+goblin.accept.2=
+goblin.accept.3=
+
+goblin.refuse.1=
+goblin.refuse.idle.1=
+
+goblin.refuse.choice.1=
+goblin.refuse.choice.2=
+
 # ---------- duckGob ----------
 duckGob.intro.1=
 duckGob.intro.2=
@@ -92,3 +114,49 @@ weaponsmith.money.2=
 
 # ---------- def ----------
 def.intro.1=
+
+# -- end --
+end=
+
+# ---------- ui -----------
+play=
+options=
+exit=
+close=
+settings=
+apply=
+lang=
+sound=
+continue=
+mainMenu=
+pause=
+sure=
+yes=
+cancel=
+confirm=
+music=
+
+....=
+
+# ----------- final -----------
+final.1=
+final.2=
+final.3=
+final.4=
+final.5=
+
+# ---------- items ----------
+skechip=
+
+# ---------- credits ----------
+credits.title=
+credits.design=
+credits.author=
+credits.programmer=
+credits.story=
+credits.asset=
+credits.assetauthor=
+credits.thanks=
+credits.supporters=
+credits.end=
+credits.end1=

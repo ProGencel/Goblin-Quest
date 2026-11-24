@@ -29,6 +29,7 @@ public class PauseMenu {
     private Dialog dialog;
 
     private int volume;
+    private int volumeM;
 
     public PauseMenu(Skin skin, SpriteBatch batch, I18NBundle bundle,
                      Runnable onResume, Runnable onMainMenu) {
@@ -37,6 +38,7 @@ public class PauseMenu {
         this.onResume = onResume;
         this.onMainMenu = onMainMenu;
         this.volume = prefs.getInteger("vol", 50);
+        this.volumeM = prefs.getInteger("mus",50);
 
         set(bundle);
     }
@@ -114,7 +116,24 @@ public class PauseMenu {
             }
         });
 
+        Slider sliderM = createSlider(skin);
+        sliderM.setValue(volumeM);
+
+        Label valueLabelM = new Label(String.valueOf(volumeM), skin);
+        sliderM.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                int value = (int) sliderM.getValue();
+                valueLabelM.setText(value);
+                volumeM = value;
+                prefs.putInteger("mus", volumeM);
+            }
+        });
+
         Table soundTable = new Table();
+        soundTable.add(new Label(bundle.get("music"), skin)).left().padRight(20);
+        soundTable.add(sliderM).width(200);
+        soundTable.add(valueLabelM).width(50).padLeft(5).row();
         soundTable.add(new Label(bundle.get("sound"), skin)).left().padRight(20);
         soundTable.add(slider).width(200);
         soundTable.add(valueLabel).width(50).padLeft(5);
@@ -124,6 +143,7 @@ public class PauseMenu {
     private void saveVolume()
     {
         prefs.putInteger("vol", volume);
+        prefs.putInteger("mus",volumeM);
         prefs.flush();
     }
 
@@ -173,8 +193,13 @@ public class PauseMenu {
         dialog.pad(20);
         dialog.getButtonTable().defaults().pad(10);
 
-        dialog.button(cancel, true);
-        dialog.button(yes, false);
+        TextButton yesB = new TextButton(yes,skin);
+        yesB.pad(10);
+        TextButton no = new TextButton(cancel,skin);
+        no.pad(10);
+
+        dialog.button(no, true);
+        dialog.button(yesB, false);
     }
 
     public void setActive(boolean active)
@@ -185,7 +210,9 @@ public class PauseMenu {
         }
         stage.getRoot().setVisible(active);
         stage.getRoot().setTouchable(active ? Touchable.enabled : Touchable.disabled);
-        if (active) {
+
+        if (active)
+        {
             Gdx.input.setInputProcessor(stage);
         }
     }
