@@ -1,0 +1,68 @@
+name: Localization Check
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  check-localization:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check localization files
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          folder = Path("assets/data/localization")
+          reference = folder / "loc_tr.properties"
+
+          def read_properties(path):
+              result = {}
+
+              for line in path.read_text(encoding="utf-8").splitlines():
+                  line = line.strip()
+
+                  if not line or line.startswith(("#", "!")):
+                      continue
+
+                  if "=" in line:
+                      key, value = line.split("=", 1)
+                      result[key.strip()] = value.strip()
+
+              return result
+
+          base = read_properties(reference)
+          failed = False
+
+          files = sorted(folder.glob("loc_*.properties"))
+
+          if not files:
+              raise SystemExit("No localization files found!")
+
+          for file in [reference, *files]:
+              current = read_properties(file)
+
+              missing = base.keys() - current.keys()
+              extra = current.keys() - base.keys()
+              empty = {k for k, v in current.items() if not v}
+
+              print(f"\nChecking {file.name}")
+
+              for key in sorted(missing):
+                  print(f"::error::{file.name} Missing: {key}")
+
+              for key in sorted(extra):
+                  print(f"::error::{file.name} Extra: {key}")
+
+              for key in sorted(empty):
+                  print(f"::error::{file.name} Empty: {key}")
+
+              if missing or extra or empty:
+                  failed = True
+              else:
+                  print("All translations OK!")
+
+          if failed:
+              raise SystemExit(1)
+          PY

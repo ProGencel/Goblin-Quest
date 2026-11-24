@@ -1,8 +1,8 @@
-turn everything localization,
-add music to main menu and end screens
-check the red warn thing
 add icon
-give pad buttons on the in game settings menu
+add music to main menu and end screens - DONE
+turn everything localization - DONE
+check the red warn thing - DONE
+give pad buttons on the in game settings menu - DONE
 better main menu - DONE
 Fix the skeletons facing direction after mission - DONE
 design the cave better and set the ais speed - DONE
@@ -10,7 +10,7 @@ Fix the skeleton move bug - DONE
 fix the campfires light at the skeletons house - DONE
 
 
-After release
+BEFORE RELEASE
 debug modelari kapat, fps gostermesini kapat
 
 Ileri seviye
