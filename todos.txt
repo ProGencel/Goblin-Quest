@@ -8,11 +8,23 @@ Fix the skeletons facing direction after mission - DONE
 design the cave better and set the ais speed - DONE
 Fix the skeleton move bug - DONE
 fix the campfires light at the skeletons house - DONE
+Better ui
+
+BUG
+last boss dialog shows everywhere
+fix the clouds appear everythings up (roof and cave handle)
+Make all bad goblin bald
+Progress do not lost when you quit main menu fix the title
+Remove clouds when they on the black part of the map
+Dont show clouds when dark
+reset gamestate
+check localizations
 
 
 BEFORE RELEASE
 debug modelari kapat, fps gostermesini kapat
 
-Ileri seviye
-bulut golge gecisleri ekle
-sulara animasyon ekle
+Next Level improvements
+Cloud shadows
+Animation to waters
+Swim

@@ -13,7 +13,6 @@ import com.kitswiki.gquest.hud.ShopManager;
 import com.kitswiki.gquest.hud.mainMenu.SettingdDialog;
 import com.kitswiki.gquest.managers.AudioManager;
 
-import java.io.File;
 import java.util.Locale;
 
 public class GameSession {

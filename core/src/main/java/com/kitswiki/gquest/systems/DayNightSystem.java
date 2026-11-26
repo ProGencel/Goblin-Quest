@@ -31,24 +31,38 @@ public class DayNightSystem extends EntitySystem {
     private int day;
     private final Color ambient = new Color(Color.WHITE);
     private final RayHandler rayHandler;
+    private final Runnable runnable;
 
-    public DayNightSystem(int day, float hour, RayHandler rayHandler) {
+    float lastMin = 0;
+    float CLOUD_FREQ = (DAY_LENGTH_SECONDS / 24) / 3;
+
+    public DayNightSystem(int day, float hour, RayHandler rayHandler, Runnable runnable) {
 
         this.day = day;
         this.hour = hour;
         this.rayHandler = rayHandler;
+        this.runnable = runnable;
 
         updateAmbient();
     }
 
     @Override
     public void update(float deltaTime) {
-        //deltaTime *= 10f;
+//        deltaTime *= 10f;
         hour += deltaTime * (24f / DAY_LENGTH_SECONDS);
         if(hour >= 24f)
         {
             hour -= 24f;
             day++;
+        }
+
+
+        lastMin += deltaTime;
+
+        if(lastMin > CLOUD_FREQ)
+        {
+            lastMin = 0;
+            runnable.run();
         }
         updateAmbient();
     }
@@ -88,5 +102,9 @@ public class DayNightSystem extends EntitySystem {
 
     public int getDay() {
         return day;
+    }
+
+    public Color getAmbient() {
+        return ambient;
     }
 }

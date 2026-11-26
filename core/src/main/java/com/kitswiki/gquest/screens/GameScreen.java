@@ -11,6 +11,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,6 +30,7 @@ import com.kitswiki.gquest.ai.skeleton.SkeletonState;
 import com.kitswiki.gquest.components.SkeletonAIComponent;
 import com.kitswiki.gquest.effects.BlackScreen;
 import com.kitswiki.gquest.enums.BACK_MUSIC;
+import com.kitswiki.gquest.factories.CloudFactory;
 import com.kitswiki.gquest.factories.LightFactory;
 import com.kitswiki.gquest.hud.*;
 import com.kitswiki.gquest.ai.pathfinding.TileGraph;
@@ -133,15 +135,15 @@ public class GameScreen implements Screen, ChangeMap {
         this.gameState = gameSession.getGameState();
 
         this.delayedSpawnSystem = new DelayedSpawnSystem(gameSession.getGameState());
-        this.dayNightSystem = new DayNightSystem(gameSession.getDay(),gameSession.getHour(),rayHandler);
 
         this.portalFactory = new PortalFactory(mapReader,engine,world);
         this.lightFactory = new LightFactory(mapReader,rayHandler,engine);
         this.staticBodyBuilder = new StaticBodyBuilder(world,mapReader,engine);
         this.audioManager = gameSession.getAudioManager();
         this.entityFactory = new EntityFactory(world,mapReader,engine,audioManager);
+        this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory,new CloudFactory(engine,gameSession,mapReader,currMap));
+        this.dayNightSystem = new DayNightSystem(gameSession.getDay(),gameSession.getHour(),rayHandler,mapObjectBuilder.getCreateCloud());
         this.hud = new Hud(dialogStage,assetManager,dayNightSystem,audioManager);
-        this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory);
         hud.setDialog();
 
         this.fade = new ScreenFade(startFadedIn);
@@ -207,15 +209,16 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new DamageSystem(p));
         engine.addSystem(new DeathSystem(this,"town","begin",gameSession,audioManager));
         engine.addSystem(delayedSpawnSystem);
+        engine.addSystem(new InteractSystem(p));
         engine.addSystem(new DialogInteractSystem(p, hud.getDialogBox(), dialogManager, gameState, shopManager,
             () -> pendingScreenChange = this::showEnding));
-        engine.addSystem(new InteractSystem(p));
         engine.addSystem(new PortalSystem(this,p));
         engine.addSystem(new CollectableInteractSystem(gameState));
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
         engine.addSystem(new AnimationSystem(assetManager.get("atlas/cooked/gquest.atlas")));
         engine.addSystem(new RoofSystem());
-        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage,this,viewport,rayHandler));
+        engine.addSystem(new RenderSystem(batch,tiledMap,camera,mapRenderer,dialogStage,this,viewport,rayHandler,gameSession,mapReader));
+        engine.addSystem(new CloudSystem());
         engine.addSystem(new LightSystem());
         engine.addSystem(new InGameUiSystem(assetManager,p));
 
@@ -228,7 +231,11 @@ public class GameScreen implements Screen, ChangeMap {
             return;
         }
         if ("cave".equals(map) && isCaveBusy()) {
-            hud.getDialogBox().start(new String[]{"Cave is busy now"}, null);
+            if (!hud.getDialogBox().isOpen()) {
+                hud.getDialogBox().start(
+                    new String[]{"Cave is busy now"}, null
+                );
+            }
             return;
         }
         pendingMap = map;
@@ -255,6 +262,7 @@ public class GameScreen implements Screen, ChangeMap {
         delta = Math.min(delta, 1/30f);
 
         ScreenUtils.clear(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_STENCIL_BUFFER_BIT);
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
         {
@@ -285,6 +293,9 @@ public class GameScreen implements Screen, ChangeMap {
         {
             blackScreen.draw();
         }
+
+        batch.setProjectionMatrix(uiViewport.getCamera().combined);
+
         batch.begin();
         new BitmapFont().draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20); //MEMORY LEAK SAKIN ACIK UNUTMA !!!!
         batch.end();

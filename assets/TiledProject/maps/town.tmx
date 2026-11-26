@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="70" tilewidth="16" tileheight="16" infinite="0" nextlayerid="33" nextobjectid="2980">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="70" tilewidth="16" tileheight="16" infinite="0" nextlayerid="35" nextobjectid="2988">
  <tileset firstgid="1" source="../tilesets/props.tsx"/>
  <tileset firstgid="69" source="../tilesets/sunnysideworld.tsx"/>
  <tileset firstgid="4165" source="../tilesets/duck.tsx"/>
@@ -1016,7 +1016,7 @@
   <object id="912" gid="14" x="1280" y="432" width="32" height="48"/>
   <object id="913" gid="14" x="1568" y="384" width="32" height="48"/>
   <object id="914" gid="14" x="1564.91" y="239.091" width="32" height="48"/>
-  <object id="915" gid="14" x="1408" y="160" width="32" height="48"/>
+  <object id="915" gid="14" x="1457.33" y="200" width="32" height="48"/>
   <object id="916" gid="14" x="1232" y="208" width="32" height="48"/>
   <object id="917" gid="14" x="1146.73" y="274" width="32" height="48"/>
   <object id="918" gid="14" x="1280" y="384" width="32" height="48"/>
@@ -1746,6 +1746,10 @@
    <point/>
   </object>
  </objectgroup>
+ <objectgroup id="33" name="clouds">
+  <object id="2982" x="1744" y="0" width="50" height="1120"/>
+  <object id="2983" x="-204" y="0" width="76" height="1120"/>
+ </objectgroup>
  <objectgroup id="24" name="roofs" visible="0">
   <properties>
    <property name="identity" value="orange_roof"/>
@@ -1773,7 +1777,29 @@
     <property name="target_id" value="orange_roof"/>
    </properties>
   </object>
-  <object id="147" x="1294.59" y="229.92" width="51.5" height="101.625">
+  <object id="147" x="1294.59" y="228.42" width="51.5" height="103.125">
+   <properties>
+    <property name="target_id" value="orange_roof"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="34" name="not_cloud_recs">
+  <object id="2984" x="1402.5" y="203.631" width="154.75" height="114.568">
+   <properties>
+    <property name="target_id" value="orange_roof"/>
+   </properties>
+  </object>
+  <object id="2985" x="1498.78" y="154.824" width="58.125" height="61.375">
+   <properties>
+    <property name="target_id" value="orange_roof"/>
+   </properties>
+  </object>
+  <object id="2986" x="1343.3" y="203.37" width="66" height="84.125">
+   <properties>
+    <property name="target_id" value="orange_roof"/>
+   </properties>
+  </object>
+  <object id="2987" x="1291.09" y="202.801" width="58.75" height="115.875">
    <properties>
     <property name="target_id" value="orange_roof"/>
    </properties>

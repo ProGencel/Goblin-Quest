@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.components.RoofComponent;
+import com.kitswiki.gquest.factories.CloudFactory;
 import com.kitswiki.gquest.factories.EntityFactory;
 import com.kitswiki.gquest.hud.GameState;
 import com.kitswiki.gquest.systems.DelayedSpawnSystem;
@@ -18,13 +19,20 @@ public class MapObjectBuilder {
     private final Engine engine;
     private final EntityFactory entityFactory;
     private final DelayedSpawnSystem delayedSpawnSystem;
+    private final CloudFactory cloudFactory;
     private Entity p;
 
-    public MapObjectBuilder(DelayedSpawnSystem delayedSpawnSystem, TiledMapReader mapReader, Engine engine, EntityFactory entityFactory) {
+    public MapObjectBuilder(DelayedSpawnSystem delayedSpawnSystem, TiledMapReader mapReader, Engine engine, EntityFactory entityFactory, CloudFactory cloudFactory) {
         this.delayedSpawnSystem = delayedSpawnSystem;
         this.mapReader = mapReader;
         this.engine = engine;
         this.entityFactory = entityFactory;
+        this.cloudFactory = cloudFactory;
+    }
+
+    public Runnable getCreateCloud()
+    {
+        return cloudFactory.getCreateCloud();
     }
 
     public void loadDynamicObjects(GameState gameState)

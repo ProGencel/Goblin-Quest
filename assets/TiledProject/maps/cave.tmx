@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="17" nextobjectid="886">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="18" nextobjectid="888">
  <tileset firstgid="1" source="../tilesets/sunnysideworld.tsx"/>
  <tileset firstgid="4097" source="../tilesets/props.tsx"/>
  <layer id="1" name="ground" width="100" height="100">
@@ -882,6 +882,10 @@
   <object id="883" gid="499" x="1249" y="180" width="16" height="16"/>
   <object id="884" gid="499" x="1226" y="554" width="16" height="16"/>
   <object id="885" gid="499" x="820" y="602" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup id="17" name="clouds">
+  <object id="886" x="1724" y="320" width="50" height="1120"/>
+  <object id="887" x="-224" y="320" width="76" height="1120"/>
  </objectgroup>
  <objectgroup id="16" name="lights" visible="0">
   <object id="354" x="222" y="127">

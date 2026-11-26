@@ -34,14 +34,19 @@ public class SkeletonAI {
     public void setPushable(boolean pushable)
     {
         Body body = steerableBody.getBody();
-        if(pushable)
+
+        BodyDef.BodyType targetType = pushable
+            ? BodyDef.BodyType.DynamicBody
+            : BodyDef.BodyType.StaticBody;
+
+        if (body.getType() == targetType)
         {
-            body.setType(BodyDef.BodyType.DynamicBody);
+            return;
         }
-        else
-        {
-            body.setType(BodyDef.BodyType.StaticBody);
-        }
+
+        body.setActive(false);
+        body.setType(targetType);
+        body.setActive(true);
     }
 
     public void moveToCave()
