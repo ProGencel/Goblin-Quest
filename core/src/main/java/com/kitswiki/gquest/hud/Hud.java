@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.hud.customActors.ClockLabel;
 import com.kitswiki.gquest.hud.customActors.DialogBox;
 import com.kitswiki.gquest.managers.AudioManager;
@@ -17,17 +18,15 @@ public class Hud {
 
     private final DialogBox dialogBox;
     private final ClockLabel clockLabel;
-    private final AudioManager audioManager;
 
-    public Hud(Stage stage, AssetManager assetManager, DayNightSystem dayNightSystem, AudioManager audioManager) {
+    public Hud(Stage stage, AssetManager assetManager, DayNightSystem dayNightSystem, GameSession gameSession) {
         this.stage = stage;
         this.stack = new Stack();
         stack.setFillParent(true);
 
         Skin skin = assetManager.get("UI/dialog/skin/skin.json");
-        this.dialogBox = new DialogBox(skin,audioManager);
-        this.clockLabel = new ClockLabel(skin,dayNightSystem);
-        this.audioManager = audioManager;
+        this.dialogBox = new DialogBox(skin,gameSession.getAudioManager());
+        this.clockLabel = new ClockLabel(skin,dayNightSystem,gameSession.getBundle(),gameSession);
     }
 
     public void setDialog()

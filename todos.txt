@@ -8,23 +8,27 @@ Fix the skeletons facing direction after mission - DONE
 design the cave better and set the ais speed - DONE
 Fix the skeleton move bug - DONE
 fix the campfires light at the skeletons house - DONE
-Better ui
-
-BUG
-last boss dialog shows everywhere
-fix the clouds appear everythings up (roof and cave handle)
-Make all bad goblin bald
-Progress do not lost when you quit main menu fix the title
-Remove clouds when they on the black part of the map
-Dont show clouds when dark
-reset gamestate
-check localizations
+last boss dialog shows everywhere - DONE
+fix the clouds appear everythings up (roof and cave handle) - DONE
+Make all bad goblin bald - DONE
+Progress do not lost when you quit main menu fix the title - DONE
+Remove clouds when they on the black part of the map - DONE
+Dont show clouds when dark - DONE
+reset gamestate - DONE
+check localizations - DONE
+Better ui - DONE
+final scene goblin dialog bug check that
 
 
 BEFORE RELEASE
-debug modelari kapat, fps gostermesini kapat
+turn of debug and fps
 
 Next Level improvements
-Cloud shadows
+Cloud shadows - DONE
 Animation to waters
+Mouse Icon
 Swim
+
+Check
+After final is game state reset ?
+localizations is okey?

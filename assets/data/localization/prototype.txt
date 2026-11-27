@@ -135,6 +135,12 @@ yes=
 cancel=
 confirm=
 music=
+day=
+cave.busy=
+notgold=
+thanks=
+golds=
+leave=
 
 ....=
 

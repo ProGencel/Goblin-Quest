@@ -155,7 +155,6 @@ public class EntityFactory {
 
         AnimationComponent a = new AnimationComponent();
         a.layers.add("badGoblin");
-        setRandomHair(mapObject,a);
 
         TextureComponent tex = new TextureComponent();
         tex.offsetY = spriteOffsetY(mapObject);

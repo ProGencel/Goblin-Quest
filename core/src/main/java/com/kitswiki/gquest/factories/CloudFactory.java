@@ -44,12 +44,12 @@ public class CloudFactory {
         Random random = new Random();
         Entity e = engine.createEntity();
 
-        CloudComponent c = new CloudComponent();
+        CloudComponent c = engine.createComponent(CloudComponent.class);
         c.region = generator.generateCloud();
 
-        TransformComponent t = new TransformComponent();
+        TransformComponent t = engine.createComponent(TransformComponent.class);
         t.position = getPositionRandom(c,random);
-        c.speed = MathUtils.random(0.2f,0.8f);
+        c.speed = MathUtils.random(20f,80f);
         c.speed *= c.direction;
 
         e.add(t);
@@ -69,7 +69,7 @@ public class CloudFactory {
         Rectangle rect = rec.bounds;
         if(rect.x < 0)
         {
-            c.direction = 1;
+            c.direction = 1; // right direction
         }
         else
         {

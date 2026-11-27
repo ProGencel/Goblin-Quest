@@ -17,6 +17,11 @@ public class GameState {
         flags.add(flag);
     }
 
+    public void reset()
+    {
+        flags.clear();
+    }
+
     public void writeTo(SavedData data)
     {
         data.flags.clear();

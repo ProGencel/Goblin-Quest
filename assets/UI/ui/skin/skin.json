@@ -43,6 +43,12 @@
 		"g": 1,
 		"b": 1,
 		"a": 1
+	},
+	"white1": {
+		"r": 1,
+		"g": 0.9529412,
+		"b": 0.8392157,
+		"a": 1
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
@@ -58,7 +64,7 @@
 "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
 	"default": {
 		"font": "Minecraft_2",
-		"fontColor": "FontColor"
+		"fontColor": "white1"
 	},
 	"TITLE": {
 		"font": "Minecraft_2",
@@ -68,40 +74,45 @@
 "com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle": {
 	"default": {
 		"font": "Minecraft_2",
-		"fontColorSelected": "white",
+		"fontColorSelected": "white1",
 		"fontColorUnselected": "black",
-		"selection": "dialog"
+		"selection": "bluethin"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
 	"default": {
-		"background": "uibrown"
+		"background": "button"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
 	"default": {
 		"font": "Minecraft_2",
 		"fontColor": "black",
-		"background": "uibrown",
+		"background": "buttonthin",
 		"scrollStyle": "default",
 		"listStyle": "default"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
 	"default-horizontal": {
-		"knobBeforeDown": "dialog",
-		"background": "uibrown",
-		"knob": "dialog",
-		"knobBefore": "dialog"
+		"knobBeforeDown": "buttonhoverthin",
+		"background": "buttonthin",
+		"knob": "bluethin",
+		"knobBefore": "buttonhoverthin"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle": {
+	"default-horizontal": {
+		"handle": "dialog"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
 	"default": {
 		"font": "Minecraft_2",
-		"fontColor": "black",
-		"up": "uiAnotherBrown",
-		"down": "dialog",
-		"over": "uibrown"
+		"fontColor": "white1",
+		"up": "button",
+		"down": "blue",
+		"over": "buttonhover"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
@@ -111,9 +122,9 @@
 },
 "com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle": {
 	"default": {
-		"background": "uiAnotherBrown",
+		"background": "window",
 		"titleFont": "Minecraft_2",
-		"titleFontColor": "FontColor",
+		"titleFontColor": "white1",
 		"stageBackground": "notopqeus"
 	}
 }

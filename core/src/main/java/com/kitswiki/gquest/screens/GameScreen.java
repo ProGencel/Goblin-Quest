@@ -1,10 +1,7 @@
 package com.kitswiki.gquest.screens;
 
 import box2dLight.RayHandler;
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.EntitySystem;
-import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -117,7 +114,7 @@ public class GameScreen implements Screen, ChangeMap {
         this.tiledMap = assetManager.get(mapPath);
         this.currMap = mapPath.contains("town") ? "town" : "cave";
         this.batch = new SpriteBatch();
-        this.engine = new Engine();
+        this.engine = new PooledEngine();
         this.mapRenderer = new OrthogonalTiledMapRenderer(tiledMap, UNIT_SCALE,batch);
         this.camera = new OrthographicCamera();
         this.viewport = new FitViewport(480f * UNIT_SCALE, 270f * UNIT_SCALE,camera);
@@ -143,7 +140,7 @@ public class GameScreen implements Screen, ChangeMap {
         this.entityFactory = new EntityFactory(world,mapReader,engine,audioManager);
         this.mapObjectBuilder = new MapObjectBuilder(delayedSpawnSystem,mapReader,engine,entityFactory,new CloudFactory(engine,gameSession,mapReader,currMap));
         this.dayNightSystem = new DayNightSystem(gameSession.getDay(),gameSession.getHour(),rayHandler,mapObjectBuilder.getCreateCloud());
-        this.hud = new Hud(dialogStage,assetManager,dayNightSystem,audioManager);
+        this.hud = new Hud(dialogStage,assetManager,dayNightSystem,gameSession);
         hud.setDialog();
 
         this.fade = new ScreenFade(startFadedIn);
@@ -210,8 +207,8 @@ public class GameScreen implements Screen, ChangeMap {
         engine.addSystem(new DeathSystem(this,"town","begin",gameSession,audioManager));
         engine.addSystem(delayedSpawnSystem);
         engine.addSystem(new InteractSystem(p));
-        engine.addSystem(new DialogInteractSystem(p, hud.getDialogBox(), dialogManager, gameState, shopManager,
-            () -> pendingScreenChange = this::showEnding));
+        engine.addSystem(new DialogInteractSystem(p, hud.getDialogBox(), gameState,
+            () -> pendingScreenChange = this::showEnding,gameSession));
         engine.addSystem(new PortalSystem(this,p));
         engine.addSystem(new CollectableInteractSystem(gameState));
         engine.addSystem(new CameraSystem(camera,mapReader,viewport));
@@ -233,7 +230,7 @@ public class GameScreen implements Screen, ChangeMap {
         if ("cave".equals(map) && isCaveBusy()) {
             if (!hud.getDialogBox().isOpen()) {
                 hud.getDialogBox().start(
-                    new String[]{"Cave is busy now"}, null
+                    new String[]{gameSession.getBundle().get("cave.busy")}, null
                 );
             }
             return;

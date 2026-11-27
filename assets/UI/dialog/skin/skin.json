@@ -14,17 +14,35 @@
 		"b": 0.35686275,
 		"a": 1
 	},
+	"outline": {
+		"r": 0.09411765,
+		"g": 0.078431375,
+		"b": 0.14509805,
+		"a": 1
+	},
+	"text": {
+		"r": 0.91764706,
+		"g": 0.83137256,
+		"b": 0.6666667,
+		"a": 1
+	},
 	"white": {
 		"r": 1,
 		"g": 1,
 		"b": 1,
+		"a": 1
+	},
+	"white1": {
+		"r": 0.89411765,
+		"g": 0.7294118,
+		"b": 0.44705883,
 		"a": 1
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
 	"default": {
 		"font": "Minecraft_2",
-		"fontColor": "FontColor"
+		"fontColor": "text"
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {

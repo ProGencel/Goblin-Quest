@@ -23,5 +23,20 @@ public class CloudSystem extends IteratingSystem {
         TransformComponent transform = t.get(entity);
 
         transform.position.x += deltaTime * cloud.speed;
+        switch (cloud.direction)
+        {
+            case 1 -> {
+                if(110 < transform.position.x)
+                {
+                    getEngine().removeEntity(entity);
+                }
+            }
+            default -> {
+                if(-10 < transform.position.x)
+                {
+                    getEngine().removeEntity(entity);
+                }
+            }
+        }
     }
 }

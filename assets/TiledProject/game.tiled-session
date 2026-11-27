@@ -35,11 +35,11 @@
         },
         "maps/cave.tmx": {
             "expandedObjectLayers": [
-                16,
-                7,
                 8,
-                4,
-                9
+                7,
+                9,
+                16,
+                4
             ],
             "scale": 1,
             "selectedLayer": 4,
@@ -50,20 +50,20 @@
         },
         "maps/town.tmx": {
             "expandedObjectLayers": [
+                25,
+                30,
+                23,
+                14,
                 24,
                 32,
-                30,
-                15,
-                4,
-                14,
                 9,
-                25,
-                23
+                15,
+                4
             ],
-            "scale": 4,
-            "selectedLayer": 18,
+            "scale": 1,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 805.125,
+                "x": 820.5,
                 "y": 560
             }
         },

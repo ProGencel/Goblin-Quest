@@ -51,7 +51,7 @@ public class PauseMenu {
         root.setBackground(skin.newDrawable("white", 0f, 0f, 0f, 0.6f));
 
         Table panel = new Table();
-        panel.setBackground(skin.getDrawable("uibrown"));
+        panel.setBackground(skin.getDrawable("window"));
         panel.pad(20);
 
         Label title = new Label(bundle.get("pause"), skin);

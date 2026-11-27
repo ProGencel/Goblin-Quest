@@ -3,6 +3,8 @@ package com.kitswiki.gquest.ui;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -39,7 +41,42 @@ public class InGameUi {
         Table leftTopTable = new Table();
         leftTopTable.pad(15);
 
-        label = new Label("0",skin);
+        label = new Label("0", skin) {
+
+            private final Color originalColor = new Color();
+            private final Color outlineColor = skin.getColor("outline");
+
+            @Override
+            public void draw(Batch batch, float parentAlpha) {
+                float x = getX();
+                float y = getY();
+
+                originalColor.set(getColor());
+
+                setColor(outlineColor);
+                getColor().a = originalColor.a;
+
+                for (int dx = -1; dx <= 1; dx++) {
+                    for (int dy = -1; dy <= 1; dy++) {
+                        if (dx == 0 && dy == 0) continue;
+
+                        setPosition(x + dx, y + dy);
+                        super.draw(batch, parentAlpha);
+                    }
+                }
+
+                setPosition(x, y);
+                setColor(originalColor);
+
+                super.draw(batch, parentAlpha);
+            }
+        };
+
+        label.setStyle(new Label.LabelStyle(
+            label.getStyle().font, Color.WHITE
+        ));
+
+        label.setColor(skin.getColor("text"));
         Image image = new Image(atlas.findRegion("gold"));
 
         Table goldTable = new Table();

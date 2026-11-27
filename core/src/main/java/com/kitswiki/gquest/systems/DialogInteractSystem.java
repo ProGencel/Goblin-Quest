@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.I18NBundle;
+import com.kitswiki.gquest.GameSession;
 import com.kitswiki.gquest.ai.enemy.EnemyState;
 import com.kitswiki.gquest.components.*;
 import com.kitswiki.gquest.hud.customActors.DialogBox;
@@ -28,6 +30,7 @@ public class DialogInteractSystem extends IteratingSystem {
     private final GameState gameState;
     private final ShopManager shopManager;
     private final Runnable changeToFinal;
+    private final GameSession gameSession;
 
     private String currentDialogId;
     private DialogManager.DialogEntry currentEntry;
@@ -36,14 +39,15 @@ public class DialogInteractSystem extends IteratingSystem {
     private Array<DialogManager.Choice> shopChoices;
 
 
-    public DialogInteractSystem(Entity player, DialogBox dialogBox, DialogManager dialogReader, GameState gameState, ShopManager shopManager,Runnable runnable) {
+    public DialogInteractSystem(Entity player, DialogBox dialogBox, GameState gameState, Runnable runnable, GameSession gameSession) {
         super(Family.all(TransformComponent.class, DialogComponent.class).get());
         this.player = player;
         this.dialogBox = dialogBox;
-        this.dialogReader = dialogReader;
+        this.dialogReader = gameSession.getDialogManager();
         this.gameState = gameState;
-        this.shopManager = shopManager;
+        this.shopManager = gameSession.getShopManager();
         this.changeToFinal = runnable;
+        this.gameSession = gameSession;
     }
 
     @Override
@@ -105,7 +109,10 @@ public class DialogInteractSystem extends IteratingSystem {
     {
         switch (action) {
             case "ske_cave" -> sendCaveSkes();
-            case "final" -> changeToFinal.run();
+            case "final" -> {
+                changeToFinal.run();
+                gameState.reset();
+            }
             default -> throw new IllegalArgumentException("Unknown dialog action: " + action);
         }
     }
@@ -141,10 +148,10 @@ public class DialogInteractSystem extends IteratingSystem {
         }
 
         DialogManager.Choice leave = new DialogManager.Choice();
-        leave.text = "Leave";
+        leave.text = gameSession.getBundle().get("leave");
         shopChoices.add(leave);
 
-        dialogBox.showShop(shopChoices, "Gold: " + gold());
+        dialogBox.showShop(shopChoices, gameSession.getBundle().get("golds")+": " + gold());
     }
 
     private void handleShopChoice(DialogManager.Choice c)
@@ -161,7 +168,8 @@ public class DialogInteractSystem extends IteratingSystem {
         }
 
         boolean ok = shopManager.tryBuy(shopItems[i], inv.get(player));
-        dialogBox.setHeader("Gold: " + gold() + (ok ? " - Thanks!" : " - Not enough gold."));
+        I18NBundle bundle = gameSession.getBundle();
+        dialogBox.setHeader(bundle.get("golds")+": " + gold() + (ok ? " - "+bundle.get("thanks") : " - "+bundle.get("notgold")));
     }
 
     private int gold()
